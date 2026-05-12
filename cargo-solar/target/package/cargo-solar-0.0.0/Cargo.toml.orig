@@ -1,0 +1,21 @@
+[package]
+name = "cargo-solar"
+version = "0.0.0"
+edition = "2024"
+authors = ["Nicholas Raynes"]
+description = "Cargo tool for automating use of the solar framework used for building rust projects."
+license  = "MIT OR Apache-2.0"
+repository = "https://github.com/nraynes/semver-common"
+keywords = ["solar", "framework", "cargo", "project", "tools"]
+categories = ["command-line-utilities", "development-tools"]
+include = [
+    "src/",
+    "examples/",
+    "Cargo.toml",
+    "LICENSES/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+]
+
+[dependencies]
