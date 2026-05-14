@@ -1,9 +1,7 @@
 use std::{
-    fs::{self, File},
+    fs::File,
     path::PathBuf,
 };
-
-use rust_terminal::Terminal;
 
 use clap::Parser;
 
