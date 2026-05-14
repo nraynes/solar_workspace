@@ -1,9 +1,8 @@
 use cargo_solar::Args;
 use clap::Parser;
-use semver_common::Alert;
-use solar_core::Subcommand;
+use solar_core::{SolarError, Subcommand};
 
-fn main() -> Result<(), Alert> {
+fn main() -> Result<(), SolarError> {
     let args = Args::parse();
     match args.subcommand {
         Subcommand::INIT(cmd) => cmd.run(),
