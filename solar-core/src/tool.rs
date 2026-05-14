@@ -24,7 +24,7 @@ use clap::Subcommand as SC;
 pub enum Action {
     INSTALL,
     UPGRADE,
-    REMOVE,
+    UNINSTALL,
 }
 
 pub trait ToolTrait {
@@ -32,16 +32,16 @@ pub trait ToolTrait {
         match action {
             Action::INSTALL => self.install(),
             Action::UPGRADE => self.upgrade(),
-            Action::REMOVE => self.remove(),
+            Action::UNINSTALL => self.uninstall(),
         }
     }
 
     fn install(&self) -> Result<(), SolarError>;
 
-    fn remove(&self) -> Result<(), SolarError>;
+    fn uninstall(&self) -> Result<(), SolarError>;
 
     fn upgrade(&self) -> Result<(), SolarError> {
-        self.remove()?;
+        self.uninstall()?;
         self.install()?;
         Ok(())
     }

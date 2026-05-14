@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::{Action, Tool, SolarError};
+use crate::{Action, SolarError, Tool};
 
 #[derive(Parser, Clone)]
 pub struct Upgrade {

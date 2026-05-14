@@ -14,7 +14,7 @@ impl ToolTrait for Workspaces {
         Ok(())
     }
 
-    fn remove(&self) -> Result<(), SolarError> {
+    fn uninstall(&self) -> Result<(), SolarError> {
         Ok(())
     }
 }

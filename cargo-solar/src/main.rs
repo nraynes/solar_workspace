@@ -9,6 +9,6 @@ fn main() -> Result<(), SolarError> {
         Subcommand::NEW(cmd) => cmd.run(),
         Subcommand::UPGRADE(cmd) => cmd.run(),
         Subcommand::INSTALL(cmd) => cmd.run(),
-        Subcommand::REMOVE(cmd) => cmd.run(),
+        Subcommand::UNINSTALL(cmd) => cmd.run(),
     }
 }

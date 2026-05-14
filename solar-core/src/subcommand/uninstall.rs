@@ -2,10 +2,10 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::{Action, Tool, SolarError};
+use crate::{Action, SolarError, Tool};
 
 #[derive(Parser, Clone)]
-pub struct Remove {
+pub struct Uninstall {
     /// The name of the tool to remove. If none is provided, defaults to all tools.
     #[command(subcommand)]
     tool: Option<Tool>,
@@ -15,8 +15,8 @@ pub struct Remove {
     destination: PathBuf,
 }
 
-impl Remove {
+impl Uninstall {
     pub fn run(&self) -> Result<(), SolarError> {
-        Tool::perform(&self.tool, Action::REMOVE)
+        Tool::perform(&self.tool, Action::UNINSTALL)
     }
 }

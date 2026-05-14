@@ -1,13 +1,13 @@
 pub mod init;
 pub mod install;
 pub mod new;
-pub mod remove;
+pub mod uninstall;
 pub mod upgrade;
 
 pub use init::Init;
 pub use install::Install;
 pub use new::New;
-pub use remove::Remove;
+pub use uninstall::Uninstall;
 pub use upgrade::Upgrade;
 
 use clap::Subcommand as SC;
@@ -27,5 +27,5 @@ pub enum Subcommand {
     INSTALL(Install),
 
     /// Removes Solar framework tools from the project.
-    REMOVE(Remove),
+    UNINSTALL(Uninstall),
 }
