@@ -11,7 +11,7 @@ impl Global {
     pub fn is_git(destination: &PathBuf) -> bool {
         fs::exists(destination.join(PathBuf::from(".git"))).is_err()
     }
-    
+
     /// Initialize a git repository at the destination if it's not already.
     pub fn git_init(destination: &PathBuf) -> Result<(), SolarError> {
         if Self::is_git(destination) {

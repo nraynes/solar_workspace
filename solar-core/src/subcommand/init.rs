@@ -1,11 +1,8 @@
-use std::{
-    fs::File,
-    path::PathBuf,
-};
+use std::{fs::File, path::PathBuf};
 
 use clap::Parser;
 
-use crate::{Install, SolarError, Global};
+use crate::{Global, Install, SolarError};
 
 #[derive(Parser, Clone)]
 pub struct Init {
