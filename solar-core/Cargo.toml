@@ -1,6 +1,6 @@
 [package]
 name = "solar-core"
-version = "0.0.0"
+version = "0.0.1"
 edition = "2024"
 authors = ["Nicholas Raynes"]
 description = "Core library for cargo-solar command."
