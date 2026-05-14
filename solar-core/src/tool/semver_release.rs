@@ -1,6 +1,5 @@
-use crate::ToolTrait;
+use crate::{SolarError, ToolTrait};
 use clap::Parser;
-use semver_common::Alert;
 use std::path::PathBuf;
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
@@ -11,11 +10,11 @@ pub struct SemverRelease {
 }
 
 impl ToolTrait for SemverRelease {
-    fn install(&self) -> Result<(), Alert> {
+    fn install(&self) -> Result<(), SolarError> {
         Ok(())
     }
 
-    fn remove(&self) -> Result<(), Alert> {
+    fn remove(&self) -> Result<(), SolarError> {
         Ok(())
     }
 }

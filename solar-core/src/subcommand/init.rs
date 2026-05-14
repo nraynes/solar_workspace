@@ -1,13 +1,13 @@
 use std::{
     fs::{self, File},
     path::PathBuf,
-    process::Command,
 };
 
-use clap::Parser;
-use semver_common::Alert;
+use rust_terminal::Terminal;
 
-use crate::{Install, Terminal};
+use clap::Parser;
+
+use crate::{SolarError, Install};
 
 #[derive(Parser, Clone)]
 pub struct Init {
@@ -26,14 +26,12 @@ pub struct Init {
 }
 
 impl Init {
-    pub fn run(&self) -> Result<(), Alert> {
+    pub fn run(&self) -> Result<(), SolarError> {
         // Initialize git repository if forcing initialization or repository is not initialized already
         let no_existing_git_repo =
             fs::exists(self.destination.join(PathBuf::from(".git"))).is_err();
         if self.force_init || no_existing_git_repo {
-            let mut git = Command::new("git");
-            let mut child = git.arg("init").spawn()?;
-            Terminal::read_stdout_from(&mut child)?;
+            Terminal::command().piped().run("git", vec!["init"])?;
         }
 
         // Create a README.md file

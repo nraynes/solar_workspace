@@ -11,9 +11,10 @@ pub use commitalyzer::Commitalyzer;
 pub use github_workspaces::Workspaces;
 pub use licenses::Licenses;
 pub use pre_commit::PreCommit;
-use semver_common::Alert;
 pub use semver_release::SemverRelease;
 pub use vhooks::Vhooks;
+
+use crate::SolarError;
 
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
@@ -27,7 +28,7 @@ pub enum Action {
 }
 
 pub trait ToolTrait {
-    fn act(&self, action: &Action) -> Result<(), Alert> {
+    fn act(&self, action: &Action) -> Result<(), SolarError> {
         match action {
             Action::INSTALL => self.install(),
             Action::UPGRADE => self.upgrade(),
@@ -35,11 +36,11 @@ pub trait ToolTrait {
         }
     }
 
-    fn install(&self) -> Result<(), Alert>;
+    fn install(&self) -> Result<(), SolarError>;
 
-    fn remove(&self) -> Result<(), Alert>;
+    fn remove(&self) -> Result<(), SolarError>;
 
-    fn upgrade(&self) -> Result<(), Alert> {
+    fn upgrade(&self) -> Result<(), SolarError> {
         self.remove()?;
         self.install()?;
         Ok(())
@@ -71,7 +72,7 @@ pub enum Tool {
 }
 
 impl Tool {
-    fn act(&self, action: &Action) -> Result<(), Alert> {
+    fn act(&self, action: &Action) -> Result<(), SolarError> {
         match self {
             Self::VHOOKS(tool) => tool.act(action),
             Self::COMMITALYZER(tool) => tool.act(action),
@@ -83,7 +84,7 @@ impl Tool {
         }
     }
 
-    pub fn perform(arg: &Option<Self>, action: Action) -> Result<(), Alert> {
+    pub fn perform(arg: &Option<Self>, action: Action) -> Result<(), SolarError> {
         match arg {
             Some(tool) => tool.act(&action),
             None => {

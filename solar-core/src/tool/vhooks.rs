@@ -1,7 +1,7 @@
-use crate::ToolTrait;
+use crate::{SolarError, ToolTrait};
 use clap::Parser;
-use semver_common::Alert;
 use std::path::PathBuf;
+use rust_terminal::Terminal;
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
 pub struct Vhooks {
@@ -15,11 +15,12 @@ pub struct Vhooks {
 }
 
 impl ToolTrait for Vhooks {
-    fn install(&self) -> Result<(), Alert> {
+    fn install(&self) -> Result<(), SolarError> {
+        Terminal::command().piped().run("git", vec!["config", "core.hooksPath", ""])?;
         Ok(())
     }
 
-    fn remove(&self) -> Result<(), Alert> {
+    fn remove(&self) -> Result<(), SolarError> {
         Ok(())
     }
 }

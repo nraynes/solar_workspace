@@ -1,8 +1,8 @@
 pub mod global;
 mod subcommand;
-mod terminal;
+mod solar_error;
 mod tool;
 
 pub use subcommand::{Subcommand, init::Init, install::Install, new::New, upgrade::Upgrade};
-pub use terminal::Terminal;
 pub use tool::{Action, Tool, ToolTrait};
+pub use solar_error::SolarError;

@@ -1,9 +1,8 @@
 use std::{fs, path::PathBuf};
 
 use clap::Parser;
-use semver_common::Alert;
 
-use crate::Init;
+use crate::{Init, SolarError};
 
 #[derive(Parser, Clone)]
 pub struct New {
@@ -16,7 +15,7 @@ pub struct New {
 }
 
 impl New {
-    pub fn run(&self) -> Result<(), Alert> {
+    pub fn run(&self) -> Result<(), SolarError> {
         // Ensure the destination directory exists
         let project_dir = self.destination.join(&self.name);
         fs::create_dir_all(&project_dir)?;

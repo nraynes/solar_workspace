@@ -5,7 +5,7 @@ edition = "2024"
 authors = ["Nicholas Raynes"]
 description = "Core library for cargo-solar command."
 license  = "MIT OR Apache-2.0"
-repository = ""
+repository = "https://github.com/nraynes/solar_workspace"
 keywords = ["solar", "framework", "cargo", "project", "tools"]
 categories = ["command-line-utilities", "development-tools"]
 include = [
@@ -21,6 +21,7 @@ include = [
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
 reqwest = "0.13.3"
-semver-common = "1.2.4"
+rust-alert = "0.3.0"
+rust-terminal = "0.1.1"
 strum = "0.28.0"
 strum_macros = "0.28.0"

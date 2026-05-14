@@ -1,9 +1,8 @@
 use std::path::PathBuf;
 
 use clap::Parser;
-use semver_common::Alert;
 
-use crate::{Action, Tool};
+use crate::{Action, Tool, SolarError};
 
 #[derive(Parser, Clone)]
 pub struct Remove {
@@ -17,7 +16,7 @@ pub struct Remove {
 }
 
 impl Remove {
-    pub fn run(&self) -> Result<(), Alert> {
+    pub fn run(&self) -> Result<(), SolarError> {
         Tool::perform(&self.tool, Action::REMOVE)
     }
 }
