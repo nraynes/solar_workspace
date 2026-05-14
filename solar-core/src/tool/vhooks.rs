@@ -47,6 +47,11 @@ impl ToolTrait for Vhooks {
         Ok(())
     }
 
+    fn upgrade(&self) -> Result<(), SolarError> {
+        self.install()?;
+        Ok(())
+    }
+
     fn uninstall(&self) -> Result<(), SolarError> {
         // Paths to the versioned hooks directory and default directory.
         let hooks_path = self.pathbuf_to_str(self.working_dir.join(&self.name).join("*"))?;
