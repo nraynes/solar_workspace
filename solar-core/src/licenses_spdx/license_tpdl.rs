@@ -1,0 +1,16 @@
+pub const LICENSE_TPDL: &str = "
+      
+             
+               Copyright (C) 1996-2010 David Muir
+               Sharnoff. Copyright (C) 2011 Google, Inc.
+            
+            License hereby granted for anyone to use, modify or redistribute this
+            module at their own risk. Please feed useful changes back to
+           cpan@dave.sharnoff.org.
+         
+
+      
+      
+        There is no standard license header for the license
+        
+      ";

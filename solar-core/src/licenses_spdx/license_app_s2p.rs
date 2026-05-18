@@ -1,0 +1,15 @@
+pub const LICENSE_APP_S2P: &str = "
+      
+         COPYRIGHT and LICENSE
+         
+            This program is free and open software. You may use,
+            modify, distribute, and sell this program (and any
+            modified variants) in any way you wish, provided
+            you do not restrict others from doing the same.
+         
+
+      
+      
+        There is no standard license header for the license
+        
+      ";

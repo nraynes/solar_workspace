@@ -26,6 +26,6 @@ impl Global {
     }
 
     pub fn licenses_source() -> Result<Url, SolarError> {
-        Ok(Url::parse("https://spdx.org/licenses")?)
+        Ok(Url::parse("https://spdx.org/licenses/")?)
     }
 }

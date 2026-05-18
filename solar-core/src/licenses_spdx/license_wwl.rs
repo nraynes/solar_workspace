@@ -1,0 +1,14 @@
+pub const LICENSE_WWL: &str = "
+      
+         
+            db@FreeBSD.ORG wrote this file. As long as you retain this notice
+            you can do whatever you want with this code, except you may not
+            license it under any form of the GPL. A postcard or QSL card
+            showing me you appreciate this code would be nice. Diane Bruce va3db
+         
+
+      
+      
+        There is no standard license header for the license
+        
+      ";

@@ -1,0 +1,13 @@
+pub const LICENSE_HPND_MARKUS_KUHN: &str = "
+      
+	 
+		Permission to use, copy, modify, and distribute this software
+		for any purpose and without fee is hereby granted. The author
+		disclaims all warranties with regard to this software.
+         
+
+      
+      
+        There is no standard license header for the license
+        
+      ";

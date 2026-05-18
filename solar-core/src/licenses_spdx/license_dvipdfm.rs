@@ -1,0 +1,11 @@
+pub const LICENSE_DVIPDFM: &str = "
+      
+      A modified version of this file may be distributed, but it should be distributed with a *different* name.
+         Changed files must be distributed *together with a complete and unchanged* distribution of these
+         files.
+
+    
+      
+        There is no standard license header for the license
+        
+      ";

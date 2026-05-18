@@ -1,0 +1,15 @@
+pub const LICENSE_KNUTH_CTAN: &str = "
+      
+         
+            This software is copyrighted. Unlimited copying and redistribution
+            of this package and/or its individual files are permitted
+            as long as there are no modifications. Modifications, and
+            redistribution of modifications, are also permitted, but
+            only if the resulting package and/or files are renamed.
+         
+
+      
+      
+        There is no standard license header for the license
+        
+      ";

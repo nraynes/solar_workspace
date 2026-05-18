@@ -1,0 +1,25 @@
+pub const LICENSE_MPI_PERMISSIVE: &str = "
+      
+       
+         Copyright (C) 2000-2004 by Etnus, LLC
+
+      
+
+  Permission is hereby granted to use, reproduce, prepare derivative
+  works, and to redistribute to others.
+
+				  DISCLAIMER
+
+  Neither  Etnus, nor any of their employees, makes any warranty
+  express or implied, or assumes any legal liability or
+  responsibility for the accuracy, completeness, or usefulness of any
+  information, apparatus, product, or process disclosed, or
+  represents that its use would not infringe privately owned rights.
+
+  This code was written by
+   James Cownie: Etnus, LLC. <jcownie@etnus.com>
+    
+      
+        There is no standard license header for the license
+        
+      ";

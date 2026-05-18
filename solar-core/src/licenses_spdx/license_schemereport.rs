@@ -1,0 +1,14 @@
+pub const LICENSE_SCHEMEREPORT: &str = "
+      
+     
+      We intend this report to belong to the entire Scheme community,
+        and so we grant permission to copy it in whole or in part without fee.
+        In particular, we encourage implementors of Scheme to use this report
+        as a starting point for manuals and other documentation, modifying it as necessary.
+      
+
+    
+      
+        There is no standard license header for the license
+        
+      ";

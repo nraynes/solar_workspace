@@ -9,7 +9,7 @@ use std::{
 };
 
 static LICENSE_MAIN: &str = "LICENSE";
-static LICENSES_DIR: &str = "LICENSES";
+static LICENSES_DIR: &str = "licensespdx";
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
 pub struct Licenses {
@@ -24,12 +24,16 @@ pub struct Licenses {
     /// The text to include in the main license file.
     #[arg(short, long, default_value = "MIT OR Apache-2.0")]
     licensed_under: String,
+
+    /// Just grab all of the licenses.
+    #[arg(short, long)]
+    all: bool,
 }
 
 impl Licenses {
     fn get_license_text(client: &Client, license: &str) -> Result<String, SolarError> {
         let body = &client
-            .get(Global::licenses_source()?.join(license)?)
+            .get(Global::licenses_source()?.join(&format!("{}.html", license))?)
             .send()?
             .text()?;
         let document = Html::parse_document(&body);
@@ -54,8 +58,9 @@ impl ToolTrait for Licenses {
         // Write the license files.
         for license_identifier in self.include_licenses.iter() {
             let license_text = Self::get_license_text(&client, license_identifier)?;
-            let mut license_file =
-                File::create(licenses_dir.join(PathBuf::from(license_identifier)))?;
+            let mut license_file = File::create(
+                licenses_dir.join(PathBuf::from(format!("LICENSE-{}", license_identifier))),
+            )?;
             license_file.write_all(license_text.as_bytes())?;
         }
 
