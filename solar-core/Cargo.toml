@@ -20,8 +20,12 @@ include = [
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
-reqwest = "0.13.3"
+const_format = "0.2.36"
+reqwest = { version = "0.13.3", features = ["blocking"] }
 rust-alert = "0.3.0"
 rust-terminal = "0.1.1"
+scraper = "0.27.0"
+spdx = "0.13.4"
 strum = "0.28.0"
 strum_macros = "0.28.0"
+url = "2.5.8"

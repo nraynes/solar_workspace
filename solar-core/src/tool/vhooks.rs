@@ -1,7 +1,7 @@
 use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
 use rust_terminal::Terminal;
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
 pub struct Vhooks {
@@ -33,9 +33,7 @@ impl ToolTrait for Vhooks {
         let hooks_path = self.pathbuf_to_str(self.working_dir.join(&self.name))?;
 
         // Create the new hooks directory.
-        Terminal::command()
-            .piped()
-            .run("mkdir", ["-p", &hooks_path])?;
+        fs::create_dir_all(&hooks_path)?;
 
         // Ensure working directory is a git repository.
         Global::git_init(&self.working_dir)?;

@@ -1,6 +1,6 @@
 mod cargo_deny;
 mod commitalyzer;
-mod github_workspaces;
+mod github_workflows;
 mod licenses;
 mod pre_commit;
 mod semver_release;
@@ -8,7 +8,7 @@ mod vhooks;
 
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
-pub use github_workspaces::Workspaces;
+pub use github_workflows::Workflows;
 pub use licenses::Licenses;
 pub use pre_commit::PreCommit;
 pub use semver_release::SemverRelease;
@@ -62,7 +62,7 @@ pub enum Tool {
     LICENSES(Licenses),
 
     /// Configures project with standard Github workflows.
-    WORKSPACES(Workspaces),
+    WORKFLOWS(Workflows),
 
     /// Configures project with a standard pre-commit hook for rust.
     PRECOMMIT(PreCommit),
@@ -78,7 +78,7 @@ impl Tool {
             Self::COMMITALYZER(tool) => tool.act(action),
             Self::SEMVERRELEASE(tool) => tool.act(action),
             Self::LICENSES(tool) => tool.act(action),
-            Self::WORKSPACES(tool) => tool.act(action),
+            Self::WORKFLOWS(tool) => tool.act(action),
             Self::PRECOMMIT(tool) => tool.act(action),
             Self::DENY(tool) => tool.act(action),
         }
