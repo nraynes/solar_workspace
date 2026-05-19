@@ -24,7 +24,8 @@ clap = { version = "4.6.1", features = ["derive"] }
 regex = "1.12.3"
 reqwest = { version = "0.13.3", features = ["blocking"] }
 rust-alert = "0.3.0"
-rust-terminal = "0.1.1"
+rust-dl = "0.0.1"
+rust-terminal = "0.2.0"
 spdx = "0.13.4"
 strum = "0.28.0"
 strum_macros = "0.28.0"

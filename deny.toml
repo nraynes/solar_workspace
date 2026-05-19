@@ -7,5 +7,4 @@ allow = [
     "ISC",
     "BSD-3-Clause",
     "CDLA-Permissive-2.0",
-    "Zlib"
 ]

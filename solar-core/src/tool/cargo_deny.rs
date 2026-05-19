@@ -19,10 +19,13 @@ pub struct CargoDeny {
 }
 
 impl CargoDeny {
-    fn ensure_tool_installed() -> Result<(), SolarError> {
-        let output = Terminal::command().run("cargo", ["install", "--list"])?;
+    fn ensure_tool_installed(&self) -> Result<(), SolarError> {
+        let output = Terminal::command()
+            .current_dir(self.working_dir.clone())
+            .run("cargo", ["install", "--list"])?;
         if !String::from_utf8(output.stdout)?.contains("cargo-deny") {
             Terminal::command()
+                .current_dir(self.working_dir.clone())
                 .piped()
                 .run("cargo", ["install", "cargo-deny"])?;
         }
@@ -42,7 +45,7 @@ impl CargoDeny {
 
 impl ToolTrait for CargoDeny {
     fn install(&self) -> Result<(), SolarError> {
-        Self::ensure_tool_installed()?;
+        self.ensure_tool_installed()?;
 
         // Create configuration file.
         let mut deny_config = File::create(self.working_dir.join(PathBuf::from("deny.toml")))?;

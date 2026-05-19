@@ -54,7 +54,9 @@ pub struct PreCommit {
 
 impl PreCommit {
     fn precommit_path(&self) -> Result<PathBuf, SolarError> {
-        let output = Terminal::command().run("git", vec!["config", "core.hooksPath"])?;
+        let output = Terminal::command()
+            .current_dir(self.working_dir.clone())
+            .run("git", vec!["config", "core.hooksPath"])?;
         let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?);
         Ok(self
             .working_dir

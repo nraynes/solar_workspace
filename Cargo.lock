@@ -69,9 +69,9 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "aws-lc-rs"
-version = "1.16.3"
+version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ec6fb3fe69024a75fa7e1bfb48aa6cf59706a101658ea01bfd33b2b248a038f"
+checksum = "5ec2f1fc3ec205783a5da9a7e6c1509cc69dedf09a1949e412c1e18469326d00"
 dependencies = [
  "aws-lc-sys",
  "zeroize",
@@ -79,9 +79,9 @@ dependencies = [
 
 [[package]]
 name = "aws-lc-sys"
-version = "0.40.0"
+version = "0.41.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f50037ee5e1e41e7b8f9d161680a725bd1626cb6f8c7e901f91f942850852fe7"
+checksum = "1a2f9779ce85b93ab6170dd940ad0169b5766ff848247aff13bb788b832fe3f4"
 dependencies = [
  "cc",
  "cmake",
@@ -1020,10 +1020,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-terminal"
-version = "0.1.1"
+name = "rust-dl"
+version = "0.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ee768101dd8783897ce8a96a00e0bc710770bc89bb21f05b643a05b352a5687"
+checksum = "1099627ed7967c56fd1f563d4e2df2556b5f0563df0b3b57fec5e11b95c390ee"
+dependencies = [
+ "reqwest",
+ "rust-alert",
+ "url",
+]
+
+[[package]]
+name = "rust-terminal"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "96d70ec56b716e0d6fea9310a9d154ebedfb3311ce48ca96e249416cbe9a81b9"
 dependencies = [
  "rust-alert",
 ]
@@ -1252,6 +1263,7 @@ dependencies = [
  "regex",
  "reqwest",
  "rust-alert",
+ "rust-dl",
  "rust-terminal",
  "spdx",
  "strum",
@@ -1455,9 +1467,9 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.6.10"
+version = "0.6.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68d6fdd9f81c2819c9a8b0e0cd91660e7746a8e6ea2ba7c6b2b057985f6bcb51"
+checksum = "4cfcf7e2740e6fc6d4d688b4ef00650406bb94adf4731e43c096c3a19fe40840"
 dependencies = [
  "bitflags",
  "bytes",

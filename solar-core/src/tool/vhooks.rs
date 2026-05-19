@@ -40,6 +40,7 @@ impl ToolTrait for Vhooks {
 
         // Set the new hooks directory as the git hooks directory.
         Terminal::command()
+            .current_dir(self.working_dir.clone())
             .piped()
             .run("git", vec!["config", "core.hooksPath", &hooks_path])?;
         Ok(())
@@ -60,23 +61,27 @@ impl ToolTrait for Vhooks {
 
         // Git hooks folder must exist.
         Terminal::command()
+            .current_dir(self.working_dir.clone())
             .piped()
             .run("mkdir", ["-p", &default_path])?;
 
         // If not removing hooks, move them to the default hooks directory.
         if !self.remove_all {
             Terminal::command()
+                .current_dir(self.working_dir.clone())
                 .piped()
                 .run("mv", [&hooks_path, &default_path])?;
         }
 
         // Set the new hooks directory as the default git hooks directory.
         Terminal::command()
+            .current_dir(self.working_dir.clone())
             .piped()
             .run("git", vec!["config", "core.hooksPath", &default_path])?;
 
         // Remove the versioned hooks folder.
         Terminal::command()
+            .current_dir(self.working_dir.clone())
             .piped()
             .run("rm", ["-rf", &hooks_path])?;
         Ok(())
