@@ -49,7 +49,7 @@ impl Global {
                 "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/linux/commit-msg",
             )?),
             "x86_64 windows" => Ok(Url::parse(
-                "	https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/windows/commit-msg",
+                "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/windows/commit-msg",
             )?),
             _ => Err(SolarError::from("No download available for this target")),
         }
@@ -59,5 +59,49 @@ impl Global {
         Ok(Url::parse(
             "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/commit-rules/conventional-commits.yml",
         )?)
+    }
+
+    pub fn semver_release_exec_download() -> Result<Url, SolarError> {
+        let current_target = format!("{} {}", ARCH, OS);
+        match current_target.as_str() {
+            "aarch64 macos" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/arm-macos/semver-release",
+            )?),
+            "x86_64 macos" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/intel-macos/semver-release",
+            )?),
+            "x86_64 linux" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/linux/semver-release",
+            )?),
+            "x86_64 windows" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/windows/semver-release.exe",
+            )?),
+            _ => Err(SolarError::from("No download available for this target")),
+        }
+    }
+
+    pub fn semver_release_config_url() -> Result<Url, SolarError> {
+        Ok(Url::parse(
+            "https://github.com/nraynes/semver-release/raw/refs/heads/master/sample.config.semver.json",
+        )?)
+    }
+
+    pub fn semver_cargo_exec_download() -> Result<Url, SolarError> {
+        let current_target = format!("{} {}", ARCH, OS);
+        match current_target.as_str() {
+            "aarch64 macos" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/arm-macos/semver-cargo",
+            )?),
+            "x86_64 macos" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/intel-macos/semver-cargo",
+            )?),
+            "x86_64 linux" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/linux/semver-cargo",
+            )?),
+            "x86_64 windows" => Ok(Url::parse(
+                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/windows/semver-cargo.exe",
+            )?),
+            _ => Err(SolarError::from("No download available for this target")),
+        }
     }
 }
