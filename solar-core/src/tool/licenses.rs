@@ -1,12 +1,13 @@
-use crate::{SPDX, SolarError, ToolTrait};
+use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
+use regex::Regex;
+use reqwest::blocking::Client;
 use std::{
     fs::{self, File},
     io::Write,
     path::PathBuf,
 };
 
-static LICENSE_MAIN: &str = "LICENSE";
 static LICENSES_DIR: &str = "LICENSES";
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
@@ -15,44 +16,73 @@ pub struct Licenses {
     #[arg(short, long, default_value = ".")]
     working_dir: PathBuf,
 
-    /// The licenses to include in your project.
+    /// The licenses to include in your project per conditions of dependency licenses.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0"])]
-    include_licenses: Vec<SPDX>,
+    include_licenses: Option<Vec<String>>,
 
-    /// The text to include in the main license file.
-    #[arg(short, long, default_value = "MIT OR Apache-2.0")]
-    licensed_under: String,
+    /// The licenses that the project will be licensed under.
+    #[arg(short, long, default_values = ["MIT", "Apache-2.0"])]
+    licensed_under: Option<Vec<String>>,
+}
 
-    /// Just grab all of the licenses.
-    #[arg(short, long)]
-    all: bool,
+impl Licenses {
+    fn get_license(&self, client: &Client, spdx: &str) -> Result<String, SolarError> {
+        let response = client.get(Global::licenses_url(spdx)?).send()?;
+        Ok(response.text()?)
+    }
 }
 
 impl ToolTrait for Licenses {
     fn install(&self) -> Result<(), SolarError> {
+        let client = Client::new();
         let licenses_dir = self.working_dir.join(PathBuf::from(LICENSES_DIR));
 
         // Make a new licenses folder.
         fs::create_dir_all(&licenses_dir)?;
 
-        // Write the license files.
-        for license in self.include_licenses.iter() {
-            let mut license_file =
-                File::create(licenses_dir.join(PathBuf::from(format!("LICENSE-{}", license))))?;
-            license_file.write_all(license.get().as_bytes())?;
+        // Add the included license files.
+        if let Some(includes) = &self.include_licenses {
+            for spdx in includes.iter() {
+                let mut license_file =
+                    File::create(licenses_dir.join(PathBuf::from(format!("LICENSE-{}", spdx))))?;
+                let license_text = self.get_license(&client, spdx)?;
+                license_file.write_all(license_text.as_bytes())?;
+            }
         }
 
-        // Add the main license file.
-        let mut main_license_file =
-            File::create(self.working_dir.join(PathBuf::from(LICENSE_MAIN)))?;
-        main_license_file.write_all(self.licensed_under.as_bytes())?;
+        // Add the project license files.
+        if let Some(proj_licenses) = &self.licensed_under {
+            for spdx in proj_licenses.iter() {
+                let mut license_file = File::create(
+                    self.working_dir
+                        .join(PathBuf::from(format!("LICENSE-{}", spdx))),
+                )?;
+                let license_text = self.get_license(&client, spdx)?;
+                license_file.write_all(license_text.as_bytes())?;
+            }
+        }
 
         Ok(())
     }
 
     fn uninstall(&self) -> Result<(), SolarError> {
-        // Delete main license file.
-        fs::remove_file(self.working_dir.join(PathBuf::from(LICENSE_MAIN)))?;
+        let pattern = Regex::new(r"^LICENSE-[_A-Za-z0-9\.\+-]+$")?;
+        // Delete project license file.
+        for entry in fs::read_dir(PathBuf::from("."))? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file() {
+                if let Some(file_name) = path.file_name() {
+                    if pattern.is_match(
+                        file_name
+                            .to_str()
+                            .ok_or(format!("Could not check pattern for license file."))?,
+                    ) {
+                        fs::remove_file(self.working_dir.join(path))?;
+                    }
+                }
+            }
+        }
 
         // Delete the licenses folder along with its contents.
         fs::remove_dir_all(self.working_dir.join(PathBuf::from(LICENSES_DIR)))?;

@@ -1,6 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use rust_terminal::Terminal;
+use url::Url;
 
 use crate::SolarError;
 
@@ -22,5 +23,12 @@ impl Global {
 
     pub fn default_git_hook_dir() -> PathBuf {
         PathBuf::from(".git/hooks")
+    }
+
+    pub fn licenses_url(spdx: &str) -> Result<Url, SolarError> {
+        Ok(Url::parse(&format!(
+            "https://github.com/nraynes/licenses/raw/refs/heads/main/LICENSES/LICENSE-{}",
+            spdx
+        ))?)
     }
 }
