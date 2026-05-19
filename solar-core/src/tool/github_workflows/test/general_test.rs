@@ -1,4 +1,17 @@
-pub const GENERAL_TEST: &str = "name: CI/CD Test
+use crate::tool::github_workflows::{WorkflowTrait, workflow_trait::HasConstructor};
+
+pub struct GeneralTest {}
+
+impl HasConstructor for GeneralTest {
+    fn new() -> Self {
+        Self {}
+    }
+}
+
+impl WorkflowTrait for GeneralTest {
+    fn get(&self) -> std::string::String {
+        String::from(
+            "name: CI/CD Test
 
 on:
   pull_request:
@@ -29,4 +42,7 @@ jobs:
 
       - name: Run Tests
         run: cargo test
-";
+",
+        )
+    }
+}

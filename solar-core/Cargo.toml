@@ -21,7 +21,6 @@ include = [
 
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
-const_format = "0.2.36"
 regex = "1.12.3"
 reqwest = { version = "0.13.3", features = ["blocking"] }
 rust-alert = "0.3.0"

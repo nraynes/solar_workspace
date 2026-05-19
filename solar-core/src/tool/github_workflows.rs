@@ -1,16 +1,18 @@
 mod release;
 mod test;
+mod workflow_trait;
 
-use release::{BIN_RELEASE, LIB_RELEASE};
-use test::GENERAL_TEST;
+use release::{BinRelease, LibRelease, ReleaseWf};
+use test::{GeneralTest, TestWf};
 
-use crate::{SolarError, ToolTrait};
+use crate::{SolarError, ToolTrait, tool::github_workflows::workflow_trait::HasConstructor};
 use clap::{Parser, ValueEnum};
 use std::{
     fs::{self, File},
     io::Write,
     path::PathBuf,
 };
+pub use workflow_trait::WorkflowTrait;
 
 #[derive(ValueEnum, Clone, PartialEq, Debug)]
 enum ReleaseWfType {
@@ -19,10 +21,10 @@ enum ReleaseWfType {
 }
 
 impl ReleaseWfType {
-    fn get_workflow(&self) -> String {
+    fn workflow(&self) -> ReleaseWf {
         match self {
-            Self::BIN => String::from(BIN_RELEASE),
-            Self::LIB => String::from(LIB_RELEASE),
+            Self::BIN => ReleaseWf::BIN(BinRelease::new()),
+            Self::LIB => ReleaseWf::LIB(LibRelease::new()),
         }
     }
 }
@@ -39,9 +41,9 @@ enum TestWfType {
 }
 
 impl TestWfType {
-    fn get_workflow(&self) -> String {
+    fn workflow(&self) -> TestWf {
         match self {
-            Self::GENERAL => String::from(GENERAL_TEST),
+            Self::GENERAL => TestWf::GENERAL(GeneralTest::new()),
         }
     }
 }
@@ -82,13 +84,23 @@ impl ToolTrait for Workflows {
         // Create the release workflow.
         if let Some(workflow_type) = &self.release_workflow {
             let mut workflow_file = File::create(workflows_dir.join(release::FILE_NAME))?;
-            workflow_file.write_all(workflow_type.get_workflow().as_bytes())?;
+            let mut workflow_obj = workflow_type.workflow();
+            if let ReleaseWf::BIN(bin_release) = &mut workflow_obj {
+                bin_release.set_project_name(
+                    self.working_dir
+                        .file_name()
+                        .ok_or("Could not get name of working directory")?
+                        .to_str()
+                        .ok_or("Could not convert directory name to string.")?,
+                );
+            }
+            workflow_file.write_all(workflow_obj.get().as_bytes())?;
         }
 
         // Create the test workflow.
         if let Some(workflow_type) = &self.test_workflow {
             let mut workflow_file = File::create(workflows_dir.join(test::FILE_NAME))?;
-            workflow_file.write_all(workflow_type.get_workflow().as_bytes())?;
+            workflow_file.write_all(workflow_type.workflow().get().as_bytes())?;
         }
         Ok(())
     }
