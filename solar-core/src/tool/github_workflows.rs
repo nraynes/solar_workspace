@@ -58,7 +58,7 @@ impl Default for TestWfType {
 pub struct Workflows {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 
     /// Use the release workflow in this project.
     #[arg(short, long, default_value = "bin")]
@@ -71,11 +71,15 @@ pub struct Workflows {
 
 impl Workflows {
     fn workflows_path(&self) -> PathBuf {
-        self.working_dir.join(PathBuf::from(".github/workflows"))
+        self.destination.join(PathBuf::from(".github/workflows"))
     }
 }
 
 impl ToolTrait for Workflows {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         // Ensure github workspace folders exist.
         let workflows_dir = self.workflows_path();
@@ -87,7 +91,7 @@ impl ToolTrait for Workflows {
             let mut workflow_obj = workflow_type.workflow();
             if let ReleaseWf::BIN(bin_release) = &mut workflow_obj {
                 bin_release.set_project_name(
-                    self.working_dir
+                    self.destination
                         .file_name()
                         .ok_or("Could not get name of working directory")?
                         .to_str()

@@ -14,7 +14,7 @@ static LICENSES_DIR: &str = "LICENSES";
 pub struct Licenses {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 
     /// The licenses to include in your project per conditions of dependency licenses.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0"])]
@@ -33,9 +33,13 @@ impl Licenses {
 }
 
 impl ToolTrait for Licenses {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         let client = Client::new();
-        let licenses_dir = self.working_dir.join(PathBuf::from(LICENSES_DIR));
+        let licenses_dir = self.destination.join(PathBuf::from(LICENSES_DIR));
 
         // Make a new licenses folder.
         fs::create_dir_all(&licenses_dir)?;
@@ -54,7 +58,7 @@ impl ToolTrait for Licenses {
         if let Some(proj_licenses) = &self.licensed_under {
             for spdx in proj_licenses.iter() {
                 let mut license_file = File::create(
-                    self.working_dir
+                    self.destination
                         .join(PathBuf::from(format!("LICENSE-{}", spdx))),
                 )?;
                 let license_text = self.get_license(&client, spdx)?;
@@ -78,14 +82,14 @@ impl ToolTrait for Licenses {
                             .to_str()
                             .ok_or(format!("Could not check pattern for license file."))?,
                     ) {
-                        fs::remove_file(self.working_dir.join(path))?;
+                        fs::remove_file(self.destination.join(path))?;
                     }
                 }
             }
         }
 
         // Delete the licenses folder along with its contents.
-        fs::remove_dir_all(self.working_dir.join(PathBuf::from(LICENSES_DIR)))?;
+        fs::remove_dir_all(self.destination.join(PathBuf::from(LICENSES_DIR)))?;
         Ok(())
     }
 }

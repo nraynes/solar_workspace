@@ -2,7 +2,7 @@ use std::{fs, path::PathBuf};
 
 use clap::Parser;
 
-use crate::{Init, SolarError};
+use crate::{SolarError, initialize_solar};
 
 #[derive(Parser, Clone)]
 pub struct New {
@@ -15,20 +15,12 @@ pub struct New {
 }
 
 impl New {
-    pub fn run(&self) -> Result<(), SolarError> {
+    pub fn run(&mut self) -> Result<(), SolarError> {
         // Ensure the destination directory exists
         let project_dir = self.destination.join(&self.name);
         fs::create_dir_all(&project_dir)?;
 
         // Initialize the project
-        let initializer: Init = Init::parse_from(vec![
-            "",
-            project_dir
-                .to_str()
-                .ok_or("Failed to convert destination path to string.")?,
-        ]);
-        initializer.run()?;
-
-        Ok(())
+        Ok(initialize_solar(&mut self.destination)?)
     }
 }

@@ -49,22 +49,26 @@ done
 pub struct PreCommit {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 }
 
 impl PreCommit {
     fn precommit_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .run("git", vec!["config", "core.hooksPath"])?;
-        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?);
+        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
         Ok(self
-            .working_dir
+            .destination
             .join(git_hooks_path.join(PathBuf::from("pre-commit"))))
     }
 }
 
 impl ToolTrait for PreCommit {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         let mut precommit_file = File::create(self.precommit_path()?)?;
         precommit_file.write_all(PRECOMMIT_SCRIPT_CONTENT.as_bytes())?;

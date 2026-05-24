@@ -6,6 +6,8 @@ mod pre_commit;
 mod semver_release;
 mod vhooks;
 
+use std::path::PathBuf;
+
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
 pub use github_workflows::Workflows;
@@ -16,10 +18,9 @@ pub use vhooks::Vhooks;
 
 use crate::SolarError;
 
-use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-use clap::Subcommand as SC;
+use clap::{Parser, Subcommand as SC};
 
 pub enum Action {
     INSTALL,
@@ -28,13 +29,18 @@ pub enum Action {
 }
 
 pub trait ToolTrait {
-    fn act(&self, action: &Action) -> Result<(), SolarError> {
+    fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
+        if let Some(wd) = dest {
+            self.set_dest(wd);
+        }
         match action {
             Action::INSTALL => self.install(),
             Action::UPGRADE => self.upgrade(),
             Action::UNINSTALL => self.uninstall(),
         }
     }
+
+    fn set_dest(&mut self, dest: PathBuf);
 
     fn install(&self) -> Result<(), SolarError>;
 
@@ -72,25 +78,34 @@ pub enum Tool {
 }
 
 impl Tool {
-    fn act(&self, action: &Action) -> Result<(), SolarError> {
+    fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
         match self {
-            Self::VHOOKS(tool) => tool.act(action),
-            Self::COMMITALYZER(tool) => tool.act(action),
-            Self::SEMVERRELEASE(tool) => tool.act(action),
-            Self::LICENSES(tool) => tool.act(action),
-            Self::WORKFLOWS(tool) => tool.act(action),
-            Self::PRECOMMIT(tool) => tool.act(action),
-            Self::DENY(tool) => tool.act(action),
+            Self::VHOOKS(tool) => tool.act(action, dest),
+            Self::COMMITALYZER(tool) => tool.act(action, dest),
+            Self::SEMVERRELEASE(tool) => tool.act(action, dest),
+            Self::LICENSES(tool) => tool.act(action, dest),
+            Self::WORKFLOWS(tool) => tool.act(action, dest),
+            Self::PRECOMMIT(tool) => tool.act(action, dest),
+            Self::DENY(tool) => tool.act(action, dest),
         }
     }
 
-    pub fn perform(arg: &Option<Self>, action: Action) -> Result<(), SolarError> {
+    pub fn perform(
+        arg: Option<&mut Self>,
+        action: Action,
+        dest: Option<PathBuf>,
+        pass_args: Vec<&str>,
+    ) -> Result<(), SolarError> {
         match arg {
-            Some(tool) => tool.act(&action),
+            Some(tool) => tool.act(&action, None),
             None => {
-                for tool in Self::iter() {
-                    tool.act(&action)?;
-                }
+                Vhooks::parse_from(&pass_args).act(&action, dest.clone())?;
+                Commitalyzer::parse_from(&pass_args).act(&action, dest.clone())?;
+                SemverRelease::parse_from(&pass_args).act(&action, dest.clone())?;
+                Licenses::parse_from(&pass_args).act(&action, dest.clone())?;
+                Workflows::parse_from(&pass_args).act(&action, dest.clone())?;
+                PreCommit::parse_from(&pass_args).act(&action, dest.clone())?;
+                CargoDeny::parse_from(&pass_args).act(&action, dest.clone())?;
                 Ok(())
             }
         }

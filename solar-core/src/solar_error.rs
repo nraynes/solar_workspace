@@ -12,6 +12,7 @@ use rust_alert::alert;
     regex::Error,
     String,
     rust_dl::dl_error::DownloaderError,
-    serde_json::Error
+    serde_json::Error,
+    clap::error::Error
 ])]
 pub struct SolarError {}

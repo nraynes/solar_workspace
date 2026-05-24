@@ -8,22 +8,24 @@ use std::{fs, path::PathBuf};
 pub struct Commitalyzer {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 }
 
 impl Commitalyzer {
     fn commitmsg_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .run("git", vec!["config", "core.hooksPath"])?;
-        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?);
-        Ok(self
-            .working_dir
-            .join(git_hooks_path.join(PathBuf::from("commit-msg"))))
+        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
+        Ok(git_hooks_path.join(PathBuf::from("commit-msg")))
     }
 }
 
 impl ToolTrait for Commitalyzer {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         // Download executable
         download_sync(
@@ -32,7 +34,7 @@ impl ToolTrait for Commitalyzer {
         )?;
 
         // Download commit rules
-        let commit_rules_path = self.working_dir.join(PathBuf::from("commit-rules"));
+        let commit_rules_path = self.destination.join(PathBuf::from("commit-rules"));
         fs::create_dir_all(&commit_rules_path)?;
         download_sync(
             Global::commitalyzer_conventional_commits_ruleset()?,
@@ -49,7 +51,7 @@ impl ToolTrait for Commitalyzer {
         }
 
         // Remove commit rules directory
-        let commit_rules_path = self.working_dir.join(PathBuf::from("commit-rules"));
+        let commit_rules_path = self.destination.join(PathBuf::from("commit-rules"));
         if fs::exists(&commit_rules_path)? {
             fs::remove_dir_all(commit_rules_path)?;
         }

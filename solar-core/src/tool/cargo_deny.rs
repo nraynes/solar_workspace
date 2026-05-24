@@ -11,7 +11,7 @@ use std::{
 pub struct CargoDeny {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 
     /// Default licenses to allow in your dependencies in your project.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0", "Unicode-3.0"])]
@@ -21,11 +21,11 @@ pub struct CargoDeny {
 impl CargoDeny {
     fn ensure_tool_installed(&self) -> Result<(), SolarError> {
         let output = Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .run("cargo", ["install", "--list"])?;
         if !String::from_utf8(output.stdout)?.contains("cargo-deny") {
             Terminal::command()
-                .current_dir(self.working_dir.clone())
+                .current_dir(self.destination.clone())
                 .piped()
                 .run("cargo", ["install", "cargo-deny"])?;
         }
@@ -44,11 +44,15 @@ impl CargoDeny {
 }
 
 impl ToolTrait for CargoDeny {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         self.ensure_tool_installed()?;
 
         // Create configuration file.
-        let mut deny_config = File::create(self.working_dir.join(PathBuf::from("deny.toml")))?;
+        let mut deny_config = File::create(self.destination.join(PathBuf::from("deny.toml")))?;
         deny_config.write_all(&self.deny_config_content().into_bytes())?;
 
         Ok(())
@@ -56,7 +60,7 @@ impl ToolTrait for CargoDeny {
 
     fn uninstall(&self) -> Result<(), SolarError> {
         // Remove configuration file.
-        fs::remove_file(self.working_dir.join(PathBuf::from("deny.toml")))?;
+        fs::remove_file(self.destination.join(PathBuf::from("deny.toml")))?;
 
         Ok(())
     }

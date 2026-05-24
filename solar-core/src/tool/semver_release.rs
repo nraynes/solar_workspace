@@ -45,7 +45,7 @@ impl Plugin {
 pub struct SemverRelease {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
+    destination: PathBuf,
 
     /// The list of semver plugins to use.
     #[arg(short, long, default_values = ["cargo"])]
@@ -53,11 +53,15 @@ pub struct SemverRelease {
 }
 
 impl ToolTrait for SemverRelease {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
         let client = Client::new();
 
         // Make release directory
-        let release_dir_path = self.working_dir.join(PathBuf::from(".release"));
+        let release_dir_path = self.destination.join(PathBuf::from(".release"));
         fs::create_dir_all(&release_dir_path)?;
 
         // Download executable
@@ -83,18 +87,18 @@ impl ToolTrait for SemverRelease {
         }
         let release_config_text = release_config.to_string();
         let mut config_file =
-            File::create(self.working_dir.join(PathBuf::from("config.semver.json")))?;
+            File::create(self.destination.join(PathBuf::from("config.semver.json")))?;
         config_file.write_all(release_config_text.as_bytes())?;
         Ok(())
     }
 
     fn uninstall(&self) -> Result<(), SolarError> {
         // Remove release directory
-        let release_dir_path = self.working_dir.join(PathBuf::from(".release"));
+        let release_dir_path = self.destination.join(PathBuf::from(".release"));
         fs::remove_dir_all(&release_dir_path)?;
 
         // Remove config
-        let config_path = self.working_dir.join(PathBuf::from("config.semver.json"));
+        let config_path = self.destination.join(PathBuf::from("config.semver.json"));
         if fs::exists(&config_path)? {
             fs::remove_file(&config_path)?;
         }

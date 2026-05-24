@@ -5,13 +5,13 @@ use std::{fs, path::PathBuf};
 
 #[derive(Parser, Clone, Default, PartialEq, Debug)]
 pub struct Vhooks {
+    /// The working directory to use for installation.
+    #[arg(short, long, default_value = ".")]
+    destination: PathBuf,
+
     /// Git hooks directory name.
     #[arg(short, long, default_value = ".hooks")]
     name: String,
-
-    /// The working directory to use for installation.
-    #[arg(short, long, default_value = ".")]
-    working_dir: PathBuf,
 
     /// Whether to remove all hooks when removing vhooks, or just put thim in unversioned git hooks directory.
     #[arg(short, long, default_value = "false")]
@@ -28,21 +28,34 @@ impl Vhooks {
 }
 
 impl ToolTrait for Vhooks {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.destination = dest;
+    }
+
     fn install(&self) -> Result<(), SolarError> {
+        // Ensure working directory is a git repository.
+        Global::git_init(&self.destination)?;
+
         // Path to the versioned hooks directory.
-        let hooks_path = self.pathbuf_to_str(self.working_dir.join(&self.name))?;
+        let hooks_path = self.destination.join(PathBuf::from(&self.name));
 
         // Create the new hooks directory.
         fs::create_dir_all(&hooks_path)?;
 
-        // Ensure working directory is a git repository.
-        Global::git_init(&self.working_dir)?;
-
         // Set the new hooks directory as the git hooks directory.
         Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .piped()
-            .run("git", vec!["config", "core.hooksPath", &hooks_path])?;
+            .run(
+                "git",
+                vec![
+                    "config",
+                    "core.hooksPath",
+                    &hooks_path
+                        .to_str()
+                        .ok_or("Could not convert path to string.")?,
+                ],
+            )?;
         Ok(())
     }
 
@@ -53,35 +66,35 @@ impl ToolTrait for Vhooks {
 
     fn uninstall(&self) -> Result<(), SolarError> {
         // Paths to the versioned hooks directory and default directory.
-        let hooks_path = self.pathbuf_to_str(self.working_dir.join(&self.name).join("*"))?;
+        let hooks_path = self.pathbuf_to_str(self.destination.join(&self.name).join("*"))?;
         let default_path = self.pathbuf_to_str(Global::default_git_hook_dir())?;
 
         // Must be a git repository in order to set default hook directory.
-        Global::git_init(&self.working_dir)?;
+        Global::git_init(&self.destination)?;
 
         // Git hooks folder must exist.
         Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .piped()
             .run("mkdir", ["-p", &default_path])?;
 
         // If not removing hooks, move them to the default hooks directory.
         if !self.remove_all {
             Terminal::command()
-                .current_dir(self.working_dir.clone())
+                .current_dir(self.destination.clone())
                 .piped()
                 .run("mv", [&hooks_path, &default_path])?;
         }
 
         // Set the new hooks directory as the default git hooks directory.
         Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .piped()
             .run("git", vec!["config", "core.hooksPath", &default_path])?;
 
         // Remove the versioned hooks folder.
         Terminal::command()
-            .current_dir(self.working_dir.clone())
+            .current_dir(self.destination.clone())
             .piped()
             .run("rm", ["-rf", &hooks_path])?;
         Ok(())

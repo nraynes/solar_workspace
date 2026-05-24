@@ -10,13 +10,13 @@ pub struct Global {}
 
 impl Global {
     /// Returns whether the path is a git repository or not.
-    pub fn is_git(destination: &PathBuf) -> bool {
-        fs::exists(destination.join(PathBuf::from(".git"))).is_err()
+    pub fn is_git(destination: &PathBuf) -> Result<bool, SolarError> {
+        Ok(fs::exists(destination.join(PathBuf::from(".git")))?)
     }
 
     /// Initialize a git repository at the destination if it's not already.
     pub fn git_init(destination: &PathBuf) -> Result<(), SolarError> {
-        if Self::is_git(destination) {
+        if !Self::is_git(destination)? {
             Terminal::command()
                 .current_dir(destination.clone())
                 .piped()
