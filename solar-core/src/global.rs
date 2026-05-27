@@ -1,4 +1,3 @@
-use std::env::consts::{ARCH, OS};
 use std::{fs, path::PathBuf};
 
 use rust_terminal::Terminal;
@@ -7,6 +6,26 @@ use url::Url;
 use crate::SolarError;
 
 pub struct Global {}
+
+macro_rules! match_target {
+    ($macos_arm:expr, $macos_x:expr, $linux_x:expr, $windows_x:expr, $default:expr) => {
+        #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+        return $macos_arm;
+        #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+        return $macos_x;
+        #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+        return $linux_x;
+        #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+        return $windows_x;
+        #[cfg(not(any(
+            all(target_os = "macos", target_arch = "aarch64"),
+            all(target_os = "macos", target_arch = "x86_64"),
+            all(target_os = "linux", target_arch = "x86_64"),
+            all(target_os = "windows", target_arch = "x86_64")
+        )))]
+        $default
+    };
+}
 
 impl Global {
     /// Returns whether the path is a git repository or not.
@@ -37,22 +56,21 @@ impl Global {
     }
 
     pub fn commitalyzer_exec_download() -> Result<Url, SolarError> {
-        let current_target = format!("{} {}", ARCH, OS);
-        match current_target.as_str() {
-            "aarch64 macos" => Ok(Url::parse(
+        match_target!(
+            Ok(Url::parse(
                 "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/arm-macos/commit-msg",
             )?),
-            "x86_64 macos" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/intel-macos/commit-msg",
             )?),
-            "x86_64 linux" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/linux/commit-msg",
             )?),
-            "x86_64 windows" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/commitalyzer/raw/refs/heads/master/bin/windows/commit-msg",
             )?),
-            _ => Err(SolarError::from("No download available for this target")),
-        }
+            Err(SolarError::from("No download available for this target"))
+        );
     }
 
     pub fn commitalyzer_conventional_commits_ruleset() -> Result<Url, SolarError> {
@@ -62,22 +80,21 @@ impl Global {
     }
 
     pub fn semver_release_exec_download() -> Result<Url, SolarError> {
-        let current_target = format!("{} {}", ARCH, OS);
-        match current_target.as_str() {
-            "aarch64 macos" => Ok(Url::parse(
+        match_target!(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/arm-macos/semver-release",
             )?),
-            "x86_64 macos" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/intel-macos/semver-release",
             )?),
-            "x86_64 linux" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/linux/semver-release",
             )?),
-            "x86_64 windows" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/windows/semver-release.exe",
             )?),
-            _ => Err(SolarError::from("No download available for this target")),
-        }
+            Err(SolarError::from("No download available for this target"))
+        );
     }
 
     pub fn semver_release_config_url() -> Result<Url, SolarError> {
@@ -87,21 +104,20 @@ impl Global {
     }
 
     pub fn semver_cargo_exec_download() -> Result<Url, SolarError> {
-        let current_target = format!("{} {}", ARCH, OS);
-        match current_target.as_str() {
-            "aarch64 macos" => Ok(Url::parse(
+        match_target!(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/arm-macos/semver-cargo",
             )?),
-            "x86_64 macos" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/intel-macos/semver-cargo",
             )?),
-            "x86_64 linux" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/linux/semver-cargo",
             )?),
-            "x86_64 windows" => Ok(Url::parse(
+            Ok(Url::parse(
                 "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/windows/semver-cargo.exe",
             )?),
-            _ => Err(SolarError::from("No download available for this target")),
-        }
+            Err(SolarError::from("No download available for this target"))
+        );
     }
 }
