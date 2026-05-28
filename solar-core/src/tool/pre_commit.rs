@@ -55,6 +55,10 @@ pub struct PreCommit {
 }
 
 impl PreCommit {
+    pub fn new(destination: PathBuf) -> Self {
+        Self { destination }
+    }
+
     fn precommit_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
             .current_dir(self.destination.clone())

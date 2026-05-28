@@ -9,9 +9,10 @@ pub use global::Global;
 pub use solar_error::SolarError;
 pub use subcommand::{
     Subcommand,
-    init::{Init, initialize_solar},
+    init::{Init, solar_init},
     install::Install,
-    new::New,
+    new::{New, solar_new},
+    update::{Update, solar_update},
     upgrade::Upgrade,
 };
 pub use tool::{Action, Tool, ToolTrait};

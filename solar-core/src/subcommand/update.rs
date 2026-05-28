@@ -1,32 +1,26 @@
-use std::{fs::File, path::PathBuf};
+use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::{Action, Global, SolarError, Tool};
+use crate::{Action, SolarError, Tool};
 
 #[derive(Parser, Clone)]
-pub struct Init {
+pub struct Update {
     /// The destination to initialize the project.
     #[arg(short, long, default_value = ".")]
     destination: PathBuf,
 }
 
-impl Init {
+impl Update {
     pub fn run(&mut self) -> Result<(), SolarError> {
-        Ok(solar_init(&self.destination)?)
+        Ok(solar_update(&self.destination)?)
     }
 }
 
-pub fn solar_init(destination: &PathBuf) -> Result<(), SolarError> {
-    // Initialize git repository if it's not already.
-    Global::git_init(destination)?;
-
-    // Create a README.md file
-    File::create(destination.join(PathBuf::from("README.md")))?;
-
+pub fn solar_update(destination: &PathBuf) -> Result<(), SolarError> {
     // Install all tools into the project
     Ok(Tool::act_all(
-        Action::INSTALL,
+        Action::UPGRADE,
         Some(destination.clone()),
         vec![&format!(
             "--destination={}",

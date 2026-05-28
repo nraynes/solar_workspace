@@ -7,6 +7,7 @@ fn main() -> Result<(), SolarError> {
     match args.subcommand {
         Subcommand::INIT(mut cmd) => cmd.run(),
         Subcommand::NEW(mut cmd) => cmd.run(),
+        Subcommand::UPDATE(mut cmd) => cmd.run(),
         Subcommand::UPGRADE(mut cmd) => cmd.run(),
         Subcommand::INSTALL(mut cmd) => cmd.run(),
         Subcommand::UNINSTALL(mut cmd) => cmd.run(),

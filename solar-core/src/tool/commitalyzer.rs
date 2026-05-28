@@ -14,6 +14,10 @@ pub struct Commitalyzer {
 }
 
 impl Commitalyzer {
+    pub fn new(destination: PathBuf) -> Self {
+        Self { destination }
+    }
+
     fn commitmsg_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
             .current_dir(self.destination.clone())

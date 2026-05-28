@@ -31,6 +31,14 @@ pub struct Vhooks {
 }
 
 impl Vhooks {
+    pub fn new(destination: PathBuf, name: String, remove_all: bool) -> Self {
+        Self {
+            destination,
+            name,
+            remove_all,
+        }
+    }
+
     fn pathbuf_to_str(&self, path: PathBuf) -> Result<String, SolarError> {
         Ok(String::from(
             path.to_str()

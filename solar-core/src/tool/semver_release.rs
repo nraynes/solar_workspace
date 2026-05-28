@@ -13,7 +13,7 @@ use std::{
 use url::Url;
 
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
-enum Plugin {
+pub enum Plugin {
     CARGO,
 }
 
@@ -57,6 +57,15 @@ pub struct SemverRelease {
     #[arg(short, long, default_values = ["cargo"])]
     #[serde(default = "default_plugins")]
     plugins: Vec<Plugin>,
+}
+
+impl SemverRelease {
+    pub fn new(destination: PathBuf, plugins: Vec<Plugin>) -> Self {
+        Self {
+            destination,
+            plugins,
+        }
+    }
 }
 
 impl ToolTrait for SemverRelease {

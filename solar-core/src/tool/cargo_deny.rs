@@ -30,6 +30,13 @@ pub struct CargoDeny {
 }
 
 impl CargoDeny {
+    pub fn new(destination: PathBuf, allow_licenses: Vec<String>) -> Self {
+        Self {
+            destination,
+            allow_licenses,
+        }
+    }
+
     fn ensure_tool_installed(&self) -> Result<(), SolarError> {
         let output = Terminal::command()
             .current_dir(self.destination.clone())

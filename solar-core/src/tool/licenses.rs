@@ -34,6 +34,18 @@ pub struct Licenses {
 }
 
 impl Licenses {
+    pub fn new(
+        destination: PathBuf,
+        include_licenses: Option<Vec<String>>,
+        licensed_under: Option<Vec<String>>,
+    ) -> Self {
+        Self {
+            destination,
+            include_licenses,
+            licensed_under,
+        }
+    }
+
     fn get_license(&self, client: &Client, spdx: &str) -> Result<String, SolarError> {
         let response = client.get(Global::licenses_url(spdx)?).send()?;
         Ok(response.text()?)

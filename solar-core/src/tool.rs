@@ -10,10 +10,10 @@ use std::path::PathBuf;
 
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
-pub use github_workflows::Workflows;
+pub use github_workflows::{ReleaseWfType, TestWfType, Workflows};
 pub use licenses::Licenses;
 pub use pre_commit::PreCommit;
-pub use semver_release::SemverRelease;
+pub use semver_release::{Plugin, SemverRelease};
 pub use vhooks::Vhooks;
 
 use crate::SolarError;
@@ -76,7 +76,7 @@ pub enum Tool {
 }
 
 impl Tool {
-    fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
+    pub fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
         match self {
             Self::VHOOKS(tool) => tool.act(action, dest),
             Self::COMMITALYZER(tool) => tool.act(action, dest),
@@ -88,24 +88,18 @@ impl Tool {
         }
     }
 
-    pub fn perform(
-        arg: Option<&mut Self>,
+    pub fn act_all(
         action: Action,
         dest: Option<PathBuf>,
-        pass_args: Vec<&str>,
+        args: Vec<&str>,
     ) -> Result<(), SolarError> {
-        match arg {
-            Some(tool) => tool.act(&action, None),
-            None => {
-                Vhooks::parse_from(&pass_args).act(&action, dest.clone())?;
-                Commitalyzer::parse_from(&pass_args).act(&action, dest.clone())?;
-                SemverRelease::parse_from(&pass_args).act(&action, dest.clone())?;
-                Licenses::parse_from(&pass_args).act(&action, dest.clone())?;
-                Workflows::parse_from(&pass_args).act(&action, dest.clone())?;
-                PreCommit::parse_from(&pass_args).act(&action, dest.clone())?;
-                CargoDeny::parse_from(&pass_args).act(&action, dest.clone())?;
-                Ok(())
-            }
-        }
+        Vhooks::parse_from(&args).act(&action, dest.clone())?;
+        Commitalyzer::parse_from(&args).act(&action, dest.clone())?;
+        SemverRelease::parse_from(&args).act(&action, dest.clone())?;
+        Licenses::parse_from(&args).act(&action, dest.clone())?;
+        Workflows::parse_from(&args).act(&action, dest.clone())?;
+        PreCommit::parse_from(&args).act(&action, dest.clone())?;
+        CargoDeny::parse_from(&args).act(&action, dest.clone())?;
+        Ok(())
     }
 }

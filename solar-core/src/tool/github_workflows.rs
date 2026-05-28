@@ -18,7 +18,7 @@ use std::{
 pub use workflow_trait::WorkflowTrait;
 
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
-enum ReleaseWfType {
+pub enum ReleaseWfType {
     BIN,
     LIB,
 }
@@ -39,7 +39,7 @@ impl Default for ReleaseWfType {
 }
 
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
-enum TestWfType {
+pub enum TestWfType {
     GENERAL,
 }
 
@@ -84,6 +84,18 @@ pub struct Workflows {
 }
 
 impl Workflows {
+    pub fn new(
+        destination: PathBuf,
+        release_workflow: Option<ReleaseWfType>,
+        test_workflow: Option<TestWfType>,
+    ) -> Self {
+        Self {
+            destination,
+            release_workflow,
+            test_workflow,
+        }
+    }
+
     fn workflows_path(&self) -> PathBuf {
         self.destination.join(PathBuf::from(".github/workflows"))
     }
