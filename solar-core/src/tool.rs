@@ -18,8 +18,6 @@ pub use vhooks::Vhooks;
 
 use crate::SolarError;
 
-use strum_macros::EnumIter;
-
 use clap::{Parser, Subcommand as SC};
 
 pub enum Action {
@@ -53,7 +51,7 @@ pub trait ToolTrait {
     }
 }
 
-#[derive(SC, Clone, EnumIter, PartialEq, Debug)]
+#[derive(SC, Clone, PartialEq, Debug)]
 pub enum Tool {
     /// Configures a versioned git hook folder for a project.
     VHOOKS(Vhooks),

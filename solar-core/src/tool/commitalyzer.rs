@@ -2,12 +2,14 @@ use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
 use rust_dl::downloader::download_sync;
 use rust_terminal::Terminal;
+use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Commitalyzer {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 }
 

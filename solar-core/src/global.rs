@@ -33,6 +33,11 @@ impl Global {
         Ok(fs::exists(destination.join(PathBuf::from(".git")))?)
     }
 
+    /// The default destination to run from, used for deserializing from configuration file.
+    pub fn default_destination() -> PathBuf {
+        PathBuf::from(".")
+    }
+
     /// Initialize a git repository at the destination if it's not already.
     pub fn git_init(destination: &PathBuf) -> Result<(), SolarError> {
         if !Self::is_git(destination)? {

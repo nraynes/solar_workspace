@@ -1,20 +1,32 @@
 use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
 use rust_terminal::Terminal;
+use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+fn default_name() -> String {
+    ".hooks".to_string()
+}
+
+fn default_false() -> bool {
+    false
+}
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Vhooks {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 
     /// Git hooks directory name.
     #[arg(short, long, default_value = ".hooks")]
+    #[serde(default = "default_name")]
     name: String,
 
     /// Whether to remove all hooks when removing vhooks, or just put thim in unversioned git hooks directory.
     #[arg(short, long, default_value = "false")]
+    #[serde(default = "default_false")]
     remove_all: bool,
 }
 

@@ -3,9 +3,12 @@ mod test;
 mod workflow_trait;
 
 use release::{BinRelease, LibRelease, ReleaseWf};
+use serde::{Deserialize, Serialize};
 use test::{GeneralTest, TestWf};
 
-use crate::{SolarError, ToolTrait, tool::github_workflows::workflow_trait::HasConstructor};
+use crate::{
+    Global, SolarError, ToolTrait, tool::github_workflows::workflow_trait::HasConstructor,
+};
 use clap::{Parser, ValueEnum};
 use std::{
     fs::{self, File},
@@ -14,7 +17,7 @@ use std::{
 };
 pub use workflow_trait::WorkflowTrait;
 
-#[derive(ValueEnum, Clone, PartialEq, Debug)]
+#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
 enum ReleaseWfType {
     BIN,
     LIB,
@@ -35,7 +38,7 @@ impl Default for ReleaseWfType {
     }
 }
 
-#[derive(ValueEnum, Clone, PartialEq, Debug)]
+#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
 enum TestWfType {
     GENERAL,
 }
@@ -54,18 +57,29 @@ impl Default for TestWfType {
     }
 }
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+fn default_release_wf() -> Option<ReleaseWfType> {
+    Some(ReleaseWfType::BIN)
+}
+
+fn default_test_wf() -> Option<TestWfType> {
+    Some(TestWfType::GENERAL)
+}
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Workflows {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 
     /// Use the release workflow in this project.
     #[arg(short, long, default_value = "bin")]
+    #[serde(default = "default_release_wf")]
     release_workflow: Option<ReleaseWfType>,
 
     /// Use the test workflow in this project.
     #[arg(short, long, default_value = "general")]
+    #[serde(default = "default_test_wf")]
     test_workflow: Option<TestWfType>,
 }
 

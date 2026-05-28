@@ -1,20 +1,31 @@
-use crate::{SolarError, ToolTrait};
+use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
 use rust_terminal::Terminal;
+use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File},
     io::Write,
     path::PathBuf,
 };
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+fn default_allow_licenses() -> Vec<String> {
+    vec![
+        "MIT".to_string(),
+        "Apache-2.0".to_string(),
+        "Unicode-3.0".to_string(),
+    ]
+}
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct CargoDeny {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 
     /// Default licenses to allow in your dependencies in your project.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0", "Unicode-3.0"])]
+    #[serde(default = "default_allow_licenses")]
     allow_licenses: Vec<String>,
 }
 

@@ -2,6 +2,7 @@ use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
 use regex::Regex;
 use reqwest::blocking::Client;
+use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File},
     io::Write,
@@ -10,18 +11,25 @@ use std::{
 
 static LICENSES_DIR: &str = "LICENSES";
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+fn default_licenses() -> Option<Vec<String>> {
+    Some(vec!["MIT".to_string(), "Apache-2.0".to_string()])
+}
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Licenses {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 
     /// The licenses to include in your project per conditions of dependency licenses.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0"])]
+    #[serde(default = "default_licenses")]
     include_licenses: Option<Vec<String>>,
 
     /// The licenses that the project will be licensed under.
     #[arg(short, long, default_values = ["MIT", "Apache-2.0"])]
+    #[serde(default = "default_licenses")]
     licensed_under: Option<Vec<String>>,
 }
 

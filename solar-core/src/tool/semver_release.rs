@@ -2,6 +2,7 @@ use crate::{Global, SolarError, ToolTrait};
 use clap::{Parser, ValueEnum};
 use reqwest::blocking::Client;
 use rust_dl::downloader::download_sync;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use std::{
     fs::{self, File},
@@ -11,7 +12,7 @@ use std::{
 };
 use url::Url;
 
-#[derive(ValueEnum, Clone, PartialEq, Debug)]
+#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
 enum Plugin {
     CARGO,
 }
@@ -41,14 +42,20 @@ impl Plugin {
     }
 }
 
-#[derive(Parser, Clone, Default, PartialEq, Debug)]
+fn default_plugins() -> Vec<Plugin> {
+    vec![Plugin::CARGO]
+}
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct SemverRelease {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
+    #[serde(default = "Global::default_destination")]
     destination: PathBuf,
 
     /// The list of semver plugins to use.
     #[arg(short, long, default_values = ["cargo"])]
+    #[serde(default = "default_plugins")]
     plugins: Vec<Plugin>,
 }
 
