@@ -126,6 +126,7 @@ dependencies = [
  "clap",
  "clap_mangen",
  "mocked-up",
+ "rust-terminal",
  "solar-core",
 ]
 
@@ -275,11 +276,58 @@ dependencies = [
 ]
 
 [[package]]
+name = "darling"
+version = "0.21.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9cdf337090841a411e2a7f3deb9187445851f91b309c0c0a29e05f74a00a48c0"
+dependencies = [
+ "darling_core",
+ "darling_macro",
+]
+
+[[package]]
+name = "darling_core"
+version = "0.21.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1247195ecd7e3c85f83c8d2a366e4210d588e802133e1e355180a9870b517ea4"
+dependencies = [
+ "fnv",
+ "ident_case",
+ "proc-macro2",
+ "quote",
+ "strsim",
+ "syn",
+]
+
+[[package]]
+name = "darling_macro"
+version = "0.21.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d38308df82d1080de0afee5d069fa14b0326a88c14f15c5ccda35b4a6c414c81"
+dependencies = [
+ "darling_core",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "derive-getters"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74ef43543e701c01ad77d3a5922755c6a1d71b22d942cb8042be4994b380caff"
 dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "derive_setters"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7e6f6fa1f03c14ae082120b84b3c7fbd7b8588d924cf2d7c3daf9afd49df8b9"
+dependencies = [
+ "darling",
  "proc-macro2",
  "quote",
  "syn",
@@ -669,6 +717,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d3067d79b975e8844ca9eb072e16b31c3c1c36928edf9c6789548c524d0d954"
 
 [[package]]
+name = "ident_case"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
+
+[[package]]
 name = "idna"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -845,9 +899,9 @@ dependencies = [
 
 [[package]]
 name = "mock_object"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9e9aaf117ea6c34aad7f21039f6920fff3346493679093124ce9c6392b3739d"
+checksum = "8a9990605983e1485ff22418b964fc13951cea1dc8cc1cb2449462def21d782c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -856,9 +910,9 @@ dependencies = [
 
 [[package]]
 name = "mocked-up"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f66dfe3acac02dae8c02ccc0941421c33e5ec5154c2a886180568bc4e966cd25"
+checksum = "d36f1709111e0cb08ca5acbdee8941717ba9365f4e9ed540167c3c1be1f49021"
 dependencies = [
  "derive-getters",
  "mock_object",
@@ -1412,6 +1466,7 @@ version = "0.0.1"
 dependencies = [
  "clap",
  "derive-getters",
+ "derive_setters",
  "regex",
  "reqwest",
  "rust-alert",

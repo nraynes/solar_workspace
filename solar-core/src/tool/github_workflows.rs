@@ -2,6 +2,7 @@ mod release;
 mod test;
 mod workflow_trait;
 
+use derive_getters::Getters;
 use release::{BinRelease, LibRelease, ReleaseWf};
 use serde::{Deserialize, Serialize};
 use test::{GeneralTest, TestWf};
@@ -65,11 +66,11 @@ fn default_test_wf() -> Option<TestWfType> {
     Some(TestWfType::GENERAL)
 }
 
-#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct Workflows {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    #[serde(default = "Global::default_destination")]
+    #[serde(skip)]
     destination: PathBuf,
 
     /// Use the release workflow in this project.

@@ -1,5 +1,6 @@
-use crate::{Global, SolarError, ToolTrait};
+use crate::{Config, Global, SOLARCONFIGNAME, SolarError, ToolTrait};
 use clap::Parser;
+use derive_getters::Getters;
 use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
@@ -8,15 +9,11 @@ fn default_name() -> String {
     ".hooks".to_string()
 }
 
-fn default_false() -> bool {
-    false
-}
-
-#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct Vhooks {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    #[serde(default = "Global::default_destination")]
+    #[serde(skip)]
     destination: PathBuf,
 
     /// Git hooks directory name.
@@ -26,7 +23,7 @@ pub struct Vhooks {
 
     /// Whether to remove all hooks when removing vhooks, or just put thim in unversioned git hooks directory.
     #[arg(short, long, default_value = "false")]
-    #[serde(default = "default_false")]
+    #[serde(skip)]
     remove_all: bool,
 }
 
@@ -38,13 +35,6 @@ impl Vhooks {
             remove_all,
         }
     }
-
-    fn pathbuf_to_str(&self, path: PathBuf) -> Result<String, SolarError> {
-        Ok(String::from(
-            path.to_str()
-                .ok_or("Could not convert path buffer to string")?,
-        ))
-    }
 }
 
 impl ToolTrait for Vhooks {
@@ -53,6 +43,14 @@ impl ToolTrait for Vhooks {
     }
 
     fn install(&self) -> Result<(), SolarError> {
+        // Update configuration file.
+        let config =
+            match Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME))) {
+                Ok(cfg) => cfg.set_vhooks(Some(self.clone())),
+                Err(_) => Config::new(Some(self.clone()), None, None, None, None, None, None),
+            };
+        config.save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
+
         // Ensure working directory is a git repository.
         Global::git_init(&self.destination)?;
 
@@ -71,7 +69,7 @@ impl ToolTrait for Vhooks {
                 vec![
                     "config",
                     "core.hooksPath",
-                    &hooks_path
+                    PathBuf::from(format!("./{}", &self.name))
                         .to_str()
                         .ok_or("Could not convert path to string.")?,
                 ],
@@ -80,43 +78,65 @@ impl ToolTrait for Vhooks {
     }
 
     fn upgrade(&self) -> Result<(), SolarError> {
-        self.install()?;
+        println!("Upgrade does not apply to vhooks - nothing to upgrade.");
         Ok(())
     }
 
     fn uninstall(&self) -> Result<(), SolarError> {
+        let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
+        let vhooks: Self = config
+            .vhooks()
+            .clone()
+            .ok_or("Cannot uninstall vhooks - vhooks not found in configuration.")?;
+
         // Paths to the versioned hooks directory and default directory.
-        let hooks_path = self.pathbuf_to_str(self.destination.join(&self.name).join("*"))?;
-        let default_path = self.pathbuf_to_str(Global::default_git_hook_dir())?;
+        let hooks_path = self.destination.join(vhooks.name());
+        let default_path = self.destination.join(Global::default_git_hook_dir());
 
         // Must be a git repository in order to set default hook directory.
-        Global::git_init(&self.destination)?;
+        Global::is_git(&self.destination)?;
 
         // Git hooks folder must exist.
-        Terminal::command()
-            .current_dir(self.destination.clone())
-            .piped()
-            .run("mkdir", ["-p", &default_path])?;
+        fs::create_dir_all(&default_path)?;
 
         // If not removing hooks, move them to the default hooks directory.
         if !self.remove_all {
-            Terminal::command()
-                .current_dir(self.destination.clone())
-                .piped()
-                .run("mv", [&hooks_path, &default_path])?;
+            for item in fs::read_dir(&hooks_path)? {
+                let item = item?;
+                fs::rename(item.path(), &default_path.join(item.file_name()))?;
+            }
         }
 
         // Set the new hooks directory as the default git hooks directory.
         Terminal::command()
             .current_dir(self.destination.clone())
             .piped()
-            .run("git", vec!["config", "core.hooksPath", &default_path])?;
+            .run(
+                "git",
+                vec![
+                    "config",
+                    "core.hooksPath",
+                    PathBuf::from(format!(
+                        "./{}",
+                        Global::default_git_hook_dir()
+                            .to_str()
+                            .ok_or("Could not convert path to string.")?
+                    ))
+                    .to_str()
+                    .ok_or("Could not convert path to string.")?,
+                ],
+            )?;
 
         // Remove the versioned hooks folder.
-        Terminal::command()
-            .current_dir(self.destination.clone())
-            .piped()
-            .run("rm", ["-rf", &hooks_path])?;
+        fs::remove_dir_all(&hooks_path)?;
+
+        // Update configuration.
+        let config = config.set_vhooks(None);
+        match config.is_empty() {
+            true => fs::remove_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?,
+            false => config.save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?,
+        }
+
         Ok(())
     }
 }

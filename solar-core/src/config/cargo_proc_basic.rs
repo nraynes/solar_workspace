@@ -8,28 +8,24 @@ use crate::{
     },
 };
 
-pub fn cargo_proc_basic(destination: PathBuf) -> Config {
+pub fn cargo_proc_basic() -> Config {
     Config::new(
-        Some(Vhooks::new(
-            destination.clone(),
-            ".hooks".to_string(),
-            false,
-        )),
-        Some(SemverRelease::new(destination.clone(), vec![Plugin::CARGO])),
-        Some(PreCommit::new(destination.clone())),
+        Some(Vhooks::new(PathBuf::from("."), ".hooks".to_string(), false)),
+        Some(SemverRelease::new(PathBuf::from("."), vec![Plugin::CARGO])),
+        Some(PreCommit::new(PathBuf::from("."))),
         Some(Licenses::new(
-            destination.clone(),
+            PathBuf::from("."),
             Some(vec!["MIT".to_string(), "Apache-2.0".to_string()]),
             Some(vec!["MIT".to_string(), "Apache-2.0".to_string()]),
         )),
         Some(Workflows::new(
-            destination.clone(),
-            Some(ReleaseWfType::BIN),
+            PathBuf::from("."),
+            Some(ReleaseWfType::LIB),
             Some(TestWfType::GENERAL),
         )),
-        Some(Commitalyzer::new(destination.clone())),
+        Some(Commitalyzer::new(PathBuf::from("."))),
         Some(CargoDeny::new(
-            destination.clone(),
+            PathBuf::from("."),
             vec![
                 "MIT".to_string(),
                 "Apache-2.0".to_string(),

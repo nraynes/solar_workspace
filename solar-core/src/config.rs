@@ -5,6 +5,7 @@ mod cargo_proc_basic;
 pub use cargo_bin_basic::cargo_bin_basic;
 pub use cargo_lib_basic::cargo_lib_basic;
 pub use cargo_proc_basic::cargo_proc_basic;
+use derive_setters::Setters;
 
 use std::{fs, io::Write, path::PathBuf};
 
@@ -16,14 +17,43 @@ use crate::{
     tool::{CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Vhooks, Workflows},
 };
 
-#[derive(Serialize, Deserialize, Debug, Getters)]
+pub enum ProjConfig {
+    CARGOBINBASIC,
+    CARGOLIBBASIC,
+    CARGOPROCBASIC,
+}
+
+impl ProjConfig {
+    pub fn get(&self) -> Config {
+        match self {
+            Self::CARGOBINBASIC => cargo_bin_basic(),
+            Self::CARGOLIBBASIC => cargo_lib_basic(),
+            Self::CARGOPROCBASIC => cargo_proc_basic(),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Getters, Setters)]
 pub struct Config {
+    #[setters(rename = "set_vhooks")]
     vhooks: Option<Vhooks>,
+
+    #[setters(rename = "set_semver_release")]
     semver_release: Option<SemverRelease>,
+
+    #[setters(rename = "set_pre_commit")]
     pre_commit: Option<PreCommit>,
+
+    #[setters(rename = "set_licenses")]
     licenses: Option<Licenses>,
+
+    #[setters(rename = "set_github_workflows")]
     github_workflows: Option<Workflows>,
+
+    #[setters(rename = "set_commitalyzer")]
     commitalyzer: Option<Commitalyzer>,
+
+    #[setters(rename = "set_cargo_deny")]
     cargo_deny: Option<CargoDeny>,
 }
 
@@ -63,5 +93,15 @@ impl Config {
         let mut file = fs::File::options().write(true).open(file_path)?;
         file.write_all(serde_json::to_string(self)?.as_bytes())?;
         Ok(())
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.vhooks.is_none()
+            && self.semver_release.is_none()
+            && self.pre_commit.is_none()
+            && self.licenses.is_none()
+            && self.github_workflows.is_none()
+            && self.commitalyzer.is_none()
+            && self.cargo_deny.is_none()
     }
 }

@@ -1,5 +1,6 @@
 use crate::{Global, SolarError, ToolTrait};
 use clap::{Parser, ValueEnum};
+use derive_getters::Getters;
 use reqwest::blocking::Client;
 use rust_dl::downloader::download_sync;
 use serde::{Deserialize, Serialize};
@@ -46,11 +47,11 @@ fn default_plugins() -> Vec<Plugin> {
     vec![Plugin::CARGO]
 }
 
-#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct SemverRelease {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    #[serde(default = "Global::default_destination")]
+    #[serde(skip)]
     destination: PathBuf,
 
     /// The list of semver plugins to use.

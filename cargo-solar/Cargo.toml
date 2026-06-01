@@ -34,4 +34,5 @@ name = "cargo-solar"
 path = "src/main.rs"
 
 [dev-dependencies]
-mocked-up = "0.2.0"
+mocked-up = "0.2.1"
+rust-terminal = "0.2.0"

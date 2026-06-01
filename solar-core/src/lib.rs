@@ -5,7 +5,7 @@ mod subcommand;
 mod tool;
 
 pub use config::Config;
-pub use global::Global;
+pub use global::{Global, SOLARCONFIGNAME};
 pub use solar_error::SolarError;
 pub use subcommand::{
     Subcommand,
@@ -15,4 +15,7 @@ pub use subcommand::{
     update::{Update, solar_update},
     upgrade::Upgrade,
 };
-pub use tool::{Action, Tool, ToolTrait};
+pub use tool::{
+    Action, CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Tool, ToolTrait, Vhooks,
+    Workflows,
+};

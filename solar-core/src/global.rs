@@ -5,6 +5,8 @@ use url::Url;
 
 use crate::SolarError;
 
+pub const SOLARCONFIGNAME: &str = "solar.config.json";
+
 pub struct Global {}
 
 macro_rules! match_target {
@@ -31,11 +33,6 @@ impl Global {
     /// Returns whether the path is a git repository or not.
     pub fn is_git(destination: &PathBuf) -> Result<bool, SolarError> {
         Ok(fs::exists(destination.join(PathBuf::from(".git")))?)
-    }
-
-    /// The default destination to run from, used for deserializing from configuration file.
-    pub fn default_destination() -> PathBuf {
-        PathBuf::from(".")
     }
 
     /// Initialize a git repository at the destination if it's not already.

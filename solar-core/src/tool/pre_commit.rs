@@ -1,5 +1,6 @@
 use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
+use derive_getters::Getters;
 use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -46,11 +47,11 @@ for val in \"${diff_post[@]}\"; do
 done
 ";
 
-#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct PreCommit {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    #[serde(default = "Global::default_destination")]
+    #[serde(skip)]
     destination: PathBuf,
 }
 

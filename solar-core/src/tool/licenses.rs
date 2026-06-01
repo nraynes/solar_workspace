@@ -1,5 +1,6 @@
 use crate::{Global, SolarError, ToolTrait};
 use clap::Parser;
+use derive_getters::Getters;
 use regex::Regex;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
@@ -15,11 +16,11 @@ fn default_licenses() -> Option<Vec<String>> {
     Some(vec!["MIT".to_string(), "Apache-2.0".to_string()])
 }
 
-#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct Licenses {
     /// The working directory to use for installation.
     #[arg(short, long, default_value = ".")]
-    #[serde(default = "Global::default_destination")]
+    #[serde(skip)]
     destination: PathBuf,
 
     /// The licenses to include in your project per conditions of dependency licenses.
