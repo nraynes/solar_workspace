@@ -35,6 +35,29 @@ impl Vhooks {
             remove_all,
         }
     }
+
+    pub fn move_hooks(prev: &PathBuf, new: &PathBuf) -> Result<(), SolarError> {
+        for item in fs::read_dir(prev)? {
+            let item = item?;
+            fs::rename(item.path(), new.join(item.file_name()))?;
+        }
+        Ok(())
+    }
+
+    pub fn set_hooks_path(&self, path: PathBuf) -> Result<(), SolarError> {
+        Terminal::command()
+            .current_dir(self.destination.clone())
+            .piped()
+            .run(
+                "git",
+                vec![
+                    "config",
+                    "core.hooksPath",
+                    path.to_str().ok_or("Could not convert path to string.")?,
+                ],
+            )?;
+        Ok(())
+    }
 }
 
 impl ToolTrait for Vhooks {
@@ -44,36 +67,32 @@ impl ToolTrait for Vhooks {
 
     fn install(&self) -> Result<(), SolarError> {
         // Update configuration file.
-        let config =
-            match Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME))) {
-                Ok(cfg) => cfg.set_vhooks(Some(self.clone())),
-                Err(_) => Config::new(Some(self.clone()), None, None, None, None, None, None),
-            };
-        config.save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
+        let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))
+            .unwrap_or(Config::new_empty());
+        let current_hooks = config.vhooks().clone();
+        config
+            .set_vhooks(Some(self.clone()))
+            .save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
 
         // Ensure working directory is a git repository.
         Global::git_init(&self.destination)?;
 
         // Path to the versioned hooks directory.
-        let hooks_path = self.destination.join(PathBuf::from(&self.name));
+        let hooks_path = self.destination.join(&self.name);
 
         // Create the new hooks directory.
         fs::create_dir_all(&hooks_path)?;
 
         // Set the new hooks directory as the git hooks directory.
-        Terminal::command()
-            .current_dir(self.destination.clone())
-            .piped()
-            .run(
-                "git",
-                vec![
-                    "config",
-                    "core.hooksPath",
-                    PathBuf::from(format!("./{}", &self.name))
-                        .to_str()
-                        .ok_or("Could not convert path to string.")?,
-                ],
-            )?;
+        self.set_hooks_path(PathBuf::from(format!("./{}", &self.name)))?;
+
+        // If there is a current installation, move the hooks from the old directory to the new one.
+        if let Some(vhooks) = current_hooks {
+            let old_hooks_path = self.destination.join(vhooks.name());
+            Self::move_hooks(&old_hooks_path, &hooks_path)?;
+            fs::remove_dir_all(&old_hooks_path)?;
+        }
+
         Ok(())
     }
 
@@ -101,36 +120,21 @@ impl ToolTrait for Vhooks {
 
         // If not removing hooks, move them to the default hooks directory.
         if !self.remove_all {
-            for item in fs::read_dir(&hooks_path)? {
-                let item = item?;
-                fs::rename(item.path(), &default_path.join(item.file_name()))?;
-            }
+            Self::move_hooks(&hooks_path, &default_path)?;
         }
 
         // Set the new hooks directory as the default git hooks directory.
-        Terminal::command()
-            .current_dir(self.destination.clone())
-            .piped()
-            .run(
-                "git",
-                vec![
-                    "config",
-                    "core.hooksPath",
-                    PathBuf::from(format!(
-                        "./{}",
-                        Global::default_git_hook_dir()
-                            .to_str()
-                            .ok_or("Could not convert path to string.")?
-                    ))
-                    .to_str()
-                    .ok_or("Could not convert path to string.")?,
-                ],
-            )?;
+        self.set_hooks_path(PathBuf::from(format!(
+            "./{}",
+            Global::default_git_hook_dir()
+                .to_str()
+                .ok_or("Could not convert path to string.")?
+        )))?;
 
         // Remove the versioned hooks folder.
         fs::remove_dir_all(&hooks_path)?;
 
-        // Update configuration.
+        // Update configuration, remove if empty.
         let config = config.set_vhooks(None);
         match config.is_empty() {
             true => fs::remove_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?,

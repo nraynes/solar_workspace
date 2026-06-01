@@ -78,6 +78,10 @@ impl Config {
         }
     }
 
+    pub fn new_empty() -> Self {
+        Self::new(None, None, None, None, None, None, None)
+    }
+
     /// Creates a new Config from a file at the supplied path, provided the file contains
     /// valid syntax for JSON and the config.
     pub fn load_from_file(file_path: PathBuf) -> Result<Self, SolarError> {
