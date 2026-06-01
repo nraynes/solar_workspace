@@ -7,9 +7,7 @@ use release::{BinRelease, LibRelease, ReleaseWf};
 use serde::{Deserialize, Serialize};
 use test::{GeneralTest, TestWf};
 
-use crate::{
-    Global, SolarError, ToolTrait, tool::github_workflows::workflow_trait::HasConstructor,
-};
+use crate::{SolarError, ToolTrait, tool::github_workflows::workflow_trait::HasConstructor};
 use clap::{Parser, ValueEnum};
 use std::{
     fs::{self, File},
@@ -18,8 +16,9 @@ use std::{
 };
 pub use workflow_trait::WorkflowTrait;
 
-#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub enum ReleaseWfType {
+    #[default]
     BIN,
     LIB,
 }
@@ -33,14 +32,9 @@ impl ReleaseWfType {
     }
 }
 
-impl Default for ReleaseWfType {
-    fn default() -> Self {
-        Self::BIN
-    }
-}
-
-#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub enum TestWfType {
+    #[default]
     GENERAL,
 }
 
@@ -49,12 +43,6 @@ impl TestWfType {
         match self {
             Self::GENERAL => TestWf::GENERAL(GeneralTest::new()),
         }
-    }
-}
-
-impl Default for TestWfType {
-    fn default() -> Self {
-        Self::GENERAL
     }
 }
 
@@ -107,7 +95,7 @@ impl ToolTrait for Workflows {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         // Ensure github workspace folders exist.
         let workflows_dir = self.workflows_path();
         fs::create_dir_all(&workflows_dir)?;
@@ -136,7 +124,7 @@ impl ToolTrait for Workflows {
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         let workflows_dir = self.workflows_path();
         let release_file = workflows_dir.join(release::FILE_NAME);
         let test_file = workflows_dir.join(test::FILE_NAME);

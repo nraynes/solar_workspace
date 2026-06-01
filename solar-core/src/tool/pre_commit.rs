@@ -1,4 +1,4 @@
-use crate::{Global, SolarError, ToolTrait};
+use crate::{SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
 use rust_terminal::Terminal;
@@ -76,13 +76,13 @@ impl ToolTrait for PreCommit {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         let mut precommit_file = File::create(self.precommit_path()?)?;
         precommit_file.write_all(PRECOMMIT_SCRIPT_CONTENT.as_bytes())?;
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         fs::remove_file(self.precommit_path()?)?;
         Ok(())
     }

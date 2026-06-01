@@ -33,7 +33,7 @@ impl ToolTrait for Commitalyzer {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         // Download executable
         download_sync(
             Global::commitalyzer_exec_download()?,
@@ -50,7 +50,7 @@ impl ToolTrait for Commitalyzer {
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         // Remove executable
         let exec_path = self.commitmsg_path()?;
         if fs::exists(&exec_path)? {

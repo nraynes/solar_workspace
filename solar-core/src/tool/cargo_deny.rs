@@ -1,4 +1,4 @@
-use crate::{Global, SolarError, ToolTrait};
+use crate::{SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
 use rust_terminal::Terminal;
@@ -67,7 +67,7 @@ impl ToolTrait for CargoDeny {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         self.ensure_tool_installed()?;
 
         // Create configuration file.
@@ -77,7 +77,7 @@ impl ToolTrait for CargoDeny {
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         // Remove configuration file.
         fs::remove_file(self.destination.join(PathBuf::from("deny.toml")))?;
 

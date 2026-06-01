@@ -18,7 +18,7 @@ pub use vhooks::Vhooks;
 
 use crate::SolarError;
 
-use clap::{Parser, Subcommand as SC};
+use clap::Subcommand as SC;
 
 pub enum Action {
     INSTALL,
@@ -40,11 +40,11 @@ pub trait ToolTrait {
 
     fn set_dest(&mut self, dest: PathBuf);
 
-    fn install(&self) -> Result<(), SolarError>;
+    fn install(&mut self) -> Result<(), SolarError>;
 
-    fn uninstall(&self) -> Result<(), SolarError>;
+    fn uninstall(&mut self) -> Result<(), SolarError>;
 
-    fn upgrade(&self) -> Result<(), SolarError> {
+    fn upgrade(&mut self) -> Result<(), SolarError> {
         self.uninstall()?;
         self.install()?;
         Ok(())
@@ -86,20 +86,5 @@ impl Tool {
             Self::PRECOMMIT(tool) => tool.act(action, dest),
             Self::DENY(tool) => tool.act(action, dest),
         }
-    }
-
-    pub fn act_all(
-        action: Action,
-        dest: Option<PathBuf>,
-        args: Vec<&str>,
-    ) -> Result<(), SolarError> {
-        Vhooks::parse_from(&args).act(&action, dest.clone())?;
-        Commitalyzer::parse_from(&args).act(&action, dest.clone())?;
-        SemverRelease::parse_from(&args).act(&action, dest.clone())?;
-        Licenses::parse_from(&args).act(&action, dest.clone())?;
-        Workflows::parse_from(&args).act(&action, dest.clone())?;
-        PreCommit::parse_from(&args).act(&action, dest.clone())?;
-        CargoDeny::parse_from(&args).act(&action, dest.clone())?;
-        Ok(())
     }
 }

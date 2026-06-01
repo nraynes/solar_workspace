@@ -13,22 +13,25 @@ use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    SolarError,
+    SolarError, ToolTrait,
     tool::{CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Vhooks, Workflows},
 };
 
+use clap::ValueEnum;
+
+#[derive(ValueEnum, Clone, Debug)]
 pub enum ProjConfig {
-    CARGOBINBASIC,
-    CARGOLIBBASIC,
-    CARGOPROCBASIC,
+    CARGO_BIN_BASIC,
+    CARGO_LIB_BASIC,
+    CARGO_PROC_BASIC,
 }
 
 impl ProjConfig {
     pub fn get(&self) -> Config {
         match self {
-            Self::CARGOBINBASIC => cargo_bin_basic(),
-            Self::CARGOLIBBASIC => cargo_lib_basic(),
-            Self::CARGOPROCBASIC => cargo_proc_basic(),
+            Self::CARGO_BIN_BASIC => cargo_bin_basic(),
+            Self::CARGO_LIB_BASIC => cargo_lib_basic(),
+            Self::CARGO_PROC_BASIC => cargo_proc_basic(),
         }
     }
 }
@@ -57,6 +60,32 @@ pub struct Config {
     cargo_deny: Option<CargoDeny>,
 }
 
+impl ToolTrait for Config {
+    fn set_dest(&mut self, dest: PathBuf) {
+        self.on_all(|tool| tool.set_dest(dest.clone()));
+    }
+
+    fn act(&mut self, action: &crate::Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
+        self.try_all(|tool| tool.act(action, dest.clone()))?;
+        Ok(())
+    }
+
+    fn install(&mut self) -> Result<(), SolarError> {
+        self.try_all(|tool| tool.install())?;
+        Ok(())
+    }
+
+    fn upgrade(&mut self) -> Result<(), SolarError> {
+        self.try_all(|tool| tool.upgrade())?;
+        Ok(())
+    }
+
+    fn uninstall(&mut self) -> Result<(), SolarError> {
+        self.try_all(|tool| tool.uninstall())?;
+        Ok(())
+    }
+}
+
 impl Config {
     pub fn new(
         vhooks: Option<Vhooks>,
@@ -80,6 +109,61 @@ impl Config {
 
     pub fn new_empty() -> Self {
         Self::new(None, None, None, None, None, None, None)
+    }
+
+    pub fn on_all<F>(&mut self, mut f: F)
+    where
+        F: FnMut(&mut dyn ToolTrait),
+    {
+        if let Some(tool) = &mut self.vhooks {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.semver_release {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.pre_commit {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.licenses {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.github_workflows {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.commitalyzer {
+            f(tool);
+        }
+        if let Some(tool) = &mut self.cargo_deny {
+            f(tool);
+        }
+    }
+
+    pub fn try_all<F>(&mut self, mut f: F) -> Result<(), SolarError>
+    where
+        F: FnMut(&mut dyn ToolTrait) -> Result<(), SolarError>,
+    {
+        if let Some(tool) = &mut self.vhooks {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.semver_release {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.pre_commit {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.licenses {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.github_workflows {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.commitalyzer {
+            f(tool)?;
+        }
+        if let Some(tool) = &mut self.cargo_deny {
+            f(tool)?;
+        }
+        Ok(())
     }
 
     /// Creates a new Config from a file at the supplied path, provided the file contains

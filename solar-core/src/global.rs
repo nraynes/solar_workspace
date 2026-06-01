@@ -1,4 +1,7 @@
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use rust_terminal::Terminal;
 use url::Url;
@@ -31,15 +34,15 @@ macro_rules! match_target {
 
 impl Global {
     /// Returns whether the path is a git repository or not.
-    pub fn is_git(destination: &PathBuf) -> Result<bool, SolarError> {
+    pub fn is_git(destination: &Path) -> Result<bool, SolarError> {
         Ok(fs::exists(destination.join(PathBuf::from(".git")))?)
     }
 
     /// Initialize a git repository at the destination if it's not already.
-    pub fn git_init(destination: &PathBuf) -> Result<(), SolarError> {
+    pub fn git_init(destination: &Path) -> Result<(), SolarError> {
         if !Self::is_git(destination)? {
             Terminal::command()
-                .current_dir(destination.clone())
+                .current_dir(destination.to_path_buf())
                 .piped()
                 .run("git", vec!["init"])?;
         }

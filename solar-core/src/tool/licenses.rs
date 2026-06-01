@@ -58,7 +58,7 @@ impl ToolTrait for Licenses {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         let client = Client::new();
         let licenses_dir = self.destination.join(PathBuf::from(LICENSES_DIR));
 
@@ -90,22 +90,21 @@ impl ToolTrait for Licenses {
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         let pattern = Regex::new(r"^LICENSE-[_A-Za-z0-9\.\+-]+$")?;
         // Delete project license file.
         for entry in fs::read_dir(PathBuf::from("."))? {
             let entry = entry?;
             let path = entry.path();
-            if path.is_file() {
-                if let Some(file_name) = path.file_name() {
-                    if pattern.is_match(
-                        file_name
-                            .to_str()
-                            .ok_or(format!("Could not check pattern for license file."))?,
-                    ) {
-                        fs::remove_file(self.destination.join(path))?;
-                    }
-                }
+            if path.is_file()
+                && let Some(file_name) = path.file_name()
+                && pattern.is_match(
+                    file_name
+                        .to_str()
+                        .ok_or("Could not check pattern for license file.")?,
+                )
+            {
+                fs::remove_file(self.destination.join(path))?;
             }
         }
 

@@ -8,7 +8,7 @@ use serde_json::{Map, Value};
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
     str::FromStr,
 };
 use url::Url;
@@ -33,13 +33,14 @@ impl Plugin {
             .clone())
     }
 
-    fn download_exec(&self, download_path: &PathBuf) -> Result<(), SolarError> {
-        Ok(match self {
+    fn download_exec(&self, download_path: &Path) -> Result<(), SolarError> {
+        match self {
             Self::CARGO => download_sync(
                 Global::semver_cargo_exec_download()?,
                 download_path.join(PathBuf::from("semver-cargo")),
             )?,
-        })
+        }
+        Ok(())
     }
 }
 
@@ -74,7 +75,7 @@ impl ToolTrait for SemverRelease {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         let client = Client::new();
 
         // Make release directory
@@ -109,7 +110,7 @@ impl ToolTrait for SemverRelease {
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         // Remove release directory
         let release_dir_path = self.destination.join(PathBuf::from(".release"));
         fs::remove_dir_all(&release_dir_path)?;

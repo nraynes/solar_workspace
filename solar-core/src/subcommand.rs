@@ -1,3 +1,4 @@
+pub mod deinit;
 pub mod init;
 pub mod install;
 pub mod new;
@@ -5,6 +6,7 @@ pub mod uninstall;
 pub mod update;
 pub mod upgrade;
 
+pub use deinit::Deinit;
 pub use init::Init;
 pub use install::Install;
 pub use new::New;
@@ -33,4 +35,7 @@ pub enum Subcommand {
 
     /// Removes Solar framework tools from the project.
     UNINSTALL(Uninstall),
+
+    /// Deinitializes a solar project.
+    DEINIT(Deinit),
 }

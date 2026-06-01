@@ -11,5 +11,6 @@ fn main() -> Result<(), SolarError> {
         Subcommand::UPGRADE(mut cmd) => cmd.run(),
         Subcommand::INSTALL(mut cmd) => cmd.run(),
         Subcommand::UNINSTALL(mut cmd) => cmd.run(),
+        Subcommand::DEINIT(mut cmd) => cmd.run(),
     }
 }

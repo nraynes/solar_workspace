@@ -3,7 +3,10 @@ use clap::Parser;
 use derive_getters::Getters;
 use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 fn default_name() -> String {
     ".hooks".to_string()
@@ -36,7 +39,7 @@ impl Vhooks {
         }
     }
 
-    pub fn move_hooks(prev: &PathBuf, new: &PathBuf) -> Result<(), SolarError> {
+    pub fn move_hooks(prev: &PathBuf, new: &Path) -> Result<(), SolarError> {
         for item in fs::read_dir(prev)? {
             let item = item?;
             fs::rename(item.path(), new.join(item.file_name()))?;
@@ -65,7 +68,7 @@ impl ToolTrait for Vhooks {
         self.destination = dest;
     }
 
-    fn install(&self) -> Result<(), SolarError> {
+    fn install(&mut self) -> Result<(), SolarError> {
         // Update configuration file.
         let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))
             .unwrap_or(Config::new_empty());
@@ -96,12 +99,12 @@ impl ToolTrait for Vhooks {
         Ok(())
     }
 
-    fn upgrade(&self) -> Result<(), SolarError> {
+    fn upgrade(&mut self) -> Result<(), SolarError> {
         println!("Upgrade does not apply to vhooks - nothing to upgrade.");
         Ok(())
     }
 
-    fn uninstall(&self) -> Result<(), SolarError> {
+    fn uninstall(&mut self) -> Result<(), SolarError> {
         let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
         let vhooks: Self = config
             .vhooks()
