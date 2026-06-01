@@ -11,7 +11,7 @@ use crate::{
 pub fn cargo_lib_basic() -> Config {
     Config::new(
         Some(Vhooks::new(PathBuf::from("."), ".hooks".to_string(), false)),
-        Some(SemverRelease::new(PathBuf::from("."), vec![Plugin::CARGO])),
+        Some(SemverRelease::new(PathBuf::from("."), vec![Plugin::Cargo])),
         Some(PreCommit::new(PathBuf::from("."))),
         Some(Licenses::new(
             PathBuf::from("."),
@@ -20,8 +20,8 @@ pub fn cargo_lib_basic() -> Config {
         )),
         Some(Workflows::new(
             PathBuf::from("."),
-            Some(ReleaseWfType::LIB),
-            Some(TestWfType::GENERAL),
+            Some(ReleaseWfType::Lib),
+            Some(TestWfType::General),
         )),
         Some(Commitalyzer::new(PathBuf::from("."))),
         Some(CargoDeny::new(

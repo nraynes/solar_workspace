@@ -9,15 +9,15 @@ use crate::tool::github_workflows::WorkflowTrait;
 pub const FILE_NAME: &str = "release.yml";
 
 pub enum ReleaseWf {
-    BIN(BinRelease),
-    LIB(LibRelease),
+    Bin(BinRelease),
+    Lib(LibRelease),
 }
 
 impl WorkflowTrait for ReleaseWf {
     fn get(&self) -> String {
         match self {
-            Self::BIN(v) => v.get(),
-            Self::LIB(v) => v.get(),
+            Self::Bin(v) => v.get(),
+            Self::Lib(v) => v.get(),
         }
     }
 }

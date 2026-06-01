@@ -15,13 +15,13 @@ use url::Url;
 
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum Plugin {
-    CARGO,
+    Cargo,
 }
 
 impl Plugin {
     fn get_config(&self, client: &Client) -> Result<Map<String, Value>, SolarError> {
         let url = match self {
-            Self::CARGO => Url::parse(
+            Self::Cargo => Url::parse(
                 "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/sample.plugin.config.json",
             )?,
         };
@@ -35,7 +35,7 @@ impl Plugin {
 
     fn download_exec(&self, download_path: &Path) -> Result<(), SolarError> {
         match self {
-            Self::CARGO => download_sync(
+            Self::Cargo => download_sync(
                 Global::semver_cargo_exec_download()?,
                 download_path.join(PathBuf::from("semver-cargo")),
             )?,
@@ -45,7 +45,7 @@ impl Plugin {
 }
 
 fn default_plugins() -> Vec<Plugin> {
-    vec![Plugin::CARGO]
+    vec![Plugin::Cargo]
 }
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]

@@ -19,15 +19,15 @@ pub use workflow_trait::WorkflowTrait;
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub enum ReleaseWfType {
     #[default]
-    BIN,
-    LIB,
+    Bin,
+    Lib,
 }
 
 impl ReleaseWfType {
     fn workflow(&self) -> ReleaseWf {
         match self {
-            Self::BIN => ReleaseWf::BIN(BinRelease::new()),
-            Self::LIB => ReleaseWf::LIB(LibRelease::new()),
+            Self::Bin => ReleaseWf::Bin(BinRelease::new()),
+            Self::Lib => ReleaseWf::Lib(LibRelease::new()),
         }
     }
 }
@@ -35,23 +35,23 @@ impl ReleaseWfType {
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub enum TestWfType {
     #[default]
-    GENERAL,
+    General,
 }
 
 impl TestWfType {
     fn workflow(&self) -> TestWf {
         match self {
-            Self::GENERAL => TestWf::GENERAL(GeneralTest::new()),
+            Self::General => TestWf::General(GeneralTest::new()),
         }
     }
 }
 
 fn default_release_wf() -> Option<ReleaseWfType> {
-    Some(ReleaseWfType::BIN)
+    Some(ReleaseWfType::Bin)
 }
 
 fn default_test_wf() -> Option<TestWfType> {
-    Some(TestWfType::GENERAL)
+    Some(TestWfType::General)
 }
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
@@ -104,7 +104,7 @@ impl ToolTrait for Workflows {
         if let Some(workflow_type) = &self.release_workflow {
             let mut workflow_file = File::create(workflows_dir.join(release::FILE_NAME))?;
             let mut workflow_obj = workflow_type.workflow();
-            if let ReleaseWf::BIN(bin_release) = &mut workflow_obj {
+            if let ReleaseWf::Bin(bin_release) = &mut workflow_obj {
                 bin_release.set_project_name(
                     self.destination
                         .file_name()

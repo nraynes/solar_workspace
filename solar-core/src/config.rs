@@ -1,11 +1,13 @@
 mod cargo_bin_basic;
 mod cargo_lib_basic;
 mod cargo_proc_basic;
+mod universal_default;
 
 pub use cargo_bin_basic::cargo_bin_basic;
 pub use cargo_lib_basic::cargo_lib_basic;
 pub use cargo_proc_basic::cargo_proc_basic;
 use derive_setters::Setters;
+pub use universal_default::universal_default;
 
 use std::{fs, io::Write, path::PathBuf};
 
@@ -21,17 +23,19 @@ use clap::ValueEnum;
 
 #[derive(ValueEnum, Clone, Debug)]
 pub enum ProjConfig {
-    CARGO_BIN_BASIC,
-    CARGO_LIB_BASIC,
-    CARGO_PROC_BASIC,
+    CargoBinBasic,
+    CargoLibBasic,
+    CargoProcBasic,
+    UniversalDefault,
 }
 
 impl ProjConfig {
     pub fn get(&self) -> Config {
         match self {
-            Self::CARGO_BIN_BASIC => cargo_bin_basic(),
-            Self::CARGO_LIB_BASIC => cargo_lib_basic(),
-            Self::CARGO_PROC_BASIC => cargo_proc_basic(),
+            Self::CargoBinBasic => cargo_bin_basic(),
+            Self::CargoLibBasic => cargo_lib_basic(),
+            Self::CargoProcBasic => cargo_proc_basic(),
+            Self::UniversalDefault => universal_default(),
         }
     }
 }
