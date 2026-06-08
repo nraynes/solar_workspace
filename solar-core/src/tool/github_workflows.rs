@@ -12,7 +12,7 @@ use clap::{Parser, ValueEnum};
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
 pub use workflow_trait::WorkflowTrait;
 
@@ -86,13 +86,13 @@ impl Workflows {
     }
 
     fn workflows_path(&self) -> PathBuf {
-        self.destination.join(PathBuf::from(".github/workflows"))
+        self.destination.join(".github/workflows")
     }
 }
 
 impl ToolTrait for Workflows {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {

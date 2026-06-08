@@ -7,6 +7,7 @@ use crate::{
 
 pub fn universal_default() -> Config {
     Config::new(
+        PathBuf::new(),
         Some(Vhooks::new(PathBuf::from("."), ".hooks".to_string(), false)),
         Some(SemverRelease::new(PathBuf::from("."), vec![])),
         None,

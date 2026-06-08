@@ -10,6 +10,7 @@ use crate::{
 
 pub fn cargo_lib_basic() -> Config {
     Config::new(
+        PathBuf::new(),
         Some(Vhooks::new(PathBuf::from("."), ".hooks".to_string(), false)),
         Some(SemverRelease::new(PathBuf::from("."), vec![Plugin::Cargo])),
         Some(PreCommit::new(PathBuf::from("."))),

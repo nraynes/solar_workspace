@@ -37,7 +37,7 @@ impl Plugin {
         match self {
             Self::Cargo => download_sync(
                 Global::semver_cargo_exec_download()?,
-                download_path.join(PathBuf::from("semver-cargo")),
+                download_path.join("semver-cargo"),
             )?,
         }
         Ok(())
@@ -71,21 +71,21 @@ impl SemverRelease {
 }
 
 impl ToolTrait for SemverRelease {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
         let client = Client::new();
 
         // Make release directory
-        let release_dir_path = self.destination.join(PathBuf::from(".release"));
+        let release_dir_path = self.destination.join(".release");
         fs::create_dir_all(&release_dir_path)?;
 
         // Download executable
         download_sync(
             Global::semver_release_exec_download()?,
-            release_dir_path.join(PathBuf::from("semver-release")),
+            release_dir_path.join("semver-release"),
         )?;
 
         // Download config and plugins
@@ -104,19 +104,18 @@ impl ToolTrait for SemverRelease {
             plugin_section.extend(plugin_config);
         }
         let release_config_text = release_config.to_string();
-        let mut config_file =
-            File::create(self.destination.join(PathBuf::from("config.semver.json")))?;
+        let mut config_file = File::create(self.destination.join("config.semver.json"))?;
         config_file.write_all(release_config_text.as_bytes())?;
         Ok(())
     }
 
     fn uninstall(&mut self) -> Result<(), SolarError> {
         // Remove release directory
-        let release_dir_path = self.destination.join(PathBuf::from(".release"));
+        let release_dir_path = self.destination.join(".release");
         fs::remove_dir_all(&release_dir_path)?;
 
         // Remove config
-        let config_path = self.destination.join(PathBuf::from("config.semver.json"));
+        let config_path = self.destination.join("config.semver.json");
         if fs::exists(&config_path)? {
             fs::remove_file(&config_path)?;
         }

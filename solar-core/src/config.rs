@@ -9,13 +9,17 @@ pub use cargo_proc_basic::cargo_proc_basic;
 use derive_setters::Setters;
 pub use universal_default::universal_default;
 
-use std::{fs, io::Write, path::PathBuf};
+use std::{
+    fs,
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    SolarError, ToolTrait,
+    SOLARCONFIGNAME, SolarError, ToolTrait,
     tool::{CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Vhooks, Workflows},
 };
 
@@ -42,6 +46,10 @@ impl ProjConfig {
 
 #[derive(Serialize, Deserialize, Debug, Getters, Setters)]
 pub struct Config {
+    #[serde(skip)]
+    #[setters(rename = "set_path")]
+    path: PathBuf,
+
     #[setters(rename = "set_vhooks")]
     vhooks: Option<Vhooks>,
 
@@ -65,12 +73,12 @@ pub struct Config {
 }
 
 impl ToolTrait for Config {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.on_all(|tool| tool.set_dest(dest.clone()));
+    fn set_dest(&mut self, dest: &Path) {
+        self.on_all(|tool| tool.set_dest(dest));
     }
 
-    fn act(&mut self, action: &crate::Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
-        self.try_all(|tool| tool.act(action, dest.clone()))?;
+    fn act(&mut self, action: &crate::Action, dest: Option<&Path>) -> Result<(), SolarError> {
+        self.try_all(|tool| tool.act(action, dest))?;
         Ok(())
     }
 
@@ -91,7 +99,9 @@ impl ToolTrait for Config {
 }
 
 impl Config {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
+        path: PathBuf,
         vhooks: Option<Vhooks>,
         semver_release: Option<SemverRelease>,
         pre_commit: Option<PreCommit>,
@@ -101,6 +111,7 @@ impl Config {
         cargo_deny: Option<CargoDeny>,
     ) -> Self {
         Self {
+            path,
             vhooks,
             semver_release,
             pre_commit,
@@ -111,8 +122,8 @@ impl Config {
         }
     }
 
-    pub fn new_empty() -> Self {
-        Self::new(None, None, None, None, None, None, None)
+    pub fn new_empty(dest: &Path) -> Self {
+        Self::new(dest.to_path_buf(), None, None, None, None, None, None, None)
     }
 
     pub fn on_all<F>(&mut self, mut f: F)
@@ -172,19 +183,35 @@ impl Config {
 
     /// Creates a new Config from a file at the supplied path, provided the file contains
     /// valid syntax for JSON and the config.
-    pub fn load_from_file(file_path: PathBuf) -> Result<Self, SolarError> {
+    pub fn load_from_file(file_path: &Path) -> Result<Self, SolarError> {
         let config_file = fs::read_to_string(file_path)?;
         let config: Config = serde_json::from_str(&config_file)?;
-        Ok(config)
+        Ok(config.set_path(file_path.to_path_buf()))
     }
 
-    pub fn save_to_file(&self, file_path: PathBuf) -> Result<(), SolarError> {
-        if !fs::exists(&file_path)? {
-            fs::File::create(&file_path)?;
+    pub fn load_from(file_path: &Path) -> Result<Self, SolarError> {
+        Self::load_from_file(&file_path.join(SOLARCONFIGNAME))
+    }
+
+    pub fn load_or_default(file_path: &Path) -> Self {
+        Self::load_from(file_path).unwrap_or(Self::new_empty(&file_path.join(SOLARCONFIGNAME)))
+    }
+
+    pub fn save_to_file(&self, file_path: &Path) -> Result<(), SolarError> {
+        if !fs::exists(file_path)? {
+            fs::File::create(file_path)?;
         }
         let mut file = fs::File::options().write(true).open(file_path)?;
         file.write_all(serde_json::to_string(self)?.as_bytes())?;
         Ok(())
+    }
+
+    pub fn save_to(&self, file_path: &Path) -> Result<(), SolarError> {
+        self.save_to_file(&file_path.join(SOLARCONFIGNAME))
+    }
+
+    pub fn save(&self) -> Result<(), SolarError> {
+        self.save_to_file(&self.path)
     }
 
     pub fn is_empty(&self) -> bool {

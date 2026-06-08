@@ -1,4 +1,4 @@
-use crate::{Config, Global, SOLARCONFIGNAME, SolarError, ToolTrait};
+use crate::{Config, Global, SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
 use rust_terminal::Terminal;
@@ -49,7 +49,7 @@ impl Vhooks {
 
     pub fn set_hooks_path(&self, path: PathBuf) -> Result<(), SolarError> {
         Terminal::command()
-            .current_dir(self.destination.clone())
+            .current_dir(&self.destination)
             .piped()
             .run(
                 "git",
@@ -64,18 +64,15 @@ impl Vhooks {
 }
 
 impl ToolTrait for Vhooks {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
         // Update configuration file.
-        let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))
-            .unwrap_or(Config::new_empty());
-        let current_hooks = config.vhooks().clone();
-        config
-            .set_vhooks(Some(self.clone()))
-            .save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
+        let config = Config::load_or_default(&self.destination);
+        let current_tool_cfg = config.vhooks().clone();
+        config.set_vhooks(Some(self.clone())).save()?;
 
         // Ensure working directory is a git repository.
         Global::git_init(&self.destination)?;
@@ -90,7 +87,7 @@ impl ToolTrait for Vhooks {
         self.set_hooks_path(PathBuf::from(format!("./{}", &self.name)))?;
 
         // If there is a current installation, move the hooks from the old directory to the new one.
-        if let Some(vhooks) = current_hooks {
+        if let Some(vhooks) = current_tool_cfg {
             let old_hooks_path = self.destination.join(vhooks.name());
             Self::move_hooks(&old_hooks_path, &hooks_path)?;
             fs::remove_dir_all(&old_hooks_path)?;
@@ -99,20 +96,15 @@ impl ToolTrait for Vhooks {
         Ok(())
     }
 
-    fn upgrade(&mut self) -> Result<(), SolarError> {
-        println!("Upgrade does not apply to vhooks - nothing to upgrade.");
-        Ok(())
-    }
-
     fn uninstall(&mut self) -> Result<(), SolarError> {
-        let config = Config::load_from_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?;
-        let vhooks: Self = config
+        let config = Config::load_from(&self.destination)?;
+        let current_tool_cfg: Self = config
             .vhooks()
             .clone()
             .ok_or("Cannot uninstall vhooks - vhooks not found in configuration.")?;
 
         // Paths to the versioned hooks directory and default directory.
-        let hooks_path = self.destination.join(vhooks.name());
+        let hooks_path = self.destination.join(current_tool_cfg.name());
         let default_path = self.destination.join(Global::default_git_hook_dir());
 
         // Must be a git repository in order to set default hook directory.
@@ -140,8 +132,8 @@ impl ToolTrait for Vhooks {
         // Update configuration, remove if empty.
         let config = config.set_vhooks(None);
         match config.is_empty() {
-            true => fs::remove_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?,
-            false => config.save_to_file(self.destination.join(PathBuf::from(SOLARCONFIGNAME)))?,
+            true => fs::remove_file(config.path())?,
+            false => config.save()?,
         }
 
         Ok(())

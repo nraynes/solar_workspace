@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
 
 static PRECOMMIT_SCRIPT_CONTENT: &str = "#!/bin/bash
@@ -62,18 +62,16 @@ impl PreCommit {
 
     fn precommit_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
-            .current_dir(self.destination.clone())
+            .current_dir(&self.destination)
             .run("git", vec!["config", "core.hooksPath"])?;
         let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
-        Ok(self
-            .destination
-            .join(git_hooks_path.join(PathBuf::from("pre-commit"))))
+        Ok(self.destination.join(git_hooks_path.join("pre-commit")))
     }
 }
 
 impl ToolTrait for PreCommit {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {

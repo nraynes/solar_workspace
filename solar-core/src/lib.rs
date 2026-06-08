@@ -16,6 +16,6 @@ pub use subcommand::{
     upgrade::Upgrade,
 };
 pub use tool::{
-    Action, CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Tool, ToolTrait, Vhooks,
-    Workflows,
+    Action, CargoDeny, Commitalyzer, LICENSES_DIR, Licenses, PreCommit, SemverRelease, Tool,
+    ToolTrait, Vhooks, Workflows,
 };

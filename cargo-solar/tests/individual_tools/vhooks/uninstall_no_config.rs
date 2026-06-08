@@ -11,7 +11,7 @@ pub fn uninstall_no_config() {
 
     // Run install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run("./cargo-solar", ["install", "vhooks"])
         .unwrap();
@@ -21,7 +21,7 @@ pub fn uninstall_no_config() {
 
     // Run uninstall
     let command_output = Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .run("./cargo-solar", ["uninstall", "vhooks"])
         .unwrap();
 

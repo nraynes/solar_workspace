@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::fs;
 
 use rust_terminal::Terminal;
 use solar_core::SOLARCONFIGNAME;
@@ -14,15 +14,15 @@ pub fn operations_default() {
 
     // Run install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run("./cargo-solar", ["install", "vhooks"])
         .unwrap();
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path().clone(), ".hooks", false);
-    assert_configuration(temp.env().path().clone(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", false);
+    assert_configuration(temp.env().path(), ".hooks", false, false);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -31,7 +31,7 @@ pub fn operations_default() {
 
     // Run upgrade
     let upgrade_output = Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .run("./cargo-solar", ["upgrade", "vhooks"])
         .unwrap();
 
@@ -39,26 +39,26 @@ pub fn operations_default() {
     assert!(
         String::from_utf8(upgrade_output.stdout)
             .unwrap()
-            .contains("Upgrade does not apply to vhooks - nothing to upgrade.")
+            .contains("Nothing to upgrade for this tool.")
     );
 
     // Assert installation doesn't change
     println!("Checking upgrade...");
-    assert_installation(temp.env().path().clone(), ".hooks", false);
-    assert_configuration(temp.env().path().clone(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", false);
+    assert_configuration(temp.env().path(), ".hooks", false, false);
     println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run("./cargo-solar", ["uninstall", "vhooks"])
         .unwrap();
 
     // Assert uninstalled correctly (does not uninstall git)
     println!("Checking uninstall...");
-    assert!(!fs::exists(temp.env().path().join(PathBuf::from(SOLARCONFIGNAME))).unwrap());
-    assert_installation(temp.env().path().clone(), ".hooks", true);
+    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert_installation(temp.env().path(), ".hooks", true);
     assert!(
         fs::exists(
             temp.env()

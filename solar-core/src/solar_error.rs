@@ -9,7 +9,6 @@ use rust_alert::alert;
     reqwest::Error,
     url::ParseError,
     FromUtf8Error,
-    regex::Error,
     String,
     rust_dl::dl_error::DownloaderError,
     serde_json::Error,

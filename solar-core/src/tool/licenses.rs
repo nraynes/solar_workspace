@@ -1,16 +1,15 @@
-use crate::{Global, SolarError, ToolTrait};
+use crate::{Config, Global, SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
-use regex::Regex;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
 
-static LICENSES_DIR: &str = "LICENSES";
+pub static LICENSES_DIR: &str = "LICENSES";
 
 fn default_licenses() -> Option<Vec<String>> {
     Some(vec!["MIT".to_string(), "Apache-2.0".to_string()])
@@ -54,13 +53,18 @@ impl Licenses {
 }
 
 impl ToolTrait for Licenses {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
         let client = Client::new();
         let licenses_dir = self.destination.join(PathBuf::from(LICENSES_DIR));
+
+        // Update configuration file.
+        let config = Config::load_or_default(&self.destination);
+        let current_tool_cfg = config.licenses().clone();
+        config.set_licenses(Some(self.clone())).save()?;
 
         // Make a new licenses folder.
         fs::create_dir_all(&licenses_dir)?;
@@ -87,29 +91,50 @@ impl ToolTrait for Licenses {
             }
         }
 
+        // If there is a current installation, uninstall the old licenses.
+        if let Some(mut licenses) = current_tool_cfg {
+            licenses.set_dest(&self.destination);
+            licenses.uninstall()?;
+        }
+
         Ok(())
     }
 
     fn uninstall(&mut self) -> Result<(), SolarError> {
-        let pattern = Regex::new(r"^LICENSE-[_A-Za-z0-9\.\+-]+$")?;
-        // Delete project license file.
-        for entry in fs::read_dir(PathBuf::from("."))? {
-            let entry = entry?;
-            let path = entry.path();
-            if path.is_file()
-                && let Some(file_name) = path.file_name()
-                && pattern.is_match(
-                    file_name
-                        .to_str()
-                        .ok_or("Could not check pattern for license file.")?,
-                )
-            {
-                fs::remove_file(self.destination.join(path))?;
+        let config = Config::load_from(&self.destination)?;
+        let current_tool_cfg: Self = config
+            .licenses()
+            .clone()
+            .ok_or("Cannot uninstall licenses - vhooks not found in configuration.")?;
+
+        let licenses_dir = self.destination.join(PathBuf::from(LICENSES_DIR));
+
+        // Delete the included license files.
+        if fs::exists(&licenses_dir)?
+            && let Some(_) = &current_tool_cfg.include_licenses
+        {
+            fs::remove_dir_all(licenses_dir)?;
+        }
+
+        // Delete the project license files.
+        if let Some(proj_licenses) = &self.licensed_under {
+            for spdx in proj_licenses.iter() {
+                let file_path = self
+                    .destination
+                    .join(PathBuf::from(format!("LICENSE-{}", spdx)));
+                if fs::exists(&file_path)? {
+                    fs::remove_file(file_path)?;
+                }
             }
         }
 
-        // Delete the licenses folder along with its contents.
-        fs::remove_dir_all(self.destination.join(PathBuf::from(LICENSES_DIR)))?;
+        // Update configuration, remove if empty.
+        let config = config.set_licenses(None);
+        match config.is_empty() {
+            true => fs::remove_file(config.path())?,
+            false => config.save()?,
+        }
+
         Ok(())
     }
 }

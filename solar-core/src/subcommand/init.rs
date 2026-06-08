@@ -29,10 +29,8 @@ pub fn solar_init(config: &ProjConfig, destination: &Path) -> Result<(), SolarEr
     Global::git_init(destination)?;
 
     // Create a README.md file
-    File::create(destination.join(PathBuf::from("README.md")))?;
+    File::create(destination.join("README.md"))?;
 
     // Install project configuration
-    config
-        .get()
-        .act(&Action::INSTALL, Some(destination.to_path_buf()))
+    config.get().act(&Action::INSTALL, Some(destination))
 }

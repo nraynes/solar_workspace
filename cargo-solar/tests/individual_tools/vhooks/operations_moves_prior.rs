@@ -13,15 +13,15 @@ pub fn operations_moves_prior() {
 
     // Run install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run("./cargo-solar", ["install", "vhooks"])
         .unwrap();
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path().clone(), ".hooks", false);
-    assert_configuration(temp.env().path().clone(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", false);
+    assert_configuration(temp.env().path(), ".hooks", false, false);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -30,7 +30,7 @@ pub fn operations_moves_prior() {
 
     // Run second install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run(
             "./cargo-solar",
@@ -40,8 +40,8 @@ pub fn operations_moves_prior() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path().clone(), "versioned_hooks", false);
-    assert_configuration(temp.env().path().clone(), "versioned_hooks", false, false);
+    assert_installation(temp.env().path(), "versioned_hooks", false);
+    assert_configuration(temp.env().path(), "versioned_hooks", false, false);
 
     // Assert hooks moved correctly and old directory deleted
     assert!(!fs::exists(temp.env().path().join(".hooks")).unwrap());

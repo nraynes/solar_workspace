@@ -19,7 +19,7 @@ pub fn operations_with_arguments() {
 
     // Run install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run(
             "./cargo-solar",
@@ -40,7 +40,7 @@ pub fn operations_with_arguments() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(proj_path.clone(), "versioned_hooks", false);
+    assert_installation(&proj_path, "versioned_hooks", false);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -67,7 +67,7 @@ pub fn operations_with_arguments() {
 
     // Run upgrade
     let upgrade_output = Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .run(
             "./cargo-solar",
             [
@@ -89,17 +89,17 @@ pub fn operations_with_arguments() {
     assert!(
         String::from_utf8(upgrade_output.stdout)
             .unwrap()
-            .contains("Upgrade does not apply to vhooks - nothing to upgrade.")
+            .contains("Nothing to upgrade for this tool.")
     );
 
     // Assert installation doesn't change
     println!("Checking upgrade...");
-    assert_installation(proj_path.clone(), "versioned_hooks", false);
+    assert_installation(&proj_path, "versioned_hooks", false);
     println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run(
             "./cargo-solar",
@@ -118,7 +118,7 @@ pub fn operations_with_arguments() {
 
     // Assert uninstalled correctly (does not uninstall git)
     println!("Checking uninstall...");
-    assert_installation(proj_path, "versioned_hooks", true);
+    assert_installation(&proj_path, "versioned_hooks", true);
     assert!(
         !fs::exists(
             temp.env()

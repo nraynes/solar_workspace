@@ -6,12 +6,12 @@ mod pre_commit;
 mod semver_release;
 mod vhooks;
 
-use std::path::PathBuf;
+use std::path::Path;
 
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
 pub use github_workflows::{ReleaseWfType, TestWfType, Workflows};
-pub use licenses::Licenses;
+pub use licenses::{LICENSES_DIR, Licenses};
 pub use pre_commit::PreCommit;
 pub use semver_release::{Plugin, SemverRelease};
 pub use vhooks::Vhooks;
@@ -27,7 +27,7 @@ pub enum Action {
 }
 
 pub trait ToolTrait {
-    fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
+    fn act(&mut self, action: &Action, dest: Option<&Path>) -> Result<(), SolarError> {
         if let Some(wd) = dest {
             self.set_dest(wd);
         }
@@ -38,15 +38,14 @@ pub trait ToolTrait {
         }
     }
 
-    fn set_dest(&mut self, dest: PathBuf);
+    fn set_dest(&mut self, dest: &Path);
 
     fn install(&mut self) -> Result<(), SolarError>;
 
     fn uninstall(&mut self) -> Result<(), SolarError>;
 
     fn upgrade(&mut self) -> Result<(), SolarError> {
-        self.uninstall()?;
-        self.install()?;
+        println!("Nothing to upgrade for this tool.");
         Ok(())
     }
 }
@@ -76,7 +75,7 @@ pub enum Tool {
 }
 
 impl Tool {
-    pub fn act(&mut self, action: &Action, dest: Option<PathBuf>) -> Result<(), SolarError> {
+    pub fn act(&mut self, action: &Action, dest: Option<&Path>) -> Result<(), SolarError> {
         match self {
             Self::VHOOKS(tool) => tool.act(action, dest),
             Self::COMMITALYZER(tool) => tool.act(action, dest),

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
 
 fn default_allow_licenses() -> Vec<String> {
@@ -40,11 +40,11 @@ impl CargoDeny {
 
     fn ensure_tool_installed(&self) -> Result<(), SolarError> {
         let output = Terminal::command()
-            .current_dir(self.destination.clone())
+            .current_dir(&self.destination)
             .run("cargo", ["install", "--list"])?;
         if !String::from_utf8(output.stdout)?.contains("cargo-deny") {
             Terminal::command()
-                .current_dir(self.destination.clone())
+                .current_dir(&self.destination)
                 .piped()
                 .run("cargo", ["install", "cargo-deny"])?;
         }
@@ -63,15 +63,15 @@ impl CargoDeny {
 }
 
 impl ToolTrait for CargoDeny {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
         self.ensure_tool_installed()?;
 
         // Create configuration file.
-        let mut deny_config = File::create(self.destination.join(PathBuf::from("deny.toml")))?;
+        let mut deny_config = File::create(self.destination.join("deny.toml"))?;
         deny_config.write_all(&self.deny_config_content().into_bytes())?;
 
         Ok(())
@@ -79,7 +79,7 @@ impl ToolTrait for CargoDeny {
 
     fn uninstall(&mut self) -> Result<(), SolarError> {
         // Remove configuration file.
-        fs::remove_file(self.destination.join(PathBuf::from("deny.toml")))?;
+        fs::remove_file(self.destination.join("deny.toml"))?;
 
         Ok(())
     }

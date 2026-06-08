@@ -4,7 +4,10 @@ use derive_getters::Getters;
 use rust_dl::downloader::download_sync;
 use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct Commitalyzer {
@@ -21,16 +24,16 @@ impl Commitalyzer {
 
     fn commitmsg_path(&self) -> Result<PathBuf, SolarError> {
         let output = Terminal::command()
-            .current_dir(self.destination.clone())
+            .current_dir(&self.destination)
             .run("git", vec!["config", "core.hooksPath"])?;
         let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
-        Ok(git_hooks_path.join(PathBuf::from("commit-msg")))
+        Ok(git_hooks_path.join("commit-msg"))
     }
 }
 
 impl ToolTrait for Commitalyzer {
-    fn set_dest(&mut self, dest: PathBuf) {
-        self.destination = dest;
+    fn set_dest(&mut self, dest: &Path) {
+        self.destination = dest.to_path_buf();
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
@@ -41,11 +44,11 @@ impl ToolTrait for Commitalyzer {
         )?;
 
         // Download commit rules
-        let commit_rules_path = self.destination.join(PathBuf::from("commit-rules"));
+        let commit_rules_path = self.destination.join("commit-rules");
         fs::create_dir_all(&commit_rules_path)?;
         download_sync(
             Global::commitalyzer_conventional_commits_ruleset()?,
-            commit_rules_path.join(PathBuf::from("conventional-commits.yml")),
+            commit_rules_path.join("conventional-commits.yml"),
         )?;
         Ok(())
     }
@@ -58,7 +61,7 @@ impl ToolTrait for Commitalyzer {
         }
 
         // Remove commit rules directory
-        let commit_rules_path = self.destination.join(PathBuf::from("commit-rules"));
+        let commit_rules_path = self.destination.join("commit-rules");
         if fs::exists(&commit_rules_path)? {
             fs::remove_dir_all(commit_rules_path)?;
         }

@@ -11,20 +11,20 @@ pub fn uninstall_no_vhooks() {
 
     // Run install
     Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .piped()
         .run("./cargo-solar", ["install", "vhooks"])
         .unwrap();
 
     // Remove vhooks from config file
     fs::remove_file(temp.env().path().join(SOLARCONFIGNAME)).unwrap();
-    Config::new_empty()
-        .save_to_file(temp.env().path().join(SOLARCONFIGNAME))
+    Config::new_empty(&temp.env().path().join(SOLARCONFIGNAME))
+        .save()
         .unwrap();
 
     // Run uninstall
     let command_output = Terminal::command()
-        .current_dir(temp.env().path().clone())
+        .current_dir(temp.env().path())
         .run("./cargo-solar", ["uninstall", "vhooks"])
         .unwrap();
 
