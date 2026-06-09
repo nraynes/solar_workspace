@@ -1,51 +1,15 @@
-use crate::{SolarError, ToolTrait};
+use crate::{Config, Global, SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
-use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
 use std::{
-    fs::{self, File},
+    fs,
     io::Write,
     path::{Path, PathBuf},
 };
 
-static PRECOMMIT_SCRIPT_CONTENT: &str = "#!/bin/bash
-
-# Pull changes first.
-git pull
-
-# Function to check if an element is present in an array.
-has_element() {
-    local e
-    for e in \"${@:2}\"; do [[ \"$e\" == \"$1\" ]] && return 0; done
-    return 1
-}
-
-# Get the current diff from git
-diff_pre=($(git diff --name-only))
-
-# Format files
-cargo fmt
-
-# Generate documentation
-cargo doc
-
-# Run tests
-cargo test
-
-# Check licenses
-cargo deny check licenses
-
-# Get the diff from git after formatting
-diff_post=($(git diff --name-only))
-
-# Check if any files were changed and add them to the current commit
-for val in \"${diff_post[@]}\"; do
-    if ! has_element \"$val\" \"${diff_pre[@]}\"; then
-        git add \"$val\"
-    fi
-done
-";
+mod script;
+pub use script::Script;
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct PreCommit {
@@ -53,18 +17,22 @@ pub struct PreCommit {
     #[arg(short, long, default_value = ".")]
     #[serde(skip)]
     destination: PathBuf,
+
+    // The script to use as the pre-commit hook.
+    #[arg(short, long)]
+    script: Option<Script>,
 }
 
 impl PreCommit {
-    pub fn new(destination: PathBuf) -> Self {
-        Self { destination }
+    pub fn new(destination: PathBuf, script: Option<Script>) -> Self {
+        Self {
+            destination,
+            script,
+        }
     }
 
     fn precommit_path(&self) -> Result<PathBuf, SolarError> {
-        let output = Terminal::command()
-            .current_dir(&self.destination)
-            .run("git", vec!["config", "core.hooksPath"])?;
-        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
+        let git_hooks_path = Global::git_hooks_path(&self.destination)?;
         Ok(self.destination.join(git_hooks_path.join("pre-commit")))
     }
 }
@@ -75,13 +43,33 @@ impl ToolTrait for PreCommit {
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
-        let mut precommit_file = File::create(self.precommit_path()?)?;
-        precommit_file.write_all(PRECOMMIT_SCRIPT_CONTENT.as_bytes())?;
+        let script = self.script.as_ref().ok_or("No script value provided")?;
+        // Update configuration file.
+        let config = Config::load_or_default(&self.destination);
+        config.set_pre_commit(Some(self.clone())).save()?;
+
+        // Ensure working directory is a git repository.
+        Global::git_init(&self.destination)?;
+
+        let mut precommit_file = Global::ovrwrt_file_or_default(&self.precommit_path()?)?;
+        precommit_file.write_all(script.content().as_bytes())?;
         Ok(())
     }
 
     fn uninstall(&mut self) -> Result<(), SolarError> {
+        // Get configuration file.
+        let config = Config::load_or_default(&self.destination);
+
+        // Remove pre-commit script.
         fs::remove_file(self.precommit_path()?)?;
+
+        // Update configuration.
+        let config = config.set_pre_commit(None);
+        match config.is_empty() {
+            true => fs::remove_file(config.path())?,
+            false => config.save()?,
+        }
+
         Ok(())
     }
 }

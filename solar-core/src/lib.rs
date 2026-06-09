@@ -2,7 +2,7 @@ mod config;
 mod global;
 mod solar_error;
 mod subcommand;
-mod tool;
+pub mod tool;
 
 pub use config::Config;
 pub use global::{Global, SOLARCONFIGNAME};

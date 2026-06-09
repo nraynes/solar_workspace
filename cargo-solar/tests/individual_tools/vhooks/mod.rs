@@ -1,7 +1,10 @@
-use solar_core::Config;
-use std::{fs, path::Path};
+use solar_core::{Config, Global};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
-use crate::{assert, assert_eq, git_hooks_path};
+use crate::{assert, assert_eq};
 
 mod operations_default;
 mod operations_moves_prior;
@@ -19,5 +22,9 @@ pub fn assert_configuration(path: &Path, name: &str, remove_all: bool, not: bool
 pub fn assert_installation(path: &Path, name: &str, not: bool) {
     assert!(fs::exists(path.join(".git")).unwrap());
     assert(fs::exists(path.join(name)).unwrap(), not);
-    assert_eq(git_hooks_path(path), format!("./{}\n", name), not);
+    assert_eq(
+        Global::git_hooks_path(path).unwrap(),
+        PathBuf::from(format!("./{}", name)),
+        not,
+    );
 }

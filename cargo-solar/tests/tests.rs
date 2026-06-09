@@ -4,7 +4,6 @@ mod project_configs;
 use std::{env::current_dir, fs, path::Path};
 
 use mocked_up::TempEnv;
-use rust_terminal::Terminal;
 
 pub fn copy_bin(path: &Path) {
     let mut workspace = current_dir().unwrap();
@@ -37,12 +36,4 @@ where
         true => assert_ne!(x, y),
         false => assert_eq!(x, y),
     }
-}
-
-pub fn git_hooks_path(path: &Path) -> String {
-    let command_output = Terminal::command()
-        .current_dir(path)
-        .run("git", ["config", "core.hooksPath"])
-        .unwrap();
-    String::from_utf8(command_output.stdout).unwrap()
 }

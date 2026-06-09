@@ -1,5 +1,5 @@
 use std::{
-    fs,
+    fs::{self, File},
     path::{Path, PathBuf},
 };
 
@@ -38,6 +38,16 @@ impl Global {
         Ok(fs::exists(destination.join(".git"))?)
     }
 
+    pub fn ovrwrt_file_or_default(file_path: &Path) -> Result<File, SolarError> {
+        if !fs::exists(file_path)? {
+            File::create(file_path)?;
+        }
+        Ok(fs::File::options()
+            .write(true)
+            .truncate(true)
+            .open(file_path)?)
+    }
+
     /// Initialize a git repository at the destination if it's not already.
     pub fn git_init(destination: &Path) -> Result<(), SolarError> {
         if !Self::is_git(destination)? {
@@ -47,6 +57,18 @@ impl Global {
                 .run("git", vec!["init"])?;
         }
         Ok(())
+    }
+
+    pub fn git_hooks_path(path: &Path) -> Result<PathBuf, SolarError> {
+        let command_output = Terminal::command()
+            .current_dir(path)
+            .run("git", ["config", "core.hooksPath"])
+            .unwrap();
+        let po = String::from_utf8(command_output.stdout)?;
+        if po == "" {
+            return Ok(PathBuf::from(".git/hooks"));
+        }
+        Ok(PathBuf::from(po.trim()))
     }
 
     pub fn default_git_hook_dir() -> PathBuf {
