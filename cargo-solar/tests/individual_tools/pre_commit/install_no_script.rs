@@ -25,5 +25,6 @@ pub fn install_no_script() {
     // Assert no install.
     println!("Checking no install...");
     assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert!(!fs::exists(temp.env().path().join(".git")).unwrap());
     println!("No install confirmed!");
 }

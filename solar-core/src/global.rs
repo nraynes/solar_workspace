@@ -64,11 +64,11 @@ impl Global {
             .current_dir(path)
             .run("git", ["config", "core.hooksPath"])
             .unwrap();
-        let po = String::from_utf8(command_output.stdout)?;
-        if po == "" {
+        let output_text = String::from_utf8(command_output.stdout)?;
+        if output_text.is_empty() {
             return Ok(PathBuf::from(".git/hooks"));
         }
-        Ok(PathBuf::from(po.trim()))
+        Ok(PathBuf::from(output_text.trim()))
     }
 
     pub fn default_git_hook_dir() -> PathBuf {

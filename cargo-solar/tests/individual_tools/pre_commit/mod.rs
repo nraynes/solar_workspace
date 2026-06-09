@@ -6,6 +6,7 @@ use crate::{assert, assert_eq};
 
 mod install_no_script;
 mod operations_default;
+mod uninstall_no_install;
 
 pub fn assert_configuration(path: &Path, script: Script, not: bool) {
     println!("Getting configuration.");

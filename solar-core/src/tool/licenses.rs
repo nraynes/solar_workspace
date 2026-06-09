@@ -40,12 +40,14 @@ impl Licenses {
         }
     }
 
-    fn check_vec_eq_unord<T>(vec_one: &Vec<T>, vec_two: &Vec<T>) -> bool
+    fn check_vec_eq_unord<T>(vec_one: &[T], vec_two: &[T]) -> bool
     where
         T: Ord + Clone,
     {
-        let mut vec_one_copy = vec_one.clone();
-        let mut vec_two_copy = vec_two.clone();
+        let mut vec_one_copy = Vec::new();
+        vec_one.clone_into(&mut vec_one_copy);
+        let mut vec_two_copy = Vec::new();
+        vec_two.clone_into(&mut vec_two_copy);
         vec_one_copy.sort();
         vec_two_copy.sort();
         vec_one_copy == vec_two_copy
@@ -89,7 +91,7 @@ impl Licenses {
         }
 
         // Return new licenses configuration.
-        if new_includes.len() <= 0 && new_under.len() <= 0 {
+        if new_includes.is_empty() && new_under.is_empty() {
             return None;
         }
         Some(Self::new(
@@ -173,7 +175,7 @@ impl ToolTrait for Licenses {
             .ok_or("No licenses configuration inside config file.")?;
 
         // If no args are supplied, default to removing all licenses in configuration.
-        if self.include_licenses == None && self.licensed_under == None {
+        if self.include_licenses.is_none() && self.licensed_under.is_none() {
             self.include_licenses = current_config.include_licenses().clone();
             self.licensed_under = current_config.licensed_under().clone();
         }
@@ -183,7 +185,7 @@ impl ToolTrait for Licenses {
         // Delete the included license files.
         if fs::exists(&licenses_dir)? {
             if Self::check_opt_vec_eq_unord(
-                &current_config.include_licenses(),
+                current_config.include_licenses(),
                 &self.include_licenses,
             ) {
                 fs::remove_dir_all(licenses_dir)?;
