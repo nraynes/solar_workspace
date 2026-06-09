@@ -201,7 +201,10 @@ impl Config {
         if !fs::exists(file_path)? {
             fs::File::create(file_path)?;
         }
-        let mut file = fs::File::options().write(true).open(file_path)?;
+        let mut file = fs::File::options()
+            .write(true)
+            .truncate(true)
+            .open(file_path)?;
         file.write_all(serde_json::to_string(self)?.as_bytes())?;
         Ok(())
     }

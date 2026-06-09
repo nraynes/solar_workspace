@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[test]
-pub fn operations_default() {
+pub fn double_install() {
     let mut temp = setup_env();
 
     // Run install
@@ -48,35 +48,51 @@ pub fn operations_default() {
     );
     println!("Installation confirmed!");
 
-    // Run upgrade
-    let upgrade_output = Terminal::command()
+    // Run second install
+    Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "licenses"])
+        .piped()
+        .run(
+            "./cargo-solar",
+            [
+                "install",
+                "licenses",
+                "--include-licenses",
+                "GPL-3.0",
+                "NASA-1.3",
+                "--licensed-under",
+                "MPL-1.0",
+                "mailprio",
+            ],
+        )
         .unwrap();
 
-    // Assert upgrade does nothing (nothing to upgrade)
-    assert!(
-        String::from_utf8(upgrade_output.stdout)
-            .unwrap()
-            .contains("Nothing to upgrade for this tool.")
-    );
-
-    // Assert installed doesn't change.
-    println!("Checking upgrade...");
+    // Assert installed correctly.
+    println!("Checking second installation...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
+        vec![
+            "LICENSE-MIT",
+            "LICENSE-Apache-2.0",
+            "LICENSE-GPL-3.0",
+            "LICENSE-NASA-1.3",
+        ],
+        vec![
+            "LICENSE-MIT",
+            "LICENSE-Apache-2.0",
+            "LICENSE-MPL-1.0",
+            "LICENSE-mailprio",
+        ],
         false,
         false,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
+        vec!["MIT", "Apache-2.0", "GPL-3.0", "NASA-1.3"],
+        vec!["MIT", "Apache-2.0", "MPL-1.0", "mailprio"],
         false,
     );
-    println!("Upgrade confirmed!");
+    println!("Second installation confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -90,8 +106,18 @@ pub fn operations_default() {
     assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
+        vec![
+            "LICENSE-MIT",
+            "LICENSE-Apache-2.0",
+            "LICENSE-GPL-3.0",
+            "LICENSE-NASA-1.3",
+        ],
+        vec![
+            "LICENSE-MIT",
+            "LICENSE-Apache-2.0",
+            "LICENSE-MPL-1.0",
+            "LICENSE-mailprio",
+        ],
         true,
         true,
     );

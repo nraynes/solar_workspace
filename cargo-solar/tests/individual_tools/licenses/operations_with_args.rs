@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[test]
-pub fn operations_default() {
+pub fn operations_with_args() {
     let mut temp = setup_env();
 
     // Run install
@@ -22,11 +22,11 @@ pub fn operations_default() {
                 "install",
                 "licenses",
                 "--include-licenses",
-                "MIT",
-                "Apache-2.0",
+                "GPL-3.0",
+                "NASA-1.3",
                 "--licensed-under",
-                "MIT",
-                "Apache-2.0",
+                "MPL-1.0",
+                "mailprio",
             ],
         )
         .unwrap();
@@ -35,15 +35,15 @@ pub fn operations_default() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
+        vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"],
+        vec!["LICENSE-MPL-1.0", "LICENSE-mailprio"],
         false,
         false,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
+        vec!["GPL-3.0", "NASA-1.3"],
+        vec!["MPL-1.0", "mailprio"],
         false,
     );
     println!("Installation confirmed!");
@@ -51,7 +51,19 @@ pub fn operations_default() {
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "licenses"])
+        .run(
+            "./cargo-solar",
+            [
+                "upgrade",
+                "licenses",
+                "--include-licenses",
+                "GPL-3.0",
+                "NASA-1.3",
+                "--licensed-under",
+                "MPL-1.0",
+                "mailprio",
+            ],
+        )
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -65,15 +77,15 @@ pub fn operations_default() {
     println!("Checking upgrade...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
+        vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"],
+        vec!["LICENSE-MPL-1.0", "LICENSE-mailprio"],
         false,
         false,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
+        vec!["GPL-3.0", "NASA-1.3"],
+        vec!["MPL-1.0", "mailprio"],
         false,
     );
     println!("Upgrade confirmed!");
@@ -90,8 +102,8 @@ pub fn operations_default() {
     assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
+        vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"],
+        vec!["LICENSE-MPL-1.0", "LICENSE-mailprio"],
         true,
         true,
     );

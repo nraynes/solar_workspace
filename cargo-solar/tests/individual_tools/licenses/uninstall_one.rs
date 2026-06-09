@@ -1,7 +1,4 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
     individual_tools::licenses::{assert_configuration, assert_installation},
@@ -9,7 +6,7 @@ use crate::{
 };
 
 #[test]
-pub fn operations_default() {
+pub fn uninstall_one() {
     let mut temp = setup_env();
 
     // Run install
@@ -48,52 +45,39 @@ pub fn operations_default() {
     );
     println!("Installation confirmed!");
 
-    // Run upgrade
-    let upgrade_output = Terminal::command()
-        .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "licenses"])
-        .unwrap();
-
-    // Assert upgrade does nothing (nothing to upgrade)
-    assert!(
-        String::from_utf8(upgrade_output.stdout)
-            .unwrap()
-            .contains("Nothing to upgrade for this tool.")
-    );
-
-    // Assert installed doesn't change.
-    println!("Checking upgrade...");
-    assert_installation(
-        temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        false,
-        false,
-    );
-    assert_configuration(
-        temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
-        false,
-    );
-    println!("Upgrade confirmed!");
-
-    // Run uninstall
+    // Uninstall one license from each.
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "licenses"])
+        .run(
+            "./cargo-solar",
+            [
+                "uninstall",
+                "licenses",
+                "--include-licenses",
+                "MIT",
+                "--licensed-under",
+                "Apache-2.0",
+            ],
+        )
         .unwrap();
 
     // Assert uninstalled correctly.
     println!("Checking uninstall...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        true,
-        true,
+        vec!["LICENSE-Apache-2.0"],
+        vec!["LICENSE-MIT"],
+        false,
+        false,
     );
+    assert_installation(
+        temp.env().path(),
+        vec!["LICENSE-MIT"],
+        vec!["LICENSE-Apache-2.0"],
+        true,
+        false,
+    );
+    assert_configuration(temp.env().path(), vec!["Apache-2.0"], vec!["MIT"], false);
     println!("Uninstall confirmed!");
 }
