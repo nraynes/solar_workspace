@@ -113,6 +113,11 @@ impl ToolTrait for Licenses {
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
+        if self.include_licenses.is_none() && self.licensed_under.is_none() {
+            return Err(SolarError::from(
+                "No spdx identifiers supplied as arguments.",
+            ));
+        }
         let client = Client::new();
         let licenses_dir = self.destination.join(PathBuf::from(LICENSES_DIR));
 

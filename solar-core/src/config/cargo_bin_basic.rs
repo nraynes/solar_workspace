@@ -27,11 +27,11 @@ pub fn cargo_bin_basic() -> Config {
         Some(Commitalyzer::new(PathBuf::from("."))),
         Some(CargoDeny::new(
             PathBuf::from("."),
-            vec![
+            Some(vec![
                 "MIT".to_string(),
                 "Apache-2.0".to_string(),
                 "Unicode-3.0".to_string(),
-            ],
+            ]),
         )),
     )
 }

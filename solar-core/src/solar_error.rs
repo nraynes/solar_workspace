@@ -12,6 +12,8 @@ use rust_alert::alert;
     String,
     rust_dl::dl_error::DownloaderError,
     serde_json::Error,
-    clap::error::Error
+    clap::error::Error,
+    toml::ser::Error,
+    toml::de::Error
 ])]
 pub struct SolarError {}

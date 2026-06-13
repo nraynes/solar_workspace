@@ -5,6 +5,7 @@ use solar_core::{Config, LICENSES_DIR};
 use crate::{assert, assert_eq};
 
 mod double_install;
+mod install_no_args;
 mod operations_default;
 mod operations_with_args;
 mod uninstall_no_install;
