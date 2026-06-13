@@ -17,7 +17,10 @@ pub fn universal_default() -> Config {
             Some(vec!["MIT".to_string(), "Apache-2.0".to_string()]),
         )),
         None,
-        Some(Commitalyzer::new(PathBuf::from("."))),
+        Some(Commitalyzer::new(
+            PathBuf::from("."),
+            Some("conventional-commits".to_string()),
+        )),
         None,
     )
 }

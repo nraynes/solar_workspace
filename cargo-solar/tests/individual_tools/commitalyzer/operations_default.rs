@@ -1,0 +1,94 @@
+use std::fs;
+
+use rust_terminal::Terminal;
+use solar_core::SOLARCONFIGNAME;
+
+use crate::{
+    individual_tools::commitalyzer::{
+        RULESET_FOR_TESTING, assert_configuration, assert_installation,
+    },
+    setup_env,
+};
+
+#[test]
+pub fn operations_default() {
+    let mut temp = setup_env();
+
+    // Run install
+    Terminal::command()
+        .current_dir(temp.env().path())
+        .piped()
+        .run(
+            "./cargo-solar",
+            [
+                "install",
+                "commitalyzer",
+                "--ruleset",
+                "conventional-commits",
+            ],
+        )
+        .unwrap();
+
+    // Assert installed correctly.
+    println!("Checking installation...");
+    assert_installation(
+        temp.env().path(),
+        &Some(RULESET_FOR_TESTING.to_string()),
+        false,
+        false,
+    );
+    assert_configuration(
+        temp.env().path(),
+        &Some(RULESET_FOR_TESTING.to_string()),
+        false,
+    );
+    println!("Installation confirmed!");
+
+    // Run upgrade
+    Terminal::command()
+        .current_dir(temp.env().path())
+        .piped()
+        .run(
+            "./cargo-solar",
+            [
+                "upgrade",
+                "commitalyzer",
+                "--ruleset",
+                "conventional-commits",
+            ],
+        )
+        .unwrap();
+
+    // Assert upgraded correctly.
+    println!("Checking upgrade...");
+    assert_installation(
+        temp.env().path(),
+        &Some(RULESET_FOR_TESTING.to_string()),
+        false,
+        false,
+    );
+    assert_configuration(
+        temp.env().path(),
+        &Some(RULESET_FOR_TESTING.to_string()),
+        false,
+    );
+    println!("Upgrade confirmed!");
+
+    // Run uninstall
+    Terminal::command()
+        .current_dir(temp.env().path())
+        .piped()
+        .run("./cargo-solar", ["uninstall", "commitalyzer"])
+        .unwrap();
+
+    // Assert uninstalled correctly.
+    println!("Checking uninstallation...");
+    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert_installation(
+        temp.env().path(),
+        &Some(RULESET_FOR_TESTING.to_string()),
+        true,
+        false,
+    );
+    println!("Uninstallation confirmed!");
+}

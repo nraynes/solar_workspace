@@ -19,7 +19,7 @@ pub fn assert_configuration(
 ) {
     println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
-    let licenses_config = solar_config.licenses().as_ref().ok_or("").unwrap();
+    let licenses_config = solar_config.licenses().as_ref().unwrap();
     let config_include_licenses: &mut Option<Vec<String>> =
         &mut licenses_config.include_licenses().clone();
     if let Some(l) = config_include_licenses {

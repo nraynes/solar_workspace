@@ -14,7 +14,7 @@ mod uninstall_one;
 pub fn assert_configuration(path: &Path, allow_licenses: Vec<&str>, not: bool) {
     println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
-    let cargo_deny_config = solar_config.cargo_deny().as_ref().ok_or("").unwrap();
+    let cargo_deny_config = solar_config.cargo_deny().as_ref().unwrap();
     println!("Checking script in configuration.");
     assert_eq(
         cargo_deny_config.allow_licenses(),

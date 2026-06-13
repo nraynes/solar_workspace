@@ -24,7 +24,10 @@ pub fn cargo_proc_basic() -> Config {
             Some(ReleaseWfType::Lib),
             Some(TestWfType::General),
         )),
-        Some(Commitalyzer::new(PathBuf::from("."))),
+        Some(Commitalyzer::new(
+            PathBuf::from("."),
+            Some("conventional-commits".to_string()),
+        )),
         Some(CargoDeny::new(
             PathBuf::from("."),
             Some(vec![

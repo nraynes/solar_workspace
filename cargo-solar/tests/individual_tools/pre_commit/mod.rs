@@ -11,7 +11,7 @@ mod uninstall_no_install;
 pub fn assert_configuration(path: &Path, script: Script, not: bool) {
     println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
-    let pre_commit_config = solar_config.pre_commit().as_ref().ok_or("").unwrap();
+    let pre_commit_config = solar_config.pre_commit().as_ref().unwrap();
     println!("Checking script in configuration.");
     assert_eq(pre_commit_config.script().as_ref().unwrap(), &script, not);
 }

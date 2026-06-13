@@ -1,13 +1,15 @@
-use crate::{Global, SolarError, ToolTrait};
+use crate::{Config, Global, SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
 use rust_dl::downloader::download_sync;
-use rust_terminal::Terminal;
 use serde::{Deserialize, Serialize};
 use std::{
     fs,
     path::{Path, PathBuf},
 };
+
+static COMMIT_MSG_NAME: &str = "commit-msg";
+static COMMIT_RULES_NAME: &str = "commit-rules";
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Serialize, Deserialize, Getters)]
 pub struct Commitalyzer {
@@ -15,19 +17,18 @@ pub struct Commitalyzer {
     #[arg(short, long, default_value = ".")]
     #[serde(skip)]
     destination: PathBuf,
+
+    /// The ruleset to install.
+    #[arg(short, long)]
+    ruleset: Option<String>,
 }
 
 impl Commitalyzer {
-    pub fn new(destination: PathBuf) -> Self {
-        Self { destination }
-    }
-
-    fn commitmsg_path(&self) -> Result<PathBuf, SolarError> {
-        let output = Terminal::command()
-            .current_dir(&self.destination)
-            .run("git", vec!["config", "core.hooksPath"])?;
-        let git_hooks_path = PathBuf::from(String::from_utf8(output.stdout)?.trim());
-        Ok(git_hooks_path.join("commit-msg"))
+    pub fn new(destination: PathBuf, ruleset: Option<String>) -> Self {
+        Self {
+            destination,
+            ruleset,
+        }
     }
 }
 
@@ -37,34 +38,70 @@ impl ToolTrait for Commitalyzer {
     }
 
     fn install(&mut self) -> Result<(), SolarError> {
+        let ruleset_name = self
+            .ruleset
+            .as_ref()
+            .ok_or("A ruleset must be given for installation.")?;
+
+        // Ensure working directory is a git repository.
+        Global::git_init(&self.destination)?;
+
+        // Update configuration file.
+        let config = Config::load_or_default(&self.destination);
+        config.set_commitalyzer(Some(self.clone())).save()?;
+
         // Download executable
         download_sync(
             Global::commitalyzer_exec_download()?,
-            self.commitmsg_path()?,
+            Global::git_hooks_path(&self.destination)?.join(COMMIT_MSG_NAME),
         )?;
 
         // Download commit rules
-        let commit_rules_path = self.destination.join("commit-rules");
+        let commit_rules_path = self.destination.join(COMMIT_RULES_NAME);
         fs::create_dir_all(&commit_rules_path)?;
         download_sync(
             Global::commitalyzer_conventional_commits_ruleset()?,
-            commit_rules_path.join("conventional-commits.yml"),
+            commit_rules_path.join(format!("{}.yml", ruleset_name)),
         )?;
+
         Ok(())
     }
 
+    fn upgrade(&mut self) -> Result<(), SolarError> {
+        self.ruleset
+            .as_ref()
+            .ok_or("A ruleset must be given for installation.")?;
+        self.uninstall()?;
+        self.install()
+    }
+
     fn uninstall(&mut self) -> Result<(), SolarError> {
+        // Get configuration
+        let config = Config::load_from(&self.destination)?;
+        config
+            .commitalyzer()
+            .clone()
+            .ok_or("Cannot uninstall commitalyzer - commitalyzer not found in configuration.")?;
+
         // Remove executable
-        let exec_path = self.commitmsg_path()?;
+        let exec_path = Global::git_hooks_path(&self.destination)?.join(COMMIT_MSG_NAME);
         if fs::exists(&exec_path)? {
-            fs::remove_dir_all(exec_path)?;
+            fs::remove_file(exec_path)?;
         }
 
         // Remove commit rules directory
-        let commit_rules_path = self.destination.join("commit-rules");
+        let commit_rules_path = self.destination.join(COMMIT_RULES_NAME);
         if fs::exists(&commit_rules_path)? {
             fs::remove_dir_all(commit_rules_path)?;
         }
+
+        // Update configuration, remove if empty.
+        let config = config.set_commitalyzer(None);
+        match config.is_empty() {
+            true => fs::remove_file(config.path())?,
+            false => config.save()?,
+        }
+
         Ok(())
     }
 }
