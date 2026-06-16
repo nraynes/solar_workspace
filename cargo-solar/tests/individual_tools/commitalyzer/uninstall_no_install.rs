@@ -4,6 +4,7 @@ use rust_terminal::Terminal;
 use solar_core::SOLARCONFIGNAME;
 
 use crate::{
+    assert_configuration_file_does_not_exist_at,
     individual_tools::commitalyzer::{RULESET_FOR_TESTING, assert_installation},
     setup_env,
 };
@@ -27,12 +28,14 @@ pub fn uninstall_no_install() {
 
     // Assert environment doesn't change.
     println!("Checking no installation...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING.to_string()),
-        true,
-        true,
+        false,
+        false,
+        false,
+        false,
     );
     println!("No installation confirmed!");
 }

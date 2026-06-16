@@ -3,7 +3,7 @@ use std::fs;
 use rust_terminal::Terminal;
 use solar_core::SOLARCONFIGNAME;
 
-use crate::setup_env;
+use crate::{assert_configuration_file_does_not_exist_at, setup_env};
 
 #[test]
 pub fn install_no_script() {
@@ -24,7 +24,7 @@ pub fn install_no_script() {
 
     // Assert no install.
     println!("Checking no install...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert_configuration_file_does_not_exist_at(temp.env().path());
     assert!(!fs::exists(temp.env().path().join(".git")).unwrap());
     println!("No install confirmed!");
 }

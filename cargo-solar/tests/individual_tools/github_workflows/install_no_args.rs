@@ -1,11 +1,8 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
-    assert_configuration_file_does_not_exist_at, individual_tools::cargo_deny::assert_installation,
-    setup_env,
+    assert_configuration_file_does_not_exist_at,
+    individual_tools::github_workflows::assert_installation, setup_env,
 };
 
 #[test]
@@ -15,14 +12,14 @@ pub fn install_no_args() {
     // Run install
     let install_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["install", "deny"])
+        .run("./cargo-solar", ["install", "workflows"])
         .unwrap();
 
     // Assert install does nothing
     assert!(
         String::from_utf8(install_output.stderr)
             .unwrap()
-            .contains("No allowed licenses were specified.")
+            .contains("At least one workflow must be given for installation.")
     );
 
     // Assert environment doesn't change.

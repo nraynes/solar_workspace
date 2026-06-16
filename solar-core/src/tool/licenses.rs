@@ -1,4 +1,4 @@
-use crate::{Config, Global, SolarError, ToolTrait};
+use crate::{Config, Global, SolarError, ToolTrait, sorted};
 use clap::Parser;
 use derive_getters::Getters;
 use reqwest::blocking::Client;
@@ -40,17 +40,11 @@ impl Licenses {
         }
     }
 
-    fn check_vec_eq_unord<T>(vec_one: &[T], vec_two: &[T]) -> bool
+    fn check_vec_eq_unord<T>(vec_one: &Vec<T>, vec_two: &Vec<T>) -> bool
     where
         T: Ord + Clone,
     {
-        let mut vec_one_copy = Vec::new();
-        vec_one.clone_into(&mut vec_one_copy);
-        let mut vec_two_copy = Vec::new();
-        vec_two.clone_into(&mut vec_two_copy);
-        vec_one_copy.sort();
-        vec_two_copy.sort();
-        vec_one_copy == vec_two_copy
+        sorted(vec_one.clone()) == sorted(vec_two.clone())
     }
 
     fn check_opt_vec_eq_unord<T>(opt_one: &Option<Vec<T>>, opt_two: &Option<Vec<T>>) -> bool

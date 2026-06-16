@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use solar_core::{Config, LICENSES_DIR};
 
-use crate::{assert, assert_eq};
+use crate::{assert, assert_opt_vec_eq_unord};
 
 mod double_install;
 mod install_no_args;
@@ -13,67 +13,58 @@ mod uninstall_one;
 
 pub fn assert_configuration(
     path: &Path,
-    include_licenses: Vec<&str>,
-    licensed_under: Vec<&str>,
-    not: bool,
+    include_licenses: Option<Vec<&str>>,
+    licensed_under: Option<Vec<&str>>,
 ) {
     println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let licenses_config = solar_config.licenses().as_ref().unwrap();
-    let config_include_licenses: &mut Option<Vec<String>> =
-        &mut licenses_config.include_licenses().clone();
-    if let Some(l) = config_include_licenses {
-        l.sort();
-    }
-    let actual_include_licenses: &mut Vec<String> =
-        &mut include_licenses.iter().map(|s| s.to_string()).collect();
-    actual_include_licenses.sort();
-    let config_licensed_under: &mut Option<Vec<String>> =
-        &mut licenses_config.licensed_under().clone();
-    if let Some(l) = config_licensed_under {
-        l.sort();
-    }
-    let actual_licensed_under: &mut Vec<String> =
-        &mut licensed_under.iter().map(|s| s.to_string()).collect();
-    actual_licensed_under.sort();
+
     println!("Checking include_licenses is correct.");
-    assert_eq(
-        config_include_licenses,
-        &mut Some(actual_include_licenses.clone()),
-        not,
+    assert_opt_vec_eq_unord(
+        &include_licenses.map_or(None, |c| Some(c.iter().map(|s| s.to_string()).collect())),
+        licenses_config.include_licenses(),
+        true,
     );
     println!("Checking licensed_under is correct.");
-    assert_eq(
-        config_licensed_under,
-        &mut Some(actual_licensed_under.clone()),
-        not,
+    assert_opt_vec_eq_unord(
+        &licensed_under.map_or(None, |c| Some(c.iter().map(|s| s.to_string()).collect())),
+        licenses_config.licensed_under(),
+        true,
     );
 }
 
 pub fn assert_installation(
     path: &Path,
-    include_licenses: Vec<&str>,
-    licensed_under: Vec<&str>,
-    not: bool,
-    license_directory_not: bool,
+    include_licenses: Option<Vec<&str>>,
+    licensed_under: Option<Vec<&str>>,
+    include_licenses_should_exist: bool,
+    licensed_under_should_exist: bool,
 ) {
     println!("Checking license directory existence.");
     assert(
         fs::exists(path.join(LICENSES_DIR)).unwrap(),
-        license_directory_not,
+        include_licenses.is_some(),
     );
-    for license in include_licenses {
-        println!(
-            "Checking if {} in license directory is in existence.",
-            license
-        );
-        assert(
-            fs::exists(path.join(LICENSES_DIR).join(license)).unwrap(),
-            not,
-        );
+    if let Some(licenses) = include_licenses {
+        for license in licenses {
+            println!(
+                "Checking if {} in license directory is in existence.",
+                license
+            );
+            assert(
+                fs::exists(path.join(LICENSES_DIR).join(license)).unwrap(),
+                include_licenses_should_exist,
+            );
+        }
     }
-    for license in licensed_under {
-        println!("Checking if license file {} is in existence.", license);
-        assert(fs::exists(path.join(license)).unwrap(), not);
+    if let Some(licenses) = licensed_under {
+        for license in licenses {
+            println!("Checking if license file {} is in existence.", license);
+            assert(
+                fs::exists(path.join(license)).unwrap(),
+                licensed_under_should_exist,
+            );
+        }
     }
 }

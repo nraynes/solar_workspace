@@ -1,14 +1,13 @@
 use rust_terminal::Terminal;
+use solar_core::tool::Workflow;
 
 use crate::{
-    individual_tools::commitalyzer::{
-        RULESET_FOR_TESTING, assert_configuration, assert_installation,
-    },
+    individual_tools::github_workflows::{assert_configuration, assert_installation},
     setup_env,
 };
 
 #[test]
-pub fn double_install() {
+pub fn overwrite_workflow() {
     let mut temp = setup_env();
 
     // Run install
@@ -19,9 +18,9 @@ pub fn double_install() {
             "./cargo-solar",
             [
                 "install",
-                "commitalyzer",
-                "--ruleset",
-                "conventional-commits",
+                "workflows",
+                "--workflows-list",
+                "release-cargo-bin-general",
             ],
         )
         .unwrap();
@@ -30,13 +29,12 @@ pub fn double_install() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        true,
-        true,
-        true,
-        true,
+        Some(vec![Workflow::ReleaseCargoBinGeneral]),
     );
-    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
+    assert_configuration(
+        temp.env().path(),
+        Some(vec![Workflow::ReleaseCargoBinGeneral]),
+    );
     println!("Installation confirmed!");
 
     // Run second install
@@ -47,9 +45,9 @@ pub fn double_install() {
             "./cargo-solar",
             [
                 "install",
-                "commitalyzer",
-                "--ruleset",
-                "conventional-commits",
+                "workflows",
+                "--workflows-list",
+                "release-cargo-lib-general",
             ],
         )
         .unwrap();
@@ -58,12 +56,11 @@ pub fn double_install() {
     println!("Checking second installation...");
     assert_installation(
         temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        true,
-        true,
-        true,
-        true,
+        Some(vec![Workflow::ReleaseCargoLibGeneral]),
     );
-    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
+    assert_configuration(
+        temp.env().path(),
+        Some(vec![Workflow::ReleaseCargoLibGeneral]),
+    );
     println!("Second installation confirmed!");
 }

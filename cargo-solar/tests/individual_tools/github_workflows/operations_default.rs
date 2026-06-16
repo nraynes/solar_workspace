@@ -1,13 +1,14 @@
 use rust_terminal::Terminal;
+use solar_core::tool::Workflow;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,
-    individual_tools::licenses::{assert_configuration, assert_installation},
+    individual_tools::github_workflows::{assert_configuration, assert_installation},
     setup_env,
 };
 
 #[test]
-pub fn operations_with_args() {
+pub fn operations_default() {
     let mut temp = setup_env();
 
     // Run install
@@ -18,13 +19,10 @@ pub fn operations_with_args() {
             "./cargo-solar",
             [
                 "install",
-                "licenses",
-                "--include-licenses",
-                "GPL-3.0",
-                "NASA-1.3",
-                "--licensed-under",
-                "MPL-1.0",
-                "mailprio",
+                "workflows",
+                "--workflows-list",
+                "release-cargo-bin-general",
+                "test-cargo-general",
             ],
         )
         .unwrap();
@@ -33,34 +31,24 @@ pub fn operations_with_args() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        Some(vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"]),
-        Some(vec!["LICENSE-MPL-1.0", "LICENSE-mailprio"]),
-        true,
-        true,
+        Some(vec![
+            Workflow::ReleaseCargoBinGeneral,
+            Workflow::TestCargoGeneral,
+        ]),
     );
     assert_configuration(
         temp.env().path(),
-        Some(vec!["GPL-3.0", "NASA-1.3"]),
-        Some(vec!["MPL-1.0", "mailprio"]),
+        Some(vec![
+            Workflow::ReleaseCargoBinGeneral,
+            Workflow::TestCargoGeneral,
+        ]),
     );
     println!("Installation confirmed!");
 
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run(
-            "./cargo-solar",
-            [
-                "upgrade",
-                "licenses",
-                "--include-licenses",
-                "GPL-3.0",
-                "NASA-1.3",
-                "--licensed-under",
-                "MPL-1.0",
-                "mailprio",
-            ],
-        )
+        .run("./cargo-solar", ["upgrade", "workflows"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -70,19 +58,21 @@ pub fn operations_with_args() {
             .contains("Nothing to upgrade for this tool.")
     );
 
-    // Assert installed doesn't change.
+    // Assert installed didn't change.
     println!("Checking upgrade...");
     assert_installation(
         temp.env().path(),
-        Some(vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"]),
-        Some(vec!["LICENSE-MPL-1.0", "LICENSE-mailprio"]),
-        true,
-        true,
+        Some(vec![
+            Workflow::ReleaseCargoBinGeneral,
+            Workflow::TestCargoGeneral,
+        ]),
     );
     assert_configuration(
         temp.env().path(),
-        Some(vec!["GPL-3.0", "NASA-1.3"]),
-        Some(vec!["MPL-1.0", "mailprio"]),
+        Some(vec![
+            Workflow::ReleaseCargoBinGeneral,
+            Workflow::TestCargoGeneral,
+        ]),
     );
     println!("Upgrade confirmed!");
 
@@ -90,12 +80,12 @@ pub fn operations_with_args() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "licenses"])
+        .run("./cargo-solar", ["uninstall", "workflows"])
         .unwrap();
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
+    println!("Checking uninstallation...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
-    assert_installation(temp.env().path(), None, None, false, false);
-    println!("Uninstall confirmed!");
+    assert_installation(temp.env().path(), None);
+    println!("Uninstallation confirmed!");
 }

@@ -9,7 +9,7 @@ use std::{
     io::Write,
     path::{Path, PathBuf},
 };
-use toml::{Table, Value, map::Map};
+use toml::{Value, map::Map};
 
 static TOML_NAME: &str = "deny.toml";
 

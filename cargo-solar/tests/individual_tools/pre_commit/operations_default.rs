@@ -4,6 +4,7 @@ use rust_terminal::Terminal;
 use solar_core::{SOLARCONFIGNAME, tool::pre_commit::Script};
 
 use crate::{
+    assert_configuration_file_does_not_exist_at,
     individual_tools::pre_commit::{assert_configuration, assert_installation},
     setup_env,
 };
@@ -24,8 +25,8 @@ pub fn operations_default() {
 
     // Assert installed correctly.
     println!("Checking installation...");
-    assert_installation(temp.env().path(), Script::CargoBasic, false);
-    assert_configuration(temp.env().path(), Script::CargoBasic, false);
+    assert_installation(temp.env().path(), Some(Script::CargoBasic));
+    assert_configuration(temp.env().path(), Some(Script::CargoBasic));
     println!("Installation confirmed!");
 
     // Run upgrade
@@ -43,8 +44,8 @@ pub fn operations_default() {
 
     // Assert installed doesn't change.
     println!("Checking upgrade...");
-    assert_installation(temp.env().path(), Script::CargoBasic, false);
-    assert_configuration(temp.env().path(), Script::CargoBasic, false);
+    assert_installation(temp.env().path(), Some(Script::CargoBasic));
+    assert_configuration(temp.env().path(), Some(Script::CargoBasic));
     println!("Upgrade confirmed!");
 
     // Run uninstall
@@ -56,7 +57,7 @@ pub fn operations_default() {
 
     // Assert uninstalled correctly.
     println!("Checking uninstall...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
-    assert_installation(temp.env().path(), Script::CargoBasic, true);
+    assert_configuration_file_does_not_exist_at(temp.env().path());
+    assert_installation(temp.env().path(), None);
     println!("Uninstall confirmed!");
 }

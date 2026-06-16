@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 mod cargo_basic;
 
-#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Debug, ValueEnum)]
+#[derive(Serialize, Deserialize, Clone, Default, PartialEq, Debug, ValueEnum, Eq)]
 pub enum Script {
     #[default]
     CargoBasic,

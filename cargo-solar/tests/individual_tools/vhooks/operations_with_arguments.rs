@@ -40,7 +40,7 @@ pub fn operations_with_arguments() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(&proj_path, "versioned_hooks", false);
+    assert_installation(&proj_path, "versioned_hooks", true);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -94,7 +94,7 @@ pub fn operations_with_arguments() {
 
     // Assert installation doesn't change
     println!("Checking upgrade...");
-    assert_installation(&proj_path, "versioned_hooks", false);
+    assert_installation(&proj_path, "versioned_hooks", true);
     println!("Upgrade confirmed!");
 
     // Run uninstall
@@ -118,7 +118,7 @@ pub fn operations_with_arguments() {
 
     // Assert uninstalled correctly (does not uninstall git)
     println!("Checking uninstall...");
-    assert_installation(&proj_path, "versioned_hooks", true);
+    assert_installation(&proj_path, "versioned_hooks", false);
     assert!(
         !fs::exists(
             temp.env()

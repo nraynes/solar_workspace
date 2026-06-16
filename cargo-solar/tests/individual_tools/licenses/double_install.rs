@@ -1,9 +1,7 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
+    assert_configuration_file_does_not_exist_at,
     individual_tools::licenses::{assert_configuration, assert_installation},
     setup_env,
 };
@@ -35,16 +33,15 @@ pub fn double_install() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        false,
-        false,
+        Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
+        Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
+        true,
+        true,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
-        false,
+        Some(vec!["MIT", "Apache-2.0"]),
+        Some(vec!["MIT", "Apache-2.0"]),
     );
     println!("Installation confirmed!");
 
@@ -71,26 +68,25 @@ pub fn double_install() {
     println!("Checking second installation...");
     assert_installation(
         temp.env().path(),
-        vec![
+        Some(vec![
             "LICENSE-MIT",
             "LICENSE-Apache-2.0",
             "LICENSE-GPL-3.0",
             "LICENSE-NASA-1.3",
-        ],
-        vec![
+        ]),
+        Some(vec![
             "LICENSE-MIT",
             "LICENSE-Apache-2.0",
             "LICENSE-MPL-1.0",
             "LICENSE-mailprio",
-        ],
-        false,
-        false,
+        ]),
+        true,
+        true,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0", "GPL-3.0", "NASA-1.3"],
-        vec!["MIT", "Apache-2.0", "MPL-1.0", "mailprio"],
-        false,
+        Some(vec!["MIT", "Apache-2.0", "GPL-3.0", "NASA-1.3"]),
+        Some(vec!["MIT", "Apache-2.0", "MPL-1.0", "mailprio"]),
     );
     println!("Second installation confirmed!");
 
@@ -103,23 +99,7 @@ pub fn double_install() {
 
     // Assert uninstalled correctly.
     println!("Checking uninstall...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
-    assert_installation(
-        temp.env().path(),
-        vec![
-            "LICENSE-MIT",
-            "LICENSE-Apache-2.0",
-            "LICENSE-GPL-3.0",
-            "LICENSE-NASA-1.3",
-        ],
-        vec![
-            "LICENSE-MIT",
-            "LICENSE-Apache-2.0",
-            "LICENSE-MPL-1.0",
-            "LICENSE-mailprio",
-        ],
-        true,
-        true,
-    );
+    assert_configuration_file_does_not_exist_at(temp.env().path());
+    assert_installation(temp.env().path(), None, None, false, false);
     println!("Uninstall confirmed!");
 }

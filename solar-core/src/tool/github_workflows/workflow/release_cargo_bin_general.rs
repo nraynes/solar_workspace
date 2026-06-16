@@ -1,26 +1,19 @@
-use crate::tool::github_workflows::{WorkflowTrait, workflow_trait::HasConstructor};
+use crate::tool::github_workflows::{
+    parameters::Parameters, workflow::WorkflowDetails, workflow_file::WorkflowFile,
+};
 
-pub struct BinRelease {
-    project_name: String,
-}
+pub struct ReleaseCargoBinGeneral {}
 
-impl BinRelease {
-    pub fn set_project_name(&mut self, project_name: &str) -> &mut Self {
-        self.project_name = String::from(project_name);
-        self
-    }
-}
-
-impl HasConstructor for BinRelease {
+impl WorkflowDetails for ReleaseCargoBinGeneral {
     fn new() -> Self {
-        Self {
-            project_name: String::new(),
-        }
+        Self {}
     }
-}
 
-impl WorkflowTrait for BinRelease {
-    fn get(&self) -> std::string::String {
+    fn file(&self) -> WorkflowFile {
+        WorkflowFile::Release
+    }
+
+    fn get(&self, parameters: &Parameters) -> String {
         format!("name: CI/CD Release
   
   permissions:
@@ -77,6 +70,14 @@ impl WorkflowTrait for BinRelease {
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
           run: ./.release/semver-release
-    ", self.project_name, self.project_name, self.project_name, self.project_name, self.project_name, self.project_name, self.project_name, self.project_name)
+    ",
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name(),
+    parameters.project_name())
     }
 }

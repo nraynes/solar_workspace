@@ -1,12 +1,8 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,
-    individual_tools::commitalyzer::{RULESET_FOR_TESTING, assert_installation},
-    setup_env,
+    individual_tools::github_workflows::assert_installation, setup_env,
 };
 
 #[test]
@@ -16,15 +12,7 @@ pub fn uninstall_no_install() {
     // Run uninstall
     let uninstall_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run(
-            "./cargo-solar",
-            [
-                "upgrade",
-                "commitalyzer",
-                "--ruleset",
-                "conventional-commits",
-            ],
-        )
+        .run("./cargo-solar", ["uninstall", "workflows"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -37,13 +25,6 @@ pub fn uninstall_no_install() {
     // Assert environment doesn't change.
     println!("Checking no installation...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
-    assert_installation(
-        temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-        false,
-        false,
-        false,
-    );
+    assert_installation(temp.env().path(), None);
     println!("No installation confirmed!");
 }

@@ -20,8 +20,8 @@ pub fn operations_moves_prior() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path(), ".hooks", false);
-    assert_configuration(temp.env().path(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", true);
+    assert_configuration(temp.env().path(), ".hooks", true);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -40,8 +40,8 @@ pub fn operations_moves_prior() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path(), "versioned_hooks", false);
-    assert_configuration(temp.env().path(), "versioned_hooks", false, false);
+    assert_installation(temp.env().path(), "versioned_hooks", true);
+    assert_configuration(temp.env().path(), "versioned_hooks", true);
 
     // Assert hooks moved correctly and old directory deleted
     assert!(!fs::exists(temp.env().path().join(".hooks")).unwrap());

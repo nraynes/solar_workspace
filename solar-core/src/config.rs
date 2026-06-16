@@ -20,7 +20,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     SOLARCONFIGNAME, SolarError, ToolTrait,
-    tool::{CargoDeny, Commitalyzer, Licenses, PreCommit, SemverRelease, Vhooks, Workflows},
+    tool::{CargoDeny, Commitalyzer, GithubWorkflows, Licenses, PreCommit, SemverRelease, Vhooks},
 };
 
 use clap::ValueEnum;
@@ -63,7 +63,7 @@ pub struct Config {
     licenses: Option<Licenses>,
 
     #[setters(rename = "set_github_workflows")]
-    github_workflows: Option<Workflows>,
+    github_workflows: Option<GithubWorkflows>,
 
     #[setters(rename = "set_commitalyzer")]
     commitalyzer: Option<Commitalyzer>,
@@ -106,7 +106,7 @@ impl Config {
         semver_release: Option<SemverRelease>,
         pre_commit: Option<PreCommit>,
         licenses: Option<Licenses>,
-        github_workflows: Option<Workflows>,
+        github_workflows: Option<GithubWorkflows>,
         commitalyzer: Option<Commitalyzer>,
         cargo_deny: Option<CargoDeny>,
     ) -> Self {

@@ -3,7 +3,10 @@ use std::fs;
 use rust_terminal::Terminal;
 use solar_core::SOLARCONFIGNAME;
 
-use crate::{individual_tools::cargo_deny::assert_installation, setup_env};
+use crate::{
+    assert_configuration_file_does_not_exist_at, individual_tools::cargo_deny::assert_installation,
+    setup_env,
+};
 
 #[test]
 pub fn uninstall_no_install() {
@@ -24,7 +27,7 @@ pub fn uninstall_no_install() {
 
     // Assert environment doesn't change.
     println!("Checking no installation...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
-    assert_installation(temp.env().path(), vec!["MIT-1.0", "Unicode-3.0"], true);
+    assert_configuration_file_does_not_exist_at(temp.env().path());
+    assert_installation(temp.env().path(), None);
     println!("No installation confirmed!");
 }

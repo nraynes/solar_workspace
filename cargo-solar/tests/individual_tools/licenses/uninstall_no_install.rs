@@ -13,11 +13,9 @@ pub fn uninstall_no_install() {
         .unwrap();
 
     // Assert uninstall does nothing (no install)
-    let errors = String::from_utf8(uninstall_output.stderr).unwrap();
-    println!(
-        "\n\nout: {}\n\n\nerr: {}\n\n",
-        String::from_utf8(uninstall_output.stdout).unwrap(),
-        &errors
+    assert!(
+        String::from_utf8(uninstall_output.stderr)
+            .unwrap()
+            .contains("No such file or directory")
     );
-    assert!(errors.contains("No such file or directory"));
 }

@@ -4,6 +4,7 @@ use rust_terminal::Terminal;
 use solar_core::SOLARCONFIGNAME;
 
 use crate::{
+    assert_configuration_file_does_not_exist_at,
     individual_tools::commitalyzer::{
         RULESET_FOR_TESTING, assert_configuration, assert_installation,
     },
@@ -34,14 +35,12 @@ pub fn operations_default() {
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-        false,
+        true,
+        true,
+        true,
+        true,
     );
-    assert_configuration(
-        temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-    );
+    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
     println!("Installation confirmed!");
 
     // Run upgrade
@@ -64,14 +63,12 @@ pub fn operations_default() {
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-        false,
+        true,
+        true,
+        true,
+        true,
     );
-    assert_configuration(
-        temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-    );
+    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
     println!("Upgrade confirmed!");
 
     // Run uninstall
@@ -83,12 +80,14 @@ pub fn operations_default() {
 
     // Assert uninstalled correctly.
     println!("Checking uninstallation...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
+    assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING.to_string()),
-        true,
         false,
+        false,
+        false,
+        true,
     );
     println!("Uninstallation confirmed!");
 }

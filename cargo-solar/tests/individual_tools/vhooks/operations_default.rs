@@ -1,9 +1,9 @@
 use std::fs;
 
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
+    assert_configuration_file_does_not_exist_at,
     individual_tools::vhooks::{assert_configuration, assert_installation},
     setup_env,
 };
@@ -21,8 +21,8 @@ pub fn operations_default() {
 
     // Assert installed correctly
     println!("Checking installation...");
-    assert_installation(temp.env().path(), ".hooks", false);
-    assert_configuration(temp.env().path(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", true);
+    assert_configuration(temp.env().path(), ".hooks", true);
     println!("Installation confirmed!");
 
     // Add some hooks
@@ -44,8 +44,8 @@ pub fn operations_default() {
 
     // Assert installation doesn't change
     println!("Checking upgrade...");
-    assert_installation(temp.env().path(), ".hooks", false);
-    assert_configuration(temp.env().path(), ".hooks", false, false);
+    assert_installation(temp.env().path(), ".hooks", true);
+    assert_configuration(temp.env().path(), ".hooks", true);
     println!("Upgrade confirmed!");
 
     // Run uninstall
@@ -57,8 +57,8 @@ pub fn operations_default() {
 
     // Assert uninstalled correctly (does not uninstall git)
     println!("Checking uninstall...");
-    assert!(!fs::exists(temp.env().path().join(SOLARCONFIGNAME)).unwrap());
-    assert_installation(temp.env().path(), ".hooks", true);
+    assert_configuration_file_does_not_exist_at(temp.env().path());
+    assert_installation(temp.env().path(), ".hooks", false);
     assert!(
         fs::exists(
             temp.env()

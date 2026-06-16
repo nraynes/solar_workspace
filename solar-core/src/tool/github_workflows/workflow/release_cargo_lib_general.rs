@@ -1,15 +1,19 @@
-use crate::tool::github_workflows::{WorkflowTrait, workflow_trait::HasConstructor};
+use crate::tool::github_workflows::{
+    parameters::Parameters, workflow::WorkflowDetails, workflow_file::WorkflowFile,
+};
 
-pub struct LibRelease {}
+pub struct ReleaseCargoLibGeneral {}
 
-impl HasConstructor for LibRelease {
+impl WorkflowDetails for ReleaseCargoLibGeneral {
     fn new() -> Self {
         Self {}
     }
-}
 
-impl WorkflowTrait for LibRelease {
-    fn get(&self) -> std::string::String {
+    fn file(&self) -> WorkflowFile {
+        WorkflowFile::Release
+    }
+
+    fn get(&self, _: &Parameters) -> String {
         String::from(
             "name: CI/CD Release
 

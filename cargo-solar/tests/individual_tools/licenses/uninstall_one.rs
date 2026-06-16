@@ -32,16 +32,15 @@ pub fn uninstall_one() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT", "LICENSE-Apache-2.0"],
-        false,
-        false,
+        Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
+        Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
+        true,
+        true,
     );
     assert_configuration(
         temp.env().path(),
-        vec!["MIT", "Apache-2.0"],
-        vec!["MIT", "Apache-2.0"],
-        false,
+        Some(vec!["MIT", "Apache-2.0"]),
+        Some(vec!["MIT", "Apache-2.0"]),
     );
     println!("Installation confirmed!");
 
@@ -66,18 +65,22 @@ pub fn uninstall_one() {
     println!("Checking uninstall...");
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-Apache-2.0"],
-        vec!["LICENSE-MIT"],
-        false,
-        false,
+        Some(vec!["LICENSE-Apache-2.0"]),
+        Some(vec!["LICENSE-MIT"]),
+        true,
+        true,
     );
     assert_installation(
         temp.env().path(),
-        vec!["LICENSE-MIT"],
-        vec!["LICENSE-Apache-2.0"],
-        true,
+        Some(vec!["LICENSE-MIT"]),
+        Some(vec!["LICENSE-Apache-2.0"]),
+        false,
         false,
     );
-    assert_configuration(temp.env().path(), vec!["Apache-2.0"], vec!["MIT"], false);
+    assert_configuration(
+        temp.env().path(),
+        Some(vec!["Apache-2.0"]),
+        Some(vec!["MIT"]),
+    );
     println!("Uninstall confirmed!");
 }

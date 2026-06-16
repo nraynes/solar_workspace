@@ -10,7 +10,7 @@ use std::path::Path;
 
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
-pub use github_workflows::{ReleaseWfType, TestWfType, Workflows};
+pub use github_workflows::{GithubWorkflows, Parameters, Workflow};
 pub use licenses::{LICENSES_DIR, Licenses};
 pub use pre_commit::PreCommit;
 pub use semver_release::{Plugin, SemverRelease};
@@ -65,7 +65,7 @@ pub enum Tool {
     LICENSES(Licenses),
 
     /// Configures project with standard Github workflows.
-    WORKFLOWS(Workflows),
+    WORKFLOWS(GithubWorkflows),
 
     /// Configures project with a standard pre-commit hook for rust.
     PRECOMMIT(PreCommit),

@@ -3,8 +3,8 @@ use std::path::PathBuf;
 use crate::{
     Config,
     tool::{
-        CargoDeny, Commitalyzer, Licenses, Plugin, PreCommit, ReleaseWfType, SemverRelease,
-        TestWfType, Vhooks, Workflows, pre_commit::Script,
+        CargoDeny, Commitalyzer, GithubWorkflows, Licenses, Plugin, PreCommit, SemverRelease,
+        Vhooks, Workflow, pre_commit::Script,
     },
 };
 
@@ -19,10 +19,12 @@ pub fn cargo_bin_basic() -> Config {
             Some(vec!["MIT".to_string(), "Apache-2.0".to_string()]),
             Some(vec!["MIT".to_string(), "Apache-2.0".to_string()]),
         )),
-        Some(Workflows::new(
+        Some(GithubWorkflows::new(
             PathBuf::from("."),
-            Some(ReleaseWfType::Bin),
-            Some(TestWfType::General),
+            Some(vec![
+                Workflow::ReleaseCargoBinGeneral,
+                Workflow::TestCargoGeneral,
+            ]),
         )),
         Some(Commitalyzer::new(
             PathBuf::from("."),

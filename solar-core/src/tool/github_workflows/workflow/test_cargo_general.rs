@@ -1,15 +1,19 @@
-use crate::tool::github_workflows::{WorkflowTrait, workflow_trait::HasConstructor};
+use crate::tool::github_workflows::{
+    parameters::Parameters, workflow::WorkflowDetails, workflow_file::WorkflowFile,
+};
 
-pub struct GeneralTest {}
+pub struct TestCargoGeneral {}
 
-impl HasConstructor for GeneralTest {
+impl WorkflowDetails for TestCargoGeneral {
     fn new() -> Self {
         Self {}
     }
-}
 
-impl WorkflowTrait for GeneralTest {
-    fn get(&self) -> std::string::String {
+    fn file(&self) -> WorkflowFile {
+        WorkflowFile::Test
+    }
+
+    fn get(&self, _: &Parameters) -> String {
         String::from(
             "name: CI/CD Test
 
