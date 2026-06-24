@@ -6,7 +6,7 @@ use crate::{
 };
 
 #[test]
-pub fn uninstall_one() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

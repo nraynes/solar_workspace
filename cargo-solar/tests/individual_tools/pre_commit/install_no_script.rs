@@ -1,12 +1,11 @@
 use std::fs;
 
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{assert_configuration_file_does_not_exist_at, setup_env};
 
 #[test]
-pub fn install_no_script() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run upgrade.

@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[test]
-pub fn overwrite_workflow() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

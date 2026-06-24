@@ -5,7 +5,7 @@ use rust_terminal::Terminal;
 use crate::{individual_tools::vhooks::assert_installation, setup_env};
 
 #[test]
-pub fn operations_with_arguments() {
+pub fn test() {
     let mut temp = setup_env();
     let proj_name = "proj_folder";
     temp.env().mkdir(proj_name).unwrap();

@@ -3,7 +3,7 @@ use rust_terminal::Terminal;
 use crate::setup_env;
 
 #[test]
-pub fn uninstall_no_install() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run uninstall

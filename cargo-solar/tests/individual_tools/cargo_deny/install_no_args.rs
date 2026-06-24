@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[test]
-pub fn install_no_args() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

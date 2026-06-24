@@ -1,8 +1,9 @@
-use std::fs;
-
 use rust_terminal::Terminal;
 
-use crate::{assert_configuration_file_does_not_exist_at, setup_env};
+use crate::{
+    assert_configuration_file_does_not_exist_at,
+    individual_tools::semver_release::assert_installation, setup_env,
+};
 
 #[test]
 pub fn test() {
@@ -11,7 +12,7 @@ pub fn test() {
     // Run uninstall
     let uninstall_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["uninstall", "precommit"])
+        .run("./cargo-solar", ["uninstall", "semverrelease"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -21,9 +22,9 @@ pub fn test() {
             .contains("No such file or directory")
     );
 
-    // Assert uninstalled correctly.
-    println!("Checking uninstall...");
+    // Assert nothing changed.
+    println!("Checking uninstallation...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
-    assert!(!fs::exists(temp.env().path().join(".git")).unwrap());
-    println!("Uninstall confirmed!");
+    assert_installation(temp.env().path(), None, false);
+    println!("Uninstallation confirmed!");
 }

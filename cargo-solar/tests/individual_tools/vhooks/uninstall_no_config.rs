@@ -6,7 +6,7 @@ use solar_core::SOLARCONFIGNAME;
 use crate::setup_env;
 
 #[test]
-pub fn uninstall_no_config() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

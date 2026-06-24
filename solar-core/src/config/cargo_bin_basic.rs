@@ -12,7 +12,10 @@ pub fn cargo_bin_basic() -> Config {
     Config::new(
         PathBuf::new(),
         Some(Vhooks::new(PathBuf::from("."), ".hooks".to_string(), false)),
-        Some(SemverRelease::new(PathBuf::from("."), vec![Plugin::Cargo])),
+        Some(SemverRelease::new(
+            PathBuf::from("."),
+            Some(vec![Plugin::Cargo]),
+        )),
         Some(PreCommit::new(PathBuf::from("."), Some(Script::CargoBasic))),
         Some(Licenses::new(
             PathBuf::from("."),

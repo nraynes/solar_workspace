@@ -3,7 +3,7 @@ use rust_terminal::Terminal;
 use crate::setup_env;
 
 #[test]
-pub fn install_no_args() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

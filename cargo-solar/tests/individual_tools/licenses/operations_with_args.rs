@@ -7,7 +7,7 @@ use crate::{
 };
 
 #[test]
-pub fn operations_with_args() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

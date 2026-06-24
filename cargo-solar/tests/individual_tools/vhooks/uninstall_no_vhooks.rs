@@ -6,7 +6,7 @@ use solar_core::{Config, SOLARCONFIGNAME};
 use crate::setup_env;
 
 #[test]
-pub fn uninstall_no_vhooks() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

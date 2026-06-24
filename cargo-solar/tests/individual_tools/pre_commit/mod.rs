@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use solar_core::{Config, Global, tool::pre_commit::Script};
 
-use crate::{assert, assert_eq};
+use crate::assert;
 
 mod install_no_script;
 mod operations_default;

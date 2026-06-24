@@ -13,7 +13,9 @@ pub use commitalyzer::Commitalyzer;
 pub use github_workflows::{GithubWorkflows, Parameters, Workflow};
 pub use licenses::{LICENSES_DIR, Licenses};
 pub use pre_commit::PreCommit;
-pub use semver_release::{Plugin, SemverRelease};
+pub use semver_release::{
+    Plugin, RELEASE_BIN_NAME, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME, SemverRelease,
+};
 pub use vhooks::Vhooks;
 
 use crate::SolarError;

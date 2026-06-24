@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[test]
-pub fn double_install() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

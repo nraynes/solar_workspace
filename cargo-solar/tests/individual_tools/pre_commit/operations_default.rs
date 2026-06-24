@@ -1,7 +1,5 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::{SOLARCONFIGNAME, tool::pre_commit::Script};
+use solar_core::tool::pre_commit::Script;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,
@@ -10,7 +8,7 @@ use crate::{
 };
 
 #[test]
-pub fn operations_default() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run install

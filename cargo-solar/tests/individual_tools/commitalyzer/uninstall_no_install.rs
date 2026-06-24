@@ -1,7 +1,4 @@
-use std::fs;
-
 use rust_terminal::Terminal;
-use solar_core::SOLARCONFIGNAME;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,
@@ -10,7 +7,7 @@ use crate::{
 };
 
 #[test]
-pub fn uninstall_no_install() {
+pub fn test() {
     let mut temp = setup_env();
 
     // Run uninstall
@@ -19,7 +16,7 @@ pub fn uninstall_no_install() {
         .run("./cargo-solar", ["uninstall", "commitalyzer"])
         .unwrap();
 
-    // Assert upgrade does nothing (nothing to upgrade)
+    // Assert uninstall does nothing.
     assert!(
         String::from_utf8(uninstall_output.stderr)
             .unwrap()
