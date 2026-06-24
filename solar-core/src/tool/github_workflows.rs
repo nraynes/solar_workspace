@@ -57,9 +57,7 @@ impl GithubWorkflows {
         let mut workflow_map = HashMap::new();
         for workflow in workflows_list {
             let workflow_type = workflow.get().file();
-            if workflow_map.get(&workflow_type).is_none() {
-                workflow_map.insert(workflow_type, workflow);
-            }
+            workflow_map.entry(workflow_type).or_insert(workflow);
         }
         Ok(workflow_map)
     }
@@ -73,9 +71,7 @@ impl GithubWorkflows {
         K: Eq + Hash,
     {
         for (key, value) in hash_map_two {
-            if hash_map_one.get(&key).is_none() {
-                hash_map_one.insert(key, value);
-            }
+            hash_map_one.entry(key).or_insert(value);
         }
         hash_map_one
     }

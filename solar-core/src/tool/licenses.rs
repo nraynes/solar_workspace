@@ -40,11 +40,11 @@ impl Licenses {
         }
     }
 
-    fn check_vec_eq_unord<T>(vec_one: &Vec<T>, vec_two: &Vec<T>) -> bool
+    fn check_vec_eq_unord<T>(vec_one: &[T], vec_two: &[T]) -> bool
     where
         T: Ord + Clone,
     {
-        sorted(vec_one.clone()) == sorted(vec_two.clone())
+        sorted(vec_one.to_owned()) == sorted(vec_two.to_owned())
     }
 
     fn check_opt_vec_eq_unord<T>(opt_one: &Option<Vec<T>>, opt_two: &Option<Vec<T>>) -> bool

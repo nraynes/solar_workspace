@@ -152,10 +152,10 @@ impl ToolTrait for SemverRelease {
                     }
 
                     // Remove from solar configuration.
-                    if let Some(current_plugins) = semver_config.plugins() {
-                        if !current_plugins.contains(plugin) {
-                            new_plugins.push(plugin.clone());
-                        }
+                    if let Some(current_plugins) = semver_config.plugins()
+                        && !current_plugins.contains(plugin)
+                    {
+                        new_plugins.push(plugin.clone());
                     }
                 }
 

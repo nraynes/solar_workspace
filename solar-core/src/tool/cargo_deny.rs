@@ -67,7 +67,7 @@ impl ToolTrait for CargoDeny {
 
     fn install(&mut self) -> Result<(), SolarError> {
         // Check for current toml configuration.
-        if fs::exists(&self.destination.join(TOML_NAME))? {
+        if fs::exists(self.destination.join(TOML_NAME))? {
             return Err(SolarError::from(
                 "Current installation found. Use cargo-deny to make changes to the current installation. Only use cargo-solar to uninstall completely.",
             ));
