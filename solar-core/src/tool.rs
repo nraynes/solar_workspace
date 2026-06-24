@@ -1,53 +1,58 @@
 mod cargo_deny;
 mod commitalyzer;
-mod github_workspaces;
+mod github_workflows;
 mod licenses;
-mod pre_commit;
+pub mod pre_commit;
 mod semver_release;
 mod vhooks;
 
+use std::path::Path;
+
 pub use cargo_deny::CargoDeny;
 pub use commitalyzer::Commitalyzer;
-pub use github_workspaces::Workspaces;
-pub use licenses::Licenses;
+pub use github_workflows::{GithubWorkflows, Parameters, Workflow};
+pub use licenses::{LICENSES_DIR, Licenses};
 pub use pre_commit::PreCommit;
-pub use semver_release::SemverRelease;
+pub use semver_release::{
+    Plugin, RELEASE_BIN_NAME, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME, SemverRelease,
+};
 pub use vhooks::Vhooks;
 
 use crate::SolarError;
-
-use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
 
 use clap::Subcommand as SC;
 
 pub enum Action {
     INSTALL,
     UPGRADE,
-    REMOVE,
+    UNINSTALL,
 }
 
 pub trait ToolTrait {
-    fn act(&self, action: &Action) -> Result<(), SolarError> {
+    fn act(&mut self, action: &Action, dest: Option<&Path>) -> Result<(), SolarError> {
+        if let Some(wd) = dest {
+            self.set_dest(wd);
+        }
         match action {
             Action::INSTALL => self.install(),
             Action::UPGRADE => self.upgrade(),
-            Action::REMOVE => self.remove(),
+            Action::UNINSTALL => self.uninstall(),
         }
     }
 
-    fn install(&self) -> Result<(), SolarError>;
+    fn set_dest(&mut self, dest: &Path);
 
-    fn remove(&self) -> Result<(), SolarError>;
+    fn install(&mut self) -> Result<(), SolarError>;
 
-    fn upgrade(&self) -> Result<(), SolarError> {
-        self.remove()?;
-        self.install()?;
+    fn uninstall(&mut self) -> Result<(), SolarError>;
+
+    fn upgrade(&mut self) -> Result<(), SolarError> {
+        println!("Nothing to upgrade for this tool.");
         Ok(())
     }
 }
 
-#[derive(SC, Clone, EnumIter, PartialEq, Debug)]
+#[derive(SC, Clone, PartialEq, Debug)]
 pub enum Tool {
     /// Configures a versioned git hook folder for a project.
     VHOOKS(Vhooks),
@@ -62,7 +67,7 @@ pub enum Tool {
     LICENSES(Licenses),
 
     /// Configures project with standard Github workflows.
-    WORKSPACES(Workspaces),
+    WORKFLOWS(GithubWorkflows),
 
     /// Configures project with a standard pre-commit hook for rust.
     PRECOMMIT(PreCommit),
@@ -72,27 +77,15 @@ pub enum Tool {
 }
 
 impl Tool {
-    fn act(&self, action: &Action) -> Result<(), SolarError> {
+    pub fn act(&mut self, action: &Action, dest: Option<&Path>) -> Result<(), SolarError> {
         match self {
-            Self::VHOOKS(tool) => tool.act(action),
-            Self::COMMITALYZER(tool) => tool.act(action),
-            Self::SEMVERRELEASE(tool) => tool.act(action),
-            Self::LICENSES(tool) => tool.act(action),
-            Self::WORKSPACES(tool) => tool.act(action),
-            Self::PRECOMMIT(tool) => tool.act(action),
-            Self::DENY(tool) => tool.act(action),
-        }
-    }
-
-    pub fn perform(arg: &Option<Self>, action: Action) -> Result<(), SolarError> {
-        match arg {
-            Some(tool) => tool.act(&action),
-            None => {
-                for tool in Self::iter() {
-                    tool.act(&action)?;
-                }
-                Ok(())
-            }
+            Self::VHOOKS(tool) => tool.act(action, dest),
+            Self::COMMITALYZER(tool) => tool.act(action, dest),
+            Self::SEMVERRELEASE(tool) => tool.act(action, dest),
+            Self::LICENSES(tool) => tool.act(action, dest),
+            Self::WORKFLOWS(tool) => tool.act(action, dest),
+            Self::PRECOMMIT(tool) => tool.act(action, dest),
+            Self::DENY(tool) => tool.act(action, dest),
         }
     }
 }

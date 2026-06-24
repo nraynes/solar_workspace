@@ -1,6 +1,19 @@
+use std::string::FromUtf8Error;
+
 use rust_alert::alert;
-use rust_terminal::TerminalError;
 
 /// A custom error type used to convert error types from various crates.
-#[alert(errors = [std::io::Error, TerminalError])]
+#[alert(errors = [
+    std::io::Error,
+    rust_terminal::TerminalError,
+    reqwest::Error,
+    url::ParseError,
+    FromUtf8Error,
+    String,
+    rust_dl::dl_error::DownloaderError,
+    serde_json::Error,
+    clap::error::Error,
+    toml::ser::Error,
+    toml::de::Error
+])]
 pub struct SolarError {}

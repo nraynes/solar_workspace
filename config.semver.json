@@ -1,58 +1,58 @@
 {
-    "release_branch": "master",
+    "changelog_location": "CHANGELOG.md",
+    "commit_changes": true,
+    "generate_changelog": true,
+    "git_auth_method": "GITHUB",
+    "log_level": "DEBUG",
     "major_changes": {
         "changes": [
             {
-                "priority": 1,
+                "kind": "BREAKING CHANGES",
                 "pattern": "^(.|\n)*BREAKING CHANGE(.|\n)*$",
-                "kind": "BREAKING CHANGES"
+                "priority": 1
             }
         ]
     },
     "minor_changes": {
         "changes": [
             {
-                "priority": 2,
+                "kind": "Features",
                 "pattern": "^feat(.|\n)*$",
-                "kind": "Features"
-            }
-        ]
-    },
-    "patch_changes": {
-        "changes": [
-            {
-                "priority": 3,
-                "pattern": "^fix(.|\n)*$",
-                "kind": "Patches"
+                "priority": 2
             }
         ]
     },
     "other_changes": {
         "changes": [
             {
-                "priority": 4,
+                "kind": "Maintenance Items",
                 "pattern": "^chore(.|\n)*$",
-                "kind": "Maintenance Items"
+                "priority": 4
             },
             {
-                "priority": 5,
+                "kind": "Documentation",
                 "pattern": "^docs(.|\n)*$",
-                "kind": "Documentation"
+                "priority": 5
             }
         ]
     },
-    "generate_changelog": true,
-    "log_level": "DEBUG",
-    "changelog_location": "CHANGELOG.md",
-    "git_auth_method": "GITHUB",
-    "commit_changes": true,
-    "push_changes": true,
+    "patch_changes": {
+        "changes": [
+            {
+                "kind": "Patches",
+                "pattern": "^fix(.|\n)*$",
+                "priority": 3
+            }
+        ]
+    },
     "plugin_location": ".release",
     "plugins": {
         "semver-cargo": {
-            "set_version": true,
+            "act_on_no_update": false,
             "publish": true,
-            "act_on_no_update": false
+            "set_version": true
         }
-    }
+    },
+    "push_changes": true,
+    "release_branch": "master"
 }
