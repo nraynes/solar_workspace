@@ -2,7 +2,6 @@ use rust_terminal::Terminal;
 use solar_core::tool::Plugin::Cargo;
 
 use crate::{
-    assert_configuration_file_does_not_exist_at,
     individual_tools::semver_release::{assert_configuration, assert_installation},
     setup_env,
 };
