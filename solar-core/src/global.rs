@@ -107,21 +107,9 @@ impl Global {
     }
 
     pub fn semver_release_exec_download() -> Result<Url, SolarError> {
-        match_target!(
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/arm-macos/semver-release",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/intel-macos/semver-release",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/linux/semver-release",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/windows/semver-release.exe",
-            )?),
-            Err(SolarError::from("No download available for this target"))
-        );
+        Ok(Url::parse(
+            "https://github.com/nraynes/semver-release/raw/refs/heads/master/bin/arm-macos/semver-release",
+        )?)
     }
 
     pub fn semver_release_config_url() -> Result<Url, SolarError> {
@@ -131,20 +119,8 @@ impl Global {
     }
 
     pub fn semver_cargo_exec_download() -> Result<Url, SolarError> {
-        match_target!(
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/arm-macos/semver-cargo",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/intel-macos/semver-cargo",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/linux/semver-cargo",
-            )?),
-            Ok(Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/windows/semver-cargo.exe",
-            )?),
-            Err(SolarError::from("No download available for this target"))
-        );
+        Ok(Url::parse(
+            "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/arm-macos/semver-cargo",
+        )?)
     }
 }
