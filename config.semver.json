@@ -2,7 +2,6 @@
     "changelog_location": "CHANGELOG.md",
     "commit_changes": true,
     "generate_changelog": true,
-    "git_auth_method": "GITHUB",
     "log_level": "DEBUG",
     "major_changes": {
         "changes": [
