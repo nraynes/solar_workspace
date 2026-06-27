@@ -23,7 +23,7 @@ pub fn assert_configuration(path: &Path, ruleset: &Option<Ruleset>) {
 
 pub fn assert_installation(
     path: &Path,
-    ruleset: &Option<String>,
+    ruleset: &Option<Ruleset>,
     commit_msg_hook_should_exist: bool,
     ruleset_dir_should_exist: bool,
     ruleset_should_exist: bool,
@@ -49,8 +49,8 @@ pub fn assert_installation(
         );
         println!(
             "Checking for {}.yml file in commit-rules directory.",
-            ruleset
+            ruleset.get()
         );
-        assert!(fs::exists(path.join(format!("commit-rules/{}.yml", ruleset))).unwrap());
+        assert!(fs::exists(path.join(format!("commit-rules/{}.yml", ruleset.get()))).unwrap());
     }
 }

@@ -64,7 +64,7 @@ impl ToolTrait for Commitalyzer {
         fs::create_dir_all(&commit_rules_path)?;
         download_sync(
             Global::commitalyzer_conventional_commits_ruleset()?,
-            commit_rules_path.join(format!("{}.yml", ruleset_name)),
+            commit_rules_path.join(format!("{}.yml", ruleset_name.get())),
         )?;
 
         Ok(())

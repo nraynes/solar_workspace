@@ -28,7 +28,7 @@ pub fn test() {
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(
         temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
+        &Some(RULESET_FOR_TESTING),
         false,
         false,
         false,

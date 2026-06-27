@@ -31,7 +31,7 @@ pub fn test() {
     println!("Checking installation...");
     assert_installation(
         temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
+        &Some(RULESET_FOR_TESTING),
         true,
         true,
         true,
@@ -60,7 +60,7 @@ pub fn test() {
     println!("Checking upgrade...");
     assert_installation(
         temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
+        &Some(RULESET_FOR_TESTING),
         true,
         true,
         true,
