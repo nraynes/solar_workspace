@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use crate::{
     Config,
-    tool::{Commitalyzer, Licenses, SemverRelease, Vhooks},
+    tool::{Commitalyzer, Licenses, Ruleset, SemverRelease, Vhooks},
 };
 
 pub fn universal_default() -> Config {
@@ -19,7 +19,7 @@ pub fn universal_default() -> Config {
         None,
         Some(Commitalyzer::new(
             PathBuf::from("."),
-            Some("conventional-commits".to_string()),
+            Some(Ruleset::ConventionalCommits),
         )),
         None,
     )

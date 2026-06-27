@@ -9,7 +9,7 @@ mod vhooks;
 use std::path::Path;
 
 pub use cargo_deny::CargoDeny;
-pub use commitalyzer::Commitalyzer;
+pub use commitalyzer::{Commitalyzer, Ruleset};
 pub use github_workflows::{GithubWorkflows, Parameters, Workflow};
 pub use licenses::{LICENSES_DIR, Licenses};
 pub use pre_commit::PreCommit;

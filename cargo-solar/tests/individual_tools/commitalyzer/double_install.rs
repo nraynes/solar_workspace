@@ -37,7 +37,7 @@ pub fn test() {
         true,
         true,
     );
-    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
+    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING));
     println!("Installation confirmed!");
 
     // Run second install
@@ -66,6 +66,6 @@ pub fn test() {
         true,
         true,
     );
-    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING.to_string()));
+    assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING));
     println!("Second installation confirmed!");
 }

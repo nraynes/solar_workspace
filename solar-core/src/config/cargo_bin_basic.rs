@@ -3,8 +3,8 @@ use std::path::PathBuf;
 use crate::{
     Config,
     tool::{
-        CargoDeny, Commitalyzer, GithubWorkflows, Licenses, Plugin, PreCommit, SemverRelease,
-        Vhooks, Workflow, pre_commit::Script,
+        CargoDeny, Commitalyzer, GithubWorkflows, Licenses, Plugin, PreCommit, Ruleset,
+        SemverRelease, Vhooks, Workflow, pre_commit::Script,
     },
 };
 
@@ -31,7 +31,7 @@ pub fn cargo_bin_basic() -> Config {
         )),
         Some(Commitalyzer::new(
             PathBuf::from("."),
-            Some("conventional-commits".to_string()),
+            Some(Ruleset::ConventionalCommits),
         )),
         Some(CargoDeny::new(
             PathBuf::from("."),

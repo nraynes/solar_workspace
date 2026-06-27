@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use solar_core::Config;
+use solar_core::{Config, tool::Ruleset};
 
 use crate::{assert, assert_eq};
 
@@ -8,12 +8,12 @@ mod double_install;
 mod install_no_args;
 mod operations_default;
 mod uninstall_no_install;
-mod upgrade_no_args;
 mod upgrade_no_install;
+mod upgrade_with_args;
 
-pub static RULESET_FOR_TESTING: &str = "conventional-commits";
+pub static RULESET_FOR_TESTING: Ruleset = Ruleset::ConventionalCommits;
 
-pub fn assert_configuration(path: &Path, ruleset: &Option<String>) {
+pub fn assert_configuration(path: &Path, ruleset: &Option<Ruleset>) {
     println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let commitalyzer_config = solar_config.commitalyzer().as_ref().unwrap();

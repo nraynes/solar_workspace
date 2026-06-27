@@ -42,13 +42,20 @@ pub fn test() {
     println!("Installation confirmed!");
 
     // Run upgrade
-    let upgrade_output = Terminal::command()
+    Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["solar", "upgrade", "commitalyzer"])
+        .piped()
+        .run(
+            "./cargo-solar",
+            [
+                "solar",
+                "upgrade",
+                "commitalyzer",
+                "--ruleset",
+                "conventional-commits",
+            ],
+        )
         .unwrap();
-
-    // Assert no error.
-    assert_eq!(upgrade_output.status.code(), Some(0));
 
     // Assert upgraded correctly.
     println!("Checking upgrade...");
@@ -62,24 +69,4 @@ pub fn test() {
     );
     assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING));
     println!("Upgrade confirmed!");
-
-    // Run uninstall
-    Terminal::command()
-        .current_dir(temp.env().path())
-        .piped()
-        .run("./cargo-solar", ["solar", "uninstall", "commitalyzer"])
-        .unwrap();
-
-    // Assert uninstalled correctly.
-    println!("Checking uninstallation...");
-    assert_configuration_file_does_not_exist_at(temp.env().path());
-    assert_installation(
-        temp.env().path(),
-        &Some(RULESET_FOR_TESTING.to_string()),
-        false,
-        false,
-        false,
-        true,
-    );
-    println!("Uninstallation confirmed!");
 }

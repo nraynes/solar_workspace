@@ -1,6 +1,9 @@
+mod ruleset;
+
 use crate::{Config, Global, SolarError, ToolTrait};
 use clap::Parser;
 use derive_getters::Getters;
+pub use ruleset::Ruleset;
 use rust_dl::downloader::download_sync;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -20,11 +23,11 @@ pub struct Commitalyzer {
 
     /// The ruleset to install.
     #[arg(short, long)]
-    ruleset: Option<String>,
+    ruleset: Option<Ruleset>,
 }
 
 impl Commitalyzer {
-    pub fn new(destination: PathBuf, ruleset: Option<String>) -> Self {
+    pub fn new(destination: PathBuf, ruleset: Option<Ruleset>) -> Self {
         Self {
             destination,
             ruleset,
@@ -68,9 +71,15 @@ impl ToolTrait for Commitalyzer {
     }
 
     fn upgrade(&mut self) -> Result<(), SolarError> {
-        self.ruleset
-            .as_ref()
-            .ok_or("A ruleset must be given for installation.")?;
+        // Get configuration
+        let config = Config::load_from(&self.destination)?;
+        let config = config
+            .commitalyzer()
+            .clone()
+            .ok_or("Cannot upgrade commitalyzer - commitalyzer not found in configuration.")?;
+
+        self.ruleset = config.ruleset().clone();
+
         self.uninstall()?;
         self.install()
     }
