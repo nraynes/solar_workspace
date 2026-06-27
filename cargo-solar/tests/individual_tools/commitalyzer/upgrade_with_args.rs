@@ -1,7 +1,6 @@
 use rust_terminal::Terminal;
 
 use crate::{
-    assert_configuration_file_does_not_exist_at,
     individual_tools::commitalyzer::{
         RULESET_FOR_TESTING, assert_configuration, assert_installation,
     },
