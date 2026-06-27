@@ -1,6 +1,7 @@
-# Version: v1.0.3
+# Version: v1.0.5
 
 ## Patches
 
-- fix: fixed commitalyzer upgrade config parse
+- fix: change display implementation on ruleset to public method
+- fix: fix deserialization by adding custom method
 
