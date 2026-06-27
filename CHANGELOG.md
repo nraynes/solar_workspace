@@ -1,6 +1,6 @@
-# Version: v1.0.1
+# Version: v1.0.2
 
 ## Patches
 
-- fix: added solar unit command to handle clap parsing of cargo command
+- fix: updated commitalyzer tool installer to upgrade without requiring ruleset arg
 
