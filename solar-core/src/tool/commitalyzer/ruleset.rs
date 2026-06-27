@@ -5,9 +5,19 @@ use serde::{Deserialize, Serialize};
 
 use crate::SolarError;
 
-#[derive(ValueEnum, Clone, Serialize, Deserialize, Eq, PartialEq, Debug, Copy)]
+#[derive(ValueEnum, Clone, Serialize, Eq, PartialEq, Debug, Copy)]
 pub enum Ruleset {
     ConventionalCommits,
+}
+
+impl<'de> Deserialize<'de> for Ruleset {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        FromStr::from_str(&s).map_err(serde::de::Error::custom)
+    }
 }
 
 impl Display for Ruleset {
