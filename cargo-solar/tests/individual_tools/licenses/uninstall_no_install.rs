@@ -9,7 +9,7 @@ pub fn test() {
     // Run uninstall
     let uninstall_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["uninstall", "licenses"])
+        .run("./cargo-solar", ["solar", "uninstall", "licenses"])
         .unwrap();
 
     // Assert uninstall does nothing (no install)

@@ -17,6 +17,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "licenses",
                 "--include-licenses",
@@ -52,6 +53,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "licenses",
                 "--include-licenses",
@@ -94,7 +96,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "licenses"])
+        .run("./cargo-solar", ["solar", "uninstall", "licenses"])
         .unwrap();
 
     // Assert uninstalled correctly.

@@ -17,6 +17,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "deny",
                 "--allow-licenses",
@@ -38,7 +39,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["uninstall", "deny", "--allow-licenses", "MIT-1.0"],
+            ["solar", "uninstall", "deny", "--allow-licenses", "MIT-1.0"],
         )
         .unwrap();
 

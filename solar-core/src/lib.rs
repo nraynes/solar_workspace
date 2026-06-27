@@ -3,6 +3,7 @@ mod global;
 mod solar_error;
 mod subcommand;
 pub mod tool;
+mod unit_command;
 
 pub use config::Config;
 pub use global::{Global, SOLARCONFIGNAME};
@@ -19,6 +20,7 @@ pub use tool::{
     Action, CargoDeny, Commitalyzer, GithubWorkflows, LICENSES_DIR, Licenses, PreCommit,
     SemverRelease, Tool, ToolTrait, Vhooks,
 };
+pub use unit_command::{SolarCommand, UnitCommand};
 
 /// Method that provides a sorted collection. Takes ownership of the collection, mutates it in place,
 /// then returns it as an owned value. Useful if you just want a one-liner to get a sorted collection rather

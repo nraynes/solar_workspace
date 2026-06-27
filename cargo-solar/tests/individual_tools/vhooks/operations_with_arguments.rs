@@ -24,6 +24,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "vhooks",
                 "--destination",
@@ -71,6 +72,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "upgrade",
                 "vhooks",
                 "--destination",
@@ -104,6 +106,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "uninstall",
                 "vhooks",
                 "--destination",

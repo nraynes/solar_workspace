@@ -17,7 +17,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["install", "precommit", "--script", "cargo-basic"],
+            ["solar", "install", "precommit", "--script", "cargo-basic"],
         )
         .unwrap();
 
@@ -30,7 +30,7 @@ pub fn test() {
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "precommit"])
+        .run("./cargo-solar", ["solar", "upgrade", "precommit"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -50,7 +50,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "precommit"])
+        .run("./cargo-solar", ["solar", "uninstall", "precommit"])
         .unwrap();
 
     // Assert uninstalled correctly.

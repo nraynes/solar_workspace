@@ -16,6 +16,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "deny",
                 "--allow-licenses",
@@ -37,6 +38,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "deny",
                 "--allow-licenses",

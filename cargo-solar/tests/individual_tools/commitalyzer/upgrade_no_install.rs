@@ -16,6 +16,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "upgrade",
                 "commitalyzer",
                 "--ruleset",

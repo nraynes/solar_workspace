@@ -17,6 +17,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "workflows",
                 "--workflows-list",
@@ -44,6 +45,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "workflows",
                 "--workflows-list",

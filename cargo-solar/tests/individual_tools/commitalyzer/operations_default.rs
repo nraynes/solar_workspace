@@ -19,6 +19,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "commitalyzer",
                 "--ruleset",
@@ -47,6 +48,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "upgrade",
                 "commitalyzer",
                 "--ruleset",
@@ -72,7 +74,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "commitalyzer"])
+        .run("./cargo-solar", ["solar", "uninstall", "commitalyzer"])
         .unwrap();
 
     // Assert uninstalled correctly.

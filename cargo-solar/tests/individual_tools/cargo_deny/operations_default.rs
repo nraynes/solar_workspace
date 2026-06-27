@@ -17,6 +17,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "deny",
                 "--allow-licenses",
@@ -35,7 +36,7 @@ pub fn test() {
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "deny"])
+        .run("./cargo-solar", ["solar", "upgrade", "deny"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -55,7 +56,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "deny"])
+        .run("./cargo-solar", ["solar", "uninstall", "deny"])
         .unwrap();
 
     // Assert uninstalled correctly.

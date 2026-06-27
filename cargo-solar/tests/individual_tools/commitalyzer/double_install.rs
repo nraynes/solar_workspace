@@ -18,6 +18,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "commitalyzer",
                 "--ruleset",
@@ -46,6 +47,7 @@ pub fn test() {
         .run(
             "./cargo-solar",
             [
+                "solar",
                 "install",
                 "commitalyzer",
                 "--ruleset",

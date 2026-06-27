@@ -13,7 +13,7 @@ pub fn test() {
     // Run install
     let install_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["install", "commitalyzer"])
+        .run("./cargo-solar", ["solar", "install", "commitalyzer"])
         .unwrap();
 
     // Assert install does nothing

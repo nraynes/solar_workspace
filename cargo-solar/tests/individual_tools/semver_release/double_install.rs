@@ -13,7 +13,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "semverrelease"])
+        .run("./cargo-solar", ["solar", "install", "semverrelease"])
         .unwrap();
 
     // Assert installed correctly.
@@ -26,7 +26,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "semverrelease"])
+        .run("./cargo-solar", ["solar", "install", "semverrelease"])
         .unwrap();
 
     // Assert second install.

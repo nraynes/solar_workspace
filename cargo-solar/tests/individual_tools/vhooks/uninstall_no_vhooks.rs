@@ -13,7 +13,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "vhooks"])
+        .run("./cargo-solar", ["solar", "install", "vhooks"])
         .unwrap();
 
     // Remove vhooks from config file
@@ -25,7 +25,7 @@ pub fn test() {
     // Run uninstall
     let command_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["uninstall", "vhooks"])
+        .run("./cargo-solar", ["solar", "uninstall", "vhooks"])
         .unwrap();
 
     // Assert that uninstall fails without config

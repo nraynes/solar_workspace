@@ -16,7 +16,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "vhooks"])
+        .run("./cargo-solar", ["solar", "install", "vhooks"])
         .unwrap();
 
     // Assert installed correctly
@@ -32,7 +32,7 @@ pub fn test() {
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "vhooks"])
+        .run("./cargo-solar", ["solar", "upgrade", "vhooks"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)
@@ -52,7 +52,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "vhooks"])
+        .run("./cargo-solar", ["solar", "uninstall", "vhooks"])
         .unwrap();
 
     // Assert uninstalled correctly (does not uninstall git)

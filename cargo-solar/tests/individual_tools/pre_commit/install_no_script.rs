@@ -11,7 +11,7 @@ pub fn test() {
     // Run upgrade.
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["install", "precommit"])
+        .run("./cargo-solar", ["solar", "install", "precommit"])
         .unwrap();
 
     // Assert install with no script arg errors with message.

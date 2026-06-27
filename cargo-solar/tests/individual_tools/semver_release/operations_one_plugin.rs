@@ -17,7 +17,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["install", "semverrelease", "--plugins", "cargo"],
+            ["solar", "install", "semverrelease", "--plugins", "cargo"],
         )
         .unwrap();
 
@@ -31,7 +31,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["upgrade", "semverrelease"])
+        .run("./cargo-solar", ["solar", "upgrade", "semverrelease"])
         .unwrap();
 
     // Assert upgraded correctly.
@@ -44,7 +44,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "semverrelease"])
+        .run("./cargo-solar", ["solar", "uninstall", "semverrelease"])
         .unwrap();
 
     // Assert uninstalled correctly.

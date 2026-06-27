@@ -13,7 +13,7 @@ pub fn test() {
     // Run upgrade
     let upgrade_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["upgrade", "commitalyzer"])
+        .run("./cargo-solar", ["solar", "upgrade", "commitalyzer"])
         .unwrap();
 
     // Assert upgrade does nothing

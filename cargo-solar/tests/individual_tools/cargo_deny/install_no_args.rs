@@ -12,7 +12,7 @@ pub fn test() {
     // Run install
     let install_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["install", "deny"])
+        .run("./cargo-solar", ["solar", "install", "deny"])
         .unwrap();
 
     // Assert install does nothing

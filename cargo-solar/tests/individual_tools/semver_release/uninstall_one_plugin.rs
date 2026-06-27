@@ -16,7 +16,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["install", "semverrelease", "--plugins", "cargo"],
+            ["solar", "install", "semverrelease", "--plugins", "cargo"],
         )
         .unwrap();
 
@@ -32,7 +32,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["uninstall", "semverrelease", "--plugins", "cargo"],
+            ["solar", "uninstall", "semverrelease", "--plugins", "cargo"],
         )
         .unwrap();
 

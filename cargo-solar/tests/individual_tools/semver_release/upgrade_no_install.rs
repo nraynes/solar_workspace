@@ -13,7 +13,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["upgrade", "semverrelease"])
+        .run("./cargo-solar", ["solar", "upgrade", "semverrelease"])
         .unwrap();
 
     // Assert installed correctly.

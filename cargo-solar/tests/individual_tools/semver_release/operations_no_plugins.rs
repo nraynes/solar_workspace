@@ -14,7 +14,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "semverrelease"])
+        .run("./cargo-solar", ["solar", "install", "semverrelease"])
         .unwrap();
 
     // Assert installed correctly.
@@ -27,7 +27,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["upgrade", "semverrelease"])
+        .run("./cargo-solar", ["solar", "upgrade", "semverrelease"])
         .unwrap();
 
     // Assert upgraded correctly.
@@ -40,7 +40,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["uninstall", "semverrelease"])
+        .run("./cargo-solar", ["solar", "uninstall", "semverrelease"])
         .unwrap();
 
     // Assert uninstalled correctly.

@@ -11,7 +11,7 @@ pub fn test() {
     // Run uninstall
     let uninstall_output = Terminal::command()
         .current_dir(temp.env().path())
-        .run("./cargo-solar", ["uninstall", "precommit"])
+        .run("./cargo-solar", ["solar", "uninstall", "precommit"])
         .unwrap();
 
     // Assert upgrade does nothing (nothing to upgrade)

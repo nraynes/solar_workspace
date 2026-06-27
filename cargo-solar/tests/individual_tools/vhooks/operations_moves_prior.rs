@@ -15,7 +15,7 @@ pub fn test() {
     Terminal::command()
         .current_dir(temp.env().path())
         .piped()
-        .run("./cargo-solar", ["install", "vhooks"])
+        .run("./cargo-solar", ["solar", "install", "vhooks"])
         .unwrap();
 
     // Assert installed correctly
@@ -34,7 +34,7 @@ pub fn test() {
         .piped()
         .run(
             "./cargo-solar",
-            ["install", "vhooks", "--name", "versioned_hooks"],
+            ["solar", "install", "vhooks", "--name", "versioned_hooks"],
         )
         .unwrap();
 
