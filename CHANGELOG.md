@@ -1,6 +1,6 @@
-# Version: v1.0.2
+# Version: v1.0.3
 
 ## Patches
 
-- fix: updated commitalyzer tool installer to upgrade without requiring ruleset arg
+- fix: fixed commitalyzer upgrade config parse
 
