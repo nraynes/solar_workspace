@@ -1,3 +1,4 @@
-mod test_cargo_bin_basic;
-mod test_cargo_lib_basic;
-mod test_cargo_proc_basic;
+mod config_deinit;
+mod config_init;
+mod config_new;
+mod config_update;

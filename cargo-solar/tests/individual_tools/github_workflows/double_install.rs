@@ -27,16 +27,15 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(
         temp.env().path(),
         Some(vec![Workflow::ReleaseCargoBinGeneral]),
+        true,
     );
     assert_configuration(
         temp.env().path(),
         Some(vec![Workflow::ReleaseCargoBinGeneral]),
     );
-    println!("Installation confirmed!");
 
     // Run second install
     Terminal::command()
@@ -55,13 +54,13 @@ pub fn test() {
         .unwrap();
 
     // Assert installed performs as expected.
-    println!("Checking second installation...");
     assert_installation(
         temp.env().path(),
         Some(vec![
             Workflow::ReleaseCargoBinGeneral,
             Workflow::TestCargoGeneral,
         ]),
+        true,
     );
     assert_configuration(
         temp.env().path(),
@@ -70,5 +69,4 @@ pub fn test() {
             Workflow::TestCargoGeneral,
         ]),
     );
-    println!("Second installation confirmed!");
 }

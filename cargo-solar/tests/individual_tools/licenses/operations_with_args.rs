@@ -31,7 +31,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(
         temp.env().path(),
         Some(vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"]),
@@ -44,7 +43,6 @@ pub fn test() {
         Some(vec!["GPL-3.0", "NASA-1.3"]),
         Some(vec!["MPL-1.0", "mailprio"]),
     );
-    println!("Installation confirmed!");
 
     // Run upgrade
     let upgrade_output = Terminal::command()
@@ -73,7 +71,6 @@ pub fn test() {
     );
 
     // Assert installed doesn't change.
-    println!("Checking upgrade...");
     assert_installation(
         temp.env().path(),
         Some(vec!["LICENSE-GPL-3.0", "LICENSE-NASA-1.3"]),
@@ -86,7 +83,6 @@ pub fn test() {
         Some(vec!["GPL-3.0", "NASA-1.3"]),
         Some(vec!["MPL-1.0", "mailprio"]),
     );
-    println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -96,8 +92,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), None, None, false, false);
-    println!("Uninstall confirmed!");
 }

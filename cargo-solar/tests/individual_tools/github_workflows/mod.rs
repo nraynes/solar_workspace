@@ -14,15 +14,17 @@ mod uninstall_no_install;
 use crate::{assert, assert_opt_vec_eq_unord};
 
 pub fn assert_configuration(path: &Path, expected_workflows_list: Option<Vec<Workflow>>) {
-    println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let github_workflows_config = solar_config.github_workflows().as_ref().unwrap();
     let actual_workflows_list = github_workflows_config.workflows_list().clone();
     assert_opt_vec_eq_unord(&actual_workflows_list, &expected_workflows_list, true);
 }
 
-pub fn assert_installation(path: &Path, expected_workflows_list: Option<Vec<Workflow>>) {
-    println!("Checking workflow directory existence.");
+pub fn assert_installation(
+    path: &Path,
+    expected_workflows_list: Option<Vec<Workflow>>,
+    assert_true: bool,
+) {
     let workflows_path = path.join(".github/workflows");
     assert(
         fs::exists(&workflows_path).unwrap(),
@@ -35,7 +37,7 @@ pub fn assert_installation(path: &Path, expected_workflows_list: Option<Vec<Work
                 workflow.get().file().name()
             );
             let workflow_path = path.join(workflows_path.join(workflow.get().file().name()));
-            assert!(fs::exists(&workflow_path).unwrap());
+            assert(fs::exists(&workflow_path).unwrap(), assert_true);
             println!(
                 "Checking that workflow {} matches expected content.",
                 workflow.get().file().name()

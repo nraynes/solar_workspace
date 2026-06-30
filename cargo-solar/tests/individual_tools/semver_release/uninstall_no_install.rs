@@ -23,8 +23,6 @@ pub fn test() {
     );
 
     // Assert nothing changed.
-    println!("Checking uninstallation...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), None, false);
-    println!("Uninstallation confirmed!");
 }

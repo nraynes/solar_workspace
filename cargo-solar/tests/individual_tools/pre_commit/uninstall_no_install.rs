@@ -22,8 +22,6 @@ pub fn test() {
     );
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert!(!fs::exists(temp.env().path().join(".git")).unwrap());
-    println!("Uninstall confirmed!");
 }

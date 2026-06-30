@@ -30,7 +30,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(
         temp.env().path(),
         Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
@@ -43,7 +42,6 @@ pub fn test() {
         Some(vec!["MIT", "Apache-2.0"]),
         Some(vec!["MIT", "Apache-2.0"]),
     );
-    println!("Installation confirmed!");
 
     // Uninstall one license from each.
     Terminal::command()
@@ -64,7 +62,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
     assert_installation(
         temp.env().path(),
         Some(vec!["LICENSE-Apache-2.0"]),
@@ -84,5 +81,4 @@ pub fn test() {
         Some(vec!["Apache-2.0"]),
         Some(vec!["MIT"]),
     );
-    println!("Uninstall confirmed!");
 }

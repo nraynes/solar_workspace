@@ -19,10 +19,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly
-    println!("Checking installation...");
     assert_installation(temp.env().path(), ".hooks", true);
     assert_configuration(temp.env().path(), ".hooks", true);
-    println!("Installation confirmed!");
 
     // Add some hooks
     fs::File::create(temp.env().dir(".hooks").unwrap().path().join("pre-commit")).unwrap();
@@ -39,7 +37,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly
-    println!("Checking installation...");
     assert_installation(temp.env().path(), "versioned_hooks", true);
     assert_configuration(temp.env().path(), "versioned_hooks", true);
 
@@ -65,5 +62,4 @@ pub fn test() {
         )
         .unwrap()
     );
-    println!("Installation confirmed!");
 }

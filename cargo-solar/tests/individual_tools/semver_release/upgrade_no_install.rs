@@ -17,8 +17,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(temp.env().path(), None, true);
     assert_configuration(temp.env().path(), None);
-    println!("Installation confirmed!");
 }

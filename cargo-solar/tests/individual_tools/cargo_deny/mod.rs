@@ -12,10 +12,8 @@ mod uninstall_no_install;
 mod uninstall_one;
 
 pub fn assert_configuration(path: &Path, allow_licenses: Option<Vec<&str>>) {
-    println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let cargo_deny_config = solar_config.cargo_deny().as_ref().unwrap();
-    println!("Checking script in configuration.");
     assert_opt_vec_eq_unord(
         cargo_deny_config.allow_licenses(),
         &allow_licenses.map_or(None, |x| Some(x.iter().map(|y| y.to_string()).collect())),
@@ -24,15 +22,12 @@ pub fn assert_configuration(path: &Path, allow_licenses: Option<Vec<&str>>) {
 }
 
 pub fn assert_installation(path: &Path, allow_licenses: Option<Vec<&str>>) {
-    println!("Checking toml existence.");
     let cargo_toml_path = path.join("deny.toml");
     assert(
         fs::exists(&cargo_toml_path).unwrap(),
         allow_licenses.is_some(),
     );
     if let Some(expected_allow_licenses) = allow_licenses {
-        println!("Checking toml contents.");
-
         // Extract deny.toml configuration.
         let deny_toml_contents = fs::read_to_string(cargo_toml_path).unwrap();
         let deny_toml_map = deny_toml_contents

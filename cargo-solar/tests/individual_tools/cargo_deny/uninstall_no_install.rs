@@ -23,8 +23,6 @@ pub fn test() {
     );
 
     // Assert environment doesn't change.
-    println!("Checking no installation...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), None);
-    println!("No installation confirmed!");
 }

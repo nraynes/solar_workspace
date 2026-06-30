@@ -40,9 +40,7 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly
-    println!("Checking installation...");
     assert_installation(&proj_path, "versioned_hooks", true);
-    println!("Installation confirmed!");
 
     // Add some hooks
     fs::File::create(
@@ -95,9 +93,7 @@ pub fn test() {
     );
 
     // Assert installation doesn't change
-    println!("Checking upgrade...");
     assert_installation(&proj_path, "versioned_hooks", true);
-    println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -120,7 +116,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly (does not uninstall git)
-    println!("Checking uninstall...");
     assert_installation(&proj_path, "versioned_hooks", false);
     assert!(
         !fs::exists(
@@ -150,5 +145,4 @@ pub fn test() {
         )
         .unwrap()
     );
-    println!("Uninstall confirmed!");
 }

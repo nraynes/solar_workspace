@@ -14,10 +14,8 @@ mod upgrade_with_args;
 pub static RULESET_FOR_TESTING: Ruleset = Ruleset::ConventionalCommits;
 
 pub fn assert_configuration(path: &Path, ruleset: &Option<Ruleset>) {
-    println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let commitalyzer_config = solar_config.commitalyzer().as_ref().unwrap();
-    println!("Checking for rules list configuration.");
     assert_eq(commitalyzer_config.ruleset(), ruleset, true);
 }
 
@@ -30,15 +28,12 @@ pub fn assert_installation(
     git_should_exist: bool,
 ) {
     if git_should_exist {
-        println!("Checking for git.");
         assert!(fs::exists(path.join(".git")).unwrap());
     }
-    println!("Checking for commit-msg hook.");
     assert(
         fs::exists(path.join(".git/hooks/commit-msg")).unwrap(),
         commit_msg_hook_should_exist,
     );
-    println!("Checking for commit-rules directory.");
     assert(
         fs::exists(path.join("commit-rules")).unwrap(),
         ruleset_dir_should_exist,

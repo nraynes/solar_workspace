@@ -28,7 +28,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING),
@@ -38,7 +37,6 @@ pub fn test() {
         true,
     );
     assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING));
-    println!("Installation confirmed!");
 
     // Run upgrade
     Terminal::command()
@@ -57,7 +55,6 @@ pub fn test() {
         .unwrap();
 
     // Assert upgraded correctly.
-    println!("Checking upgrade...");
     assert_installation(
         temp.env().path(),
         &Some(RULESET_FOR_TESTING),
@@ -67,5 +64,4 @@ pub fn test() {
         true,
     );
     assert_configuration(temp.env().path(), &Some(RULESET_FOR_TESTING));
-    println!("Upgrade confirmed!");
 }

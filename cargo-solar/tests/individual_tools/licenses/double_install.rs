@@ -31,7 +31,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(
         temp.env().path(),
         Some(vec!["LICENSE-MIT", "LICENSE-Apache-2.0"]),
@@ -44,7 +43,6 @@ pub fn test() {
         Some(vec!["MIT", "Apache-2.0"]),
         Some(vec!["MIT", "Apache-2.0"]),
     );
-    println!("Installation confirmed!");
 
     // Run second install
     Terminal::command()
@@ -67,7 +65,6 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking second installation...");
     assert_installation(
         temp.env().path(),
         Some(vec![
@@ -90,7 +87,6 @@ pub fn test() {
         Some(vec!["MIT", "Apache-2.0", "GPL-3.0", "NASA-1.3"]),
         Some(vec!["MIT", "Apache-2.0", "MPL-1.0", "mailprio"]),
     );
-    println!("Second installation confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -100,8 +96,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), None, None, false, false);
-    println!("Uninstall confirmed!");
 }

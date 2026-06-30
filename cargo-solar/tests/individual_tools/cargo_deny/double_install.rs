@@ -27,10 +27,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(temp.env().path(), Some(vec!["MIT-1.0", "Unicode-3.0"]));
     assert_configuration(temp.env().path(), Some(vec!["MIT-1.0", "Unicode-3.0"]));
-    println!("Installation confirmed!");
 
     // Run second install
     let install_output = Terminal::command()
@@ -56,8 +54,6 @@ pub fn test() {
     );
 
     // Assert installed doesn't change.
-    println!("Checking second installation...");
     assert_installation(temp.env().path(), Some(vec!["MIT-1.0", "Unicode-3.0"]));
     assert_configuration(temp.env().path(), Some(vec!["MIT-1.0", "Unicode-3.0"]));
-    println!("Second nstallation confirmed!");
 }

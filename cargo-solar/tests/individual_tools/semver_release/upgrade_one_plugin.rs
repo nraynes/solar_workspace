@@ -21,10 +21,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(temp.env().path(), Some(vec![Cargo]), true);
     assert_configuration(temp.env().path(), Some(vec![Cargo]));
-    println!("Installation confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -37,8 +35,6 @@ pub fn test() {
         .unwrap();
 
     // Assert upgraded correctly.
-    println!("Checking upgrade...");
     assert_installation(temp.env().path(), Some(vec![Cargo]), true);
     assert_configuration(temp.env().path(), Some(vec![Cargo]));
-    println!("Upgrade confirmed!");
 }

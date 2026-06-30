@@ -20,10 +20,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly
-    println!("Checking installation...");
     assert_installation(temp.env().path(), ".hooks", true);
     assert_configuration(temp.env().path(), ".hooks", true);
-    println!("Installation confirmed!");
 
     // Add some hooks
     fs::File::create(temp.env().dir(".hooks").unwrap().path().join("pre-commit")).unwrap();
@@ -43,10 +41,8 @@ pub fn test() {
     );
 
     // Assert installation doesn't change
-    println!("Checking upgrade...");
     assert_installation(temp.env().path(), ".hooks", true);
     assert_configuration(temp.env().path(), ".hooks", true);
-    println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -56,7 +52,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly (does not uninstall git)
-    println!("Checking uninstall...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), ".hooks", false);
     assert!(
@@ -83,5 +78,4 @@ pub fn test() {
         )
         .unwrap()
     );
-    println!("Uninstall confirmed!");
 }

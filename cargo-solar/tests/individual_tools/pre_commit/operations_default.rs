@@ -22,10 +22,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(temp.env().path(), Some(Script::CargoBasic));
     assert_configuration(temp.env().path(), Some(Script::CargoBasic));
-    println!("Installation confirmed!");
 
     // Run upgrade
     let upgrade_output = Terminal::command()
@@ -41,10 +39,8 @@ pub fn test() {
     );
 
     // Assert installed doesn't change.
-    println!("Checking upgrade...");
     assert_installation(temp.env().path(), Some(Script::CargoBasic));
     assert_configuration(temp.env().path(), Some(Script::CargoBasic));
-    println!("Upgrade confirmed!");
 
     // Run uninstall
     Terminal::command()
@@ -54,8 +50,6 @@ pub fn test() {
         .unwrap();
 
     // Assert uninstalled correctly.
-    println!("Checking uninstall...");
     assert_configuration_file_does_not_exist_at(temp.env().path());
     assert_installation(temp.env().path(), None);
-    println!("Uninstall confirmed!");
 }

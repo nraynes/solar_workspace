@@ -16,17 +16,14 @@ pub fn assert_configuration(
     include_licenses: Option<Vec<&str>>,
     licensed_under: Option<Vec<&str>>,
 ) {
-    println!("Getting configuration.");
     let solar_config = Config::load_from(path).unwrap();
     let licenses_config = solar_config.licenses().as_ref().unwrap();
 
-    println!("Checking include_licenses is correct.");
     assert_opt_vec_eq_unord(
         &include_licenses.map_or(None, |c| Some(c.iter().map(|s| s.to_string()).collect())),
         licenses_config.include_licenses(),
         true,
     );
-    println!("Checking licensed_under is correct.");
     assert_opt_vec_eq_unord(
         &licensed_under.map_or(None, |c| Some(c.iter().map(|s| s.to_string()).collect())),
         licenses_config.licensed_under(),
@@ -41,7 +38,6 @@ pub fn assert_installation(
     include_licenses_should_exist: bool,
     licensed_under_should_exist: bool,
 ) {
-    println!("Checking license directory existence.");
     assert(
         fs::exists(path.join(LICENSES_DIR)).unwrap(),
         include_licenses.is_some(),
@@ -60,7 +56,6 @@ pub fn assert_installation(
     }
     if let Some(licenses) = licensed_under {
         for license in licenses {
-            println!("Checking if license file {} is in existence.", license);
             assert(
                 fs::exists(path.join(license)).unwrap(),
                 licensed_under_should_exist,

@@ -17,10 +17,8 @@ pub fn test() {
         .unwrap();
 
     // Assert installed correctly.
-    println!("Checking installation...");
     assert_installation(temp.env().path(), None, true);
     assert_configuration(temp.env().path(), None);
-    println!("Installation confirmed!");
 
     // Run second install
     Terminal::command()
@@ -30,8 +28,6 @@ pub fn test() {
         .unwrap();
 
     // Assert second install.
-    println!("Checking second installation...");
     assert_installation(temp.env().path(), None, true);
     assert_configuration(temp.env().path(), None);
-    println!("Second installation confirmed!");
 }
