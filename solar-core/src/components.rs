@@ -52,29 +52,29 @@ use enum_printer::enum_printer;
 pub enum Component {
     /// Configures a versioned git hook folder for a project.
     #[print_to_enum(InstallableComponent, UninstallableComponent)]
-    VHOOKS(Vhooks),
+    Vhooks(Vhooks),
 
     /// Installs commitalyzer (git commit linting tool) to the git hooks directory.
     #[print_to_enum(InstallableComponent, UninstallableComponent, UpgradableComponent)]
-    COMMITALYZER(Commitalyzer),
+    Commitalyzer(Commitalyzer),
 
     /// Installs and configured SemVer-Release in the project.
     #[print_to_enum(InstallableComponent, UninstallableComponent, UpgradableComponent)]
-    SEMVERRELEASE(SemverRelease),
+    SemverRelease(SemverRelease),
 
     /// Installs the appropriate licenses into the project.
     #[print_to_enum(InstallableComponent, UninstallableComponent)]
-    LICENSES(Licenses),
+    Licenses(Licenses),
 
     /// Configures project with standard Github workflows.
     #[print_to_enum(InstallableComponent, UninstallableComponent)]
-    WORKFLOWS(GithubWorkflows),
+    GithubWorkflows(GithubWorkflows),
 
     /// Configures project with a standard pre-commit hook for rust.
     #[print_to_enum(InstallableComponent, UninstallableComponent)]
-    PRECOMMIT(PreCommit),
+    PreCommit(PreCommit),
 
     /// Configures project with a cargo deny for license checking.
     #[print_to_enum(InstallableComponent, UninstallableComponent)]
-    DENY(CargoDeny),
+    CargoDeny(CargoDeny),
 }

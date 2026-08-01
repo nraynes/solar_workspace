@@ -1,45 +1,30 @@
-// use std::{
-//     fs,
-//     path::{Path, PathBuf},
-// };
+use std::fs;
 
-// use clap::Parser;
+use clap::Parser;
 
-// use crate::{SolarError, projects::ProjectType, solar_init};
+use crate::{
+    project::Project,
+    solar_error::SolarError,
+    traits::{ConfigureProject, Run},
+    working_dir,
+};
 
-// #[derive(Parser, Clone)]
-// pub struct New {
-//     /// The name of the new project.
-//     name: String,
+#[derive(Parser, Clone)]
+pub struct New {
+    /// The project configuration to create.
+    #[command(subcommand)]
+    project: Project,
 
-//     /// The project configuration to initialize.
-//     project: ProjectType,
+    /// The name of the new project to create.
+    #[arg(short, long)]
+    name: String,
+}
 
-//     /// The destination to create the new project.
-//     #[arg(short, long, default_value = ".")]
-//     destination: PathBuf,
-// }
+impl Run for New {
+    fn run(&self) -> Result<(), SolarError> {
+        let path = working_dir()?.join(&self.name);
+        fs::create_dir_all(&path)?;
 
-// impl New {
-//     pub fn run(&mut self) -> Result<(), SolarError> {
-//         // Ensure the destination directory exists
-//         let project_dir = self.destination.join(&self.name);
-//         fs::create_dir_all(&project_dir)?;
-
-//         // Initialize the project
-//         solar_new(&self.project, &mut self.destination, &self.name)
-//     }
-// }
-
-// pub fn solar_new(
-//     config: &ProjectType,
-//     destination: &mut Path,
-//     name: &str,
-// ) -> Result<(), SolarError> {
-//     // Ensure the destination directory exists
-//     let project_dir = destination.join(name);
-//     fs::create_dir_all(&project_dir)?;
-
-//     // Initialize the project
-//     solar_init(config, destination)
-// }
+        self.project.init(&path)
+    }
+}

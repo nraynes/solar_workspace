@@ -6,13 +6,13 @@ pub mod uninstall;
 pub mod update;
 pub mod upgrade;
 
-// pub use deinit::Deinit;
+pub use deinit::Deinit;
 use enum_dispatch::enum_dispatch;
-// pub use init::Init;
+pub use init::Init;
 pub use install::Install;
-// pub use new::New;
+pub use new::New;
 pub use uninstall::Uninstall;
-// pub use update::Update;
+pub use update::Update;
 pub use upgrade::Upgrade;
 
 use clap::Subcommand as SC;
@@ -21,16 +21,16 @@ use clap::Subcommand as SC;
 #[derive(SC, Clone)]
 pub enum Subcommand {
     /// Create a new Solar project in a new directory with a configuration.
-    // New(New),
+    New(New),
 
     /// Initialize a new Solar project with a configuration in the current directory.
-    // Init(Init),
+    Init(Init),
 
     /// Deinitializes a solar project.
-    // Deinit(Deinit),
+    Deinit(Deinit),
 
     /// Updates the configuration of tools on the current project.
-    // Update(Update),
+    Update(Update),
 
     /// Upgrade a single tool in the solar project.
     Ugrade(Upgrade),

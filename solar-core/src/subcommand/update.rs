@@ -1,25 +1,21 @@
-// use std::path::{Path, PathBuf};
+use clap::Parser;
 
-// use clap::Parser;
+use crate::{
+    project::Project,
+    solar_error::SolarError,
+    traits::{ConfigureProject, Run},
+    working_dir,
+};
 
-// use crate::solar_error::SolarError;
+#[derive(Parser, Clone)]
+pub struct Update {
+    /// The project configuration to update.
+    #[command(subcommand)]
+    project: Project,
+}
 
-// #[derive(Parser, Clone)]
-// pub struct Update {
-//     /// The destination to update the project.
-//     #[arg(short, long, default_value = ".")]
-//     destination: PathBuf,
-// }
-
-// impl Update {
-//     pub fn run(&mut self) -> Result<(), SolarError> {
-//         solar_update(
-//             &mut Config::load_from(&self.destination)?,
-//             &self.destination,
-//         )
-//     }
-// }
-
-// pub fn solar_update(config: &mut Config, destination: &Path) -> Result<(), SolarError> {
-//     config.act(&Action::UPGRADE, Some(destination))
-// }
+impl Run for Update {
+    fn run(&self) -> Result<(), SolarError> {
+        self.project.update(&working_dir()?)
+    }
+}

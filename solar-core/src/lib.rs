@@ -3,6 +3,7 @@ mod check_vec_eq_unord;
 pub mod components;
 mod extend_no_overwrite;
 mod match_target;
+pub mod project;
 pub mod solar_error;
 mod sorted;
 mod subcommand;
