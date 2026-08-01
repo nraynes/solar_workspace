@@ -1,5 +1,5 @@
 use rust_terminal::Terminal;
-use solar_core::tool::Plugin::Cargo;
+use solar_core::components::Plugin::Cargo;
 
 use crate::{
     individual_tools::semver_release::{assert_configuration, assert_installation},

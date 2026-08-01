@@ -1,5 +1,5 @@
 use rust_terminal::Terminal;
-use solar_core::tool::pre_commit::Script;
+use solar_core::components::pre_commit::Script;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,

@@ -3,7 +3,7 @@ use std::{fs, path::Path, str::FromStr};
 use serde_json::Value;
 use solar_core::{
     Config,
-    tool::{Plugin, RELEASE_BIN_NAME, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME},
+    components::{Plugin, RELEASE_BIN_NAME, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME},
 };
 
 mod double_install;

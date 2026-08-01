@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use solar_core::{Config, Global, tool::pre_commit::Script};
+use solar_core::{Config, Global, components::pre_commit::Script};
 
 use crate::assert;
 

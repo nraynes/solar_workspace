@@ -1,16 +1,21 @@
 use clap::Parser;
 
-use crate::{Action, SolarError, Tool};
+use crate::{
+    components::InstallableComponent,
+    solar_error::SolarError,
+    traits::{Installable, Run},
+    working_dir,
+};
 
 #[derive(Parser, Clone)]
 pub struct Install {
-    /// The name of the tool to install.
+    /// The name of the component to install.
     #[command(subcommand)]
-    tool: Tool,
+    component: InstallableComponent,
 }
 
-impl Install {
-    pub fn run(&mut self) -> Result<(), SolarError> {
-        self.tool.act(&Action::INSTALL, None)
+impl Run for Install {
+    fn run(&self) -> Result<(), SolarError> {
+        self.component.install(&working_dir()?)
     }
 }

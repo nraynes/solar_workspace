@@ -1,6 +1,6 @@
 use std::{fs, path::Path};
 
-use solar_core::{Config, tool::Ruleset};
+use solar_core::{Config, components::Ruleset};
 
 use crate::{assert, assert_eq};
 

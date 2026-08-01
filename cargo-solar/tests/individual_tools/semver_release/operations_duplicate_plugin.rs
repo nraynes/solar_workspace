@@ -1,5 +1,5 @@
 use rust_terminal::Terminal;
-use solar_core::tool::Plugin::Cargo;
+use solar_core::components::Plugin::Cargo;
 
 use crate::{
     assert_configuration_file_does_not_exist_at,

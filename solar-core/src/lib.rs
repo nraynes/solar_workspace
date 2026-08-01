@@ -1,36 +1,13 @@
-mod config;
-mod global;
-mod solar_error;
+mod check_opt_vec_eq_unord;
+mod check_vec_eq_unord;
+pub mod components;
+mod extend_no_overwrite;
+mod match_target;
+pub mod solar_error;
+mod sorted;
 mod subcommand;
-pub mod tool;
-mod unit_command;
+pub mod traits;
+pub mod unit_command;
+mod working_dir;
 
-pub use config::Config;
-pub use global::{Global, SOLARCONFIGNAME};
-pub use solar_error::SolarError;
-pub use subcommand::{
-    Subcommand,
-    init::{Init, solar_init},
-    install::Install,
-    new::{New, solar_new},
-    update::{Update, solar_update},
-    upgrade::Upgrade,
-};
-pub use tool::{
-    Action, CargoDeny, Commitalyzer, GithubWorkflows, LICENSES_DIR, Licenses, PreCommit,
-    SemverRelease, Tool, ToolTrait, Vhooks,
-};
-pub use unit_command::{SolarCommand, UnitCommand};
-
-/// Method that provides a sorted collection. Takes ownership of the collection, mutates it in place,
-/// then returns it as an owned value. Useful if you just want a one-liner to get a sorted collection rather
-/// than a separate line to sort the collection after its instantiated, especially if you don't want the
-/// collection to be mutable after sorting.
-pub fn sorted<C, U>(mut collection: C) -> C
-where
-    C: AsMut<[U]>,
-    U: Ord,
-{
-    collection.as_mut().sort();
-    collection
-}
+pub use working_dir::working_dir;

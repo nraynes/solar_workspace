@@ -1,5 +1,5 @@
 use rust_terminal::Terminal;
-use solar_core::tool::Workflow;
+use solar_core::components::Workflow;
 
 use crate::{
     individual_tools::github_workflows::{assert_configuration, assert_installation},

@@ -1,5 +1,5 @@
 use rust_terminal::Terminal;
-use solar_core::tool::{Plugin, Ruleset, Workflow, pre_commit::Script};
+use solar_core::components::{Plugin, Ruleset, Workflow, pre_commit::Script};
 
 use crate::{
     individual_tools::{

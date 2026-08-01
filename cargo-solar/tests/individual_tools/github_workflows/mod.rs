@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use solar_core::{
     Config,
-    tool::{Parameters, Workflow},
+    components::{Parameters, Workflow},
 };
 
 mod double_install;

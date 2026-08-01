@@ -1,16 +1,21 @@
 use clap::Parser;
 
-use crate::{Action, SolarError, Tool};
+use crate::{
+    components::UpgradableComponent,
+    solar_error::SolarError,
+    traits::{Run, Upgradable},
+    working_dir,
+};
 
 #[derive(Parser, Clone)]
 pub struct Upgrade {
-    /// The name of the tool to upgrade. If none is provided, defaults to all tools.
+    /// The name of the component to upgrade.
     #[command(subcommand)]
-    tool: Tool,
+    component: UpgradableComponent,
 }
 
-impl Upgrade {
-    pub fn run(&mut self) -> Result<(), SolarError> {
-        self.tool.act(&Action::UPGRADE, None)
+impl Run for Upgrade {
+    fn run(&self) -> Result<(), SolarError> {
+        self.component.upgrade(&working_dir()?)
     }
 }
