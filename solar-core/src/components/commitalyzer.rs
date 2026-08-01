@@ -1,6 +1,6 @@
 pub mod download;
 pub mod installation;
-mod installer;
+pub mod installer;
 pub mod ruleset;
 mod uninstaller;
 mod upgrader;

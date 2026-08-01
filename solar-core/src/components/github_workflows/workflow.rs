@@ -1,19 +1,15 @@
 use clap::Subcommand;
 use yaml_serde::Value;
 
-use crate::components::github_workflows::{
-    installation::Installation,
-    workflow::{
-        cargo_any_general_test::CargoAnyGeneralTest,
-        cargo_lib_general_release::CargoLibGeneralRelease,
-    },
-};
+use crate::components::github_workflows::installation::Installation;
 
 mod cargo_any_general_test;
 mod cargo_bin_general_release;
 mod cargo_lib_general_release;
 
+pub use cargo_any_general_test::CargoAnyGeneralTest;
 pub use cargo_bin_general_release::CargoBinGeneralRelease;
+pub use cargo_lib_general_release::CargoLibGeneralRelease;
 
 #[derive(Subcommand, Debug, Clone, PartialEq)]
 pub enum Workflow {
