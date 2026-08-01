@@ -16,7 +16,7 @@ pub struct Installation {
 impl Installation {
     pub fn read_workflows(path: &Path) -> Option<Vec<String>> {
         let mut workflow_files = Vec::new();
-        if let Ok(read_dir) = fs::read_dir(&path) {
+        if let Ok(read_dir) = fs::read_dir(path) {
             for dir_entry_result in read_dir {
                 if let Ok(dir_entry) = dir_entry_result
                     && dir_entry.path().is_file()

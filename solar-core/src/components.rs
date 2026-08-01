@@ -16,14 +16,9 @@ pub use pre_commit::{PreCommitInstaller, PreCommitUninstaller};
 pub use semver_release::{SemverReleaseInstaller, SemverReleaseUninstaller, SemverReleaseUpgrader};
 pub use vhooks::{VhooksInstaller, VhooksUninstaller};
 
-use crate::{
-    solar_error::SolarError,
-    traits::{Installable, Uninstallable, Upgradable},
-};
 use clap::Subcommand;
 use enum_dispatch::enum_dispatch;
 use enum_printer::enum_printer;
-use std::path::Path;
 
 #[enum_printer(
     InstallableComponent = [

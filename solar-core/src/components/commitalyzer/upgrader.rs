@@ -31,16 +31,15 @@ impl Upgradable for CommitalyzerUpgrader {
             .join(COMMIT_MSG_NAME);
 
         // Remove and install latest binary.
-        if *git_repository.installation().hook_bin() {
-            if fs::remove_file(&bin_path).is_ok() {
-                if let Err(e) = download_commitalyzer_binary(&bin_path) {
-                    println!(
-                        "There was an error while trying to upgrade commitalyzer binary.\n\nERROR: {}",
-                        e
-                    );
-                };
-            }
-        }
+        if *git_repository.installation().hook_bin()
+            && fs::remove_file(&bin_path).is_ok()
+            && let Err(e) = download_commitalyzer_binary(&bin_path)
+        {
+            println!(
+                "There was an error while trying to upgrade commitalyzer binary.\n\nERROR: {}",
+                e
+            );
+        };
 
         Ok(())
     }

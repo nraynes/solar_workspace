@@ -9,7 +9,7 @@ pub fn gitignore(path: &Path) -> Option<Vec<PathBuf>> {
             v.split('\n')
                 .collect::<Vec<&str>>()
                 .into_iter()
-                .map(|s| PathBuf::from(s))
+                .map(PathBuf::from)
                 .collect(),
         )
     })

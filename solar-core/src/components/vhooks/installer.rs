@@ -41,11 +41,11 @@ impl Installable for VhooksInstaller {
         // Move any hooks if the hooks path has changed.
         let old_hooks_path = git_repository.installation().hooks_path().path();
         if old_hooks_path != &self.hooks_path {
-            move_hooks(&old_hooks_path, &self.hooks_path)?;
+            move_hooks(old_hooks_path, &self.hooks_path)?;
 
             // Remove old hooks directory if it is not default.
             if !git_repository.installation().hooks_path().default() {
-                fs::remove_dir_all(&old_hooks_path)?;
+                fs::remove_dir_all(old_hooks_path)?;
             }
         }
 

@@ -40,7 +40,7 @@ impl Installable for LicensesInstaller {
                 if current_installation
                     .include_licenses()
                     .as_ref()
-                    .is_none_or(|l| !l.contains(&license))
+                    .is_none_or(|l| !l.contains(license))
                 {
                     license.download_license(&licenses_dir)?;
                 }
@@ -49,7 +49,7 @@ impl Installable for LicensesInstaller {
 
         // Add license files to project that do not currently exist.
         for license in &self.licensed_under {
-            if !current_installation.licensed_under().contains(&license) {
+            if !current_installation.licensed_under().contains(license) {
                 license.download_license(path)?;
             }
         }

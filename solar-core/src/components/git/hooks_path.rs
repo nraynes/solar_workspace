@@ -18,7 +18,10 @@ impl TryFrom<&Path> for HooksPath {
 
     fn try_from(value: &Path) -> Result<Self, Self::Error> {
         let hooks_path = git_hooks_path(value)?;
-        let is_default = hooks_path != PathBuf::from(DEFAULT_GIT_HOOKS_DIR);
+        let is_default = hooks_path
+            .to_str()
+            .ok_or("Could not convert hooks path to str.")?
+            != DEFAULT_GIT_HOOKS_DIR;
 
         Ok(Self {
             path: hooks_path,

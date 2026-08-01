@@ -48,7 +48,7 @@ impl Uninstallable for CommitalyzerUninstaller {
                         .rulesets()
                         .contains(&ruleset.get().to_string())
                     {
-                        fs::remove_file(&commit_rules_path.join(ruleset.file_name()))?;
+                        fs::remove_file(commit_rules_path.join(ruleset.file_name()))?;
                     }
                 }
             } else {

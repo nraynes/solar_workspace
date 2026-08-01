@@ -69,7 +69,7 @@ impl Uninstallable for SemverReleaseUninstaller {
             }
             None => {
                 if fs::remove_dir_all(&release_dir_path).is_ok() {
-                    fs::remove_file(&config_path);
+                    fs::remove_file(&config_path)?;
                 }
             }
         }

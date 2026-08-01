@@ -14,13 +14,13 @@ impl AppendTuple {
         for variant in &mut item_enum.variants {
             if let Fields::Unnamed(fields) = &mut variant.fields {
                 for unnamed_field in &mut fields.unnamed {
-                    if let Type::Path(ty) = &mut unnamed_field.ty {
-                        if let Some(segment) = ty.path.segments.last_mut() {
-                            segment.ident = Ident::new(
-                                format!("{}{}", segment.ident, self.what).as_str(),
-                                Span::call_site(),
-                            )
-                        }
+                    if let Type::Path(ty) = &mut unnamed_field.ty
+                        && let Some(segment) = ty.path.segments.last_mut()
+                    {
+                        segment.ident = Ident::new(
+                            format!("{}{}", segment.ident, self.what).as_str(),
+                            Span::call_site(),
+                        )
                     }
                 }
             }

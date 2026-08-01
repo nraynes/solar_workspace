@@ -67,6 +67,6 @@ impl Yaml {
     where
         T: Into<Number>,
     {
-        Value::Number(Number::from(n.into()))
+        Value::Number(n.into())
     }
 }

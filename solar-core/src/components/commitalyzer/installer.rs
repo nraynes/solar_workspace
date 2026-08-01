@@ -40,7 +40,7 @@ impl Installable for CommitalyzerInstaller {
         if !git_repository.installation().hook_bin() {
             download_commitalyzer_binary(
                 &path.join(git_repository.installation().hooks_path().path()),
-            );
+            )?;
         }
 
         // Ensure commit rules directory exists.
@@ -54,7 +54,7 @@ impl Installable for CommitalyzerInstaller {
                 .rulesets()
                 .contains(&ruleset.get().to_string())
             {
-                download_commitalyzer_ruleset(&commit_rules_path, &ruleset);
+                download_commitalyzer_ruleset(&commit_rules_path, ruleset)?;
             }
         }
 

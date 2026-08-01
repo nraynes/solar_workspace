@@ -51,10 +51,9 @@ impl Installable for SemverReleaseInstaller {
                     .plugins()
                     .get(plugin.bin_name())
                     .is_none()
+                    && plugin.download_binary(&release_dir_path).is_ok()
                 {
-                    if plugin.download_binary(&release_dir_path).is_ok() {
-                        current_installation.add_plugin(plugin.to_owned());
-                    }
+                    current_installation.add_plugin(plugin.to_owned());
                 }
             }
         }
@@ -64,7 +63,7 @@ impl Installable for SemverReleaseInstaller {
             .configuration
             .or(get_semver_release_config()
                 .ok()
-                .and_then(|v| v.as_object().and_then(|m| Some(m.to_owned()))))
+                .and_then(|v| v.as_object().map(|m| m.to_owned())))
             .ok_or("Failed to acquire semver configuration.")?;
 
         if let Some(plugin_configuration_value) = configuration.get_mut(CONFIG_PLUGINS_SECTION)

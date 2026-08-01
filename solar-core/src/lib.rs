@@ -11,3 +11,8 @@ pub mod unit_command;
 mod working_dir;
 
 pub use working_dir::working_dir;
+
+pub use check_opt_vec_eq_unord::check_opt_vec_eq_unord;
+pub use check_vec_eq_unord::check_vec_eq_unord;
+pub use extend_no_overwrite::extend_no_overwrite;
+pub use sorted::sorted;

@@ -27,7 +27,7 @@ impl Parse for Attributes {
             .expect("Could not parse list of attributes.");
         let list: Vec<Attribute> = attribute_meta
             .iter()
-            .map(|x| convert_meta_to_attribute(x))
+            .map(convert_meta_to_attribute)
             .collect();
 
         if !input.is_empty() {

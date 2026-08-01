@@ -2,7 +2,7 @@ use std::path::Path;
 
 use enum_dispatch::enum_dispatch;
 
-use crate::{components::*, solar_error::SolarError, subcommand::*, unit_command::*};
+use crate::{components::*, solar_error::SolarError, subcommand::*};
 
 #[enum_dispatch]
 pub trait Run {

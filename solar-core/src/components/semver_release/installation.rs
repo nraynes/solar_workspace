@@ -70,8 +70,7 @@ impl GetPartialInstall for Installation {
     fn get_current(path: &Path) -> Result<Self, SolarError> {
         let release_dir_contents = Self::release_directory_contents(path);
         let configuration_value = Self::semver_configuration(path)?;
-        let configuration =
-            configuration_value.and_then(|v| v.as_object().and_then(|m| Some(m.to_owned())));
+        let configuration = configuration_value.and_then(|v| v.as_object().map(|m| m.to_owned()));
         Ok(Self {
             release_dir: release_dir_contents.is_some(),
             release_bin: Self::release_bin_exists(&release_dir_contents),

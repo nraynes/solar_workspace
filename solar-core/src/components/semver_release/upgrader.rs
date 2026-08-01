@@ -25,28 +25,27 @@ impl Upgradable for SemverReleaseUpgrader {
         let release_dir_path = path.join(RELEASE_DIR_NAME);
 
         // Upgrade release binary if it exists.
-        if *current_installation.release_bin() {
-            if fs::remove_file(&release_dir_path.join(RELEASE_BIN_NAME)).is_ok() {
-                if let Err(e) = download_semver_release_binary(&release_dir_path) {
-                    println!(
-                        "There was an error while trying to upgrade semver-release main binary.\n\nERROR: {}",
-                        e
-                    );
-                };
-            }
-        }
+        if *current_installation.release_bin()
+            && fs::remove_file(release_dir_path.join(RELEASE_BIN_NAME)).is_ok()
+            && let Err(e) = download_semver_release_binary(&release_dir_path)
+        {
+            println!(
+                "There was an error while trying to upgrade semver-release main binary.\n\nERROR: {}",
+                e
+            );
+        };
 
         // Upgrade plugin binaries if they exist.
         for plugin in current_installation.plugins().values() {
-            if fs::remove_file(&release_dir_path.join(plugin.bin_name())).is_ok() {
-                if let Err(e) = plugin.download_binary(&release_dir_path) {
-                    println!(
-                        "There was an error while trying to upgrade semver plugin {}.\n\nERROR: {}",
-                        plugin.bin_name(),
-                        e
-                    );
-                };
-            }
+            if fs::remove_file(release_dir_path.join(plugin.bin_name())).is_ok()
+                && let Err(e) = plugin.download_binary(&release_dir_path)
+            {
+                println!(
+                    "There was an error while trying to upgrade semver plugin {}.\n\nERROR: {}",
+                    plugin.bin_name(),
+                    e
+                );
+            };
         }
 
         Ok(())
