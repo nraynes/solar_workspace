@@ -2,7 +2,7 @@ use std::path::Path;
 
 use derive_getters::Getters;
 
-use crate::{components::git::is_git::is_git, solar_error::SolarError, traits::GetPartialInstall};
+use crate::{tools::git::is_git::is_git, solar_error::SolarError, traits::GetPartialInstall};
 
 #[derive(Getters)]
 pub struct GitRepository<T: GetPartialInstall> {

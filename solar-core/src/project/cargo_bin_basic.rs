@@ -1,6 +1,7 @@
 use std::path::Path;
 
 use clap::Parser;
+use toml::Value;
 
 use crate::{
     components::{
@@ -10,18 +11,35 @@ use crate::{
         SemverReleaseInstaller, SemverReleaseUninstaller, SemverReleaseUpgrader, VhooksInstaller,
         VhooksUninstaller,
         commitalyzer::ruleset::Ruleset,
-        git::init::try_git_init,
         github_workflows::workflow::{CargoAnyGeneralTest, CargoBinGeneralRelease, Workflow},
         licenses::license::License,
         pre_commit::Script,
         semver_release::Plugin,
-    },
-    solar_error::SolarError,
-    traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
+    }, solar_error::SolarError, tools::{cargo::CrateBuilder}, traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
 };
 
 #[derive(Parser, Clone)]
 pub struct CargoBinBasic {
+    /// The authors for this crate, if any.
+    #[arg(short, long)]
+    authors: Option<Vec<String>>,
+
+    /// The description for this crate, if any.
+    #[arg(short, long)]
+    description: Option<String>,
+
+    /// The repository for this crate, if any.
+    #[arg(short, long)]
+    repository: Option<String>,
+
+    /// The keywords for this crate, if any.
+    #[arg(short, long)]
+    keywords: Option<Vec<String>>,
+
+    /// The categories for this crate, if any.
+    #[arg(short, long)]
+    categories: Option<Vec<String>>,
+    
     /// If there is already a pre-commit hook present, this option will allow it to be overwritten.
     #[arg(short)]
     force_overwrite_pre_commit: bool,
@@ -30,6 +48,7 @@ pub struct CargoBinBasic {
 impl ConfigureProject for CargoBinBasic {
     fn deinit(&self, path: &Path) -> Result<(), SolarError> {
         self.combine_errors(&[
+
             CargoDenyUninstaller::new().uninstall(path),
             VhooksUninstaller::new(false).uninstall(path),
             PreCommitUninstaller::new().uninstall(path),
@@ -41,10 +60,26 @@ impl ConfigureProject for CargoBinBasic {
         ])
     }
 
-    fn init(&self, path: &Path) -> Result<(), SolarError> {
-        // Initialize git if it hasn't been already.
-        try_git_init(path)?;
+    fn new(&self, path: &Path, name: &str) -> Result<(), SolarError> {
+        // Initialize cargo bin package.
+        let cratebuilder = CrateBuilder::new(
+            path.join(name),
+            name.into(),
+            (0, 0, 0),
+            self.authors.clone().unwrap_or(Vec::new()),
+            self.description.clone().unwrap_or("".into()),
+            "MIT OR Apache-2.0".into(),
+            self.repository.clone().unwrap_or("".into()),
+            self.keywords.clone().unwrap_or(Vec::new()),
+            self.categories.clone().unwrap_or(Vec::new()),
+            vec![],
+        );
+        cratebuilder.bin()?;
 
+        self.init(cratebuilder.path())
+    }
+
+    fn init(&self, path: &Path) -> Result<(), SolarError> {
         // Install cargo-deny.
         self.clean_up_on_error(
             path,
@@ -114,6 +149,17 @@ impl ConfigureProject for CargoBinBasic {
             path,
             SemverReleaseInstaller::new(Some(vec![Plugin::Cargo])).install(path),
         )?;
+
+        // Update Cargo.toml to include new files in published crate.
+        let mut cargo_toml = CrateBuilder::get_cargo_toml(path)?;
+        let include_files_list = CrateBuilder::include_files_ref(&mut cargo_toml)?;
+        include_files_list.extend(vec![
+            Value::String("LICENSES/".into()),
+            Value::String("LICENSE-MIT".into()),
+            Value::String("LICENSE-Apache-2.0".into()),
+            Value::String("CHANGELOG.md".into()),
+        ]);
+        CrateBuilder::save_cargo_toml(path, &cargo_toml)?;
 
         Ok(())
     }

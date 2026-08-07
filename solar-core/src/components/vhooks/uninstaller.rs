@@ -4,10 +4,8 @@ use std::{
 };
 
 use crate::{
-    components::{
-        git::{DEFAULT_GIT_HOOKS_DIR, GitRepository},
-        vhooks::{installation::Installation, move_hooks::move_hooks},
-    },
+    components::vhooks::{installation::Installation, move_hooks::move_hooks},
+    tools::git::{DEFAULT_GIT_HOOKS_DIR, GitRepository},
     solar_error::SolarError,
     traits::Uninstallable,
 };

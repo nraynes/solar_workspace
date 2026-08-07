@@ -1,5 +1,3 @@
-use std::fs;
-
 use clap::Parser;
 
 use crate::{
@@ -22,9 +20,6 @@ pub struct New {
 
 impl Run for New {
     fn run(&self) -> Result<(), SolarError> {
-        let path = working_dir()?.join(&self.name);
-        fs::create_dir_all(&path)?;
-
-        self.project.init(&path)
+        self.project.new(&working_dir()?, &self.name)
     }
 }

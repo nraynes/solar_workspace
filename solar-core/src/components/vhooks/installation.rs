@@ -2,7 +2,7 @@ use std::path::Path;
 
 use derive_getters::Getters;
 
-use crate::{components::git::HooksPath, solar_error::SolarError, traits::GetPartialInstall};
+use crate::{tools::git::HooksPath, solar_error::SolarError, traits::GetPartialInstall};
 
 #[derive(Getters)]
 pub struct Installation {

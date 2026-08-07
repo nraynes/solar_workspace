@@ -8,9 +8,7 @@ mod git_repository;
 pub mod gitignore;
 mod hooks_path;
 pub mod init;
-mod installer;
 pub mod is_git;
-mod uninstaller;
 
 pub use git_repository::GitRepository;
 pub use hooks_path::HooksPath;

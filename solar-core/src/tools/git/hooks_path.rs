@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use derive_getters::Getters;
 
 use crate::{
-    components::git::{DEFAULT_GIT_HOOKS_DIR, git_hooks_path},
+    tools::git::{DEFAULT_GIT_HOOKS_DIR, git_hooks_path},
     solar_error::SolarError,
 };
 

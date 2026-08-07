@@ -1,6 +1,7 @@
 mod check_opt_vec_eq_unord;
 mod check_vec_eq_unord;
 pub mod components;
+pub mod tools;
 mod extend_no_overwrite;
 mod match_target;
 pub mod project;

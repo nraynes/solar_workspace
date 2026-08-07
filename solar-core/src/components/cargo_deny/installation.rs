@@ -3,10 +3,8 @@ use std::{fs, path::Path};
 use derive_getters::Getters;
 
 use crate::{
-    components::{
-        cargo::is_crate_installed::is_crate_installed,
-        cargo_deny::{PKG_NAME, TOML_NAME},
-    },
+    components::cargo_deny::{PKG_NAME, TOML_NAME},
+    tools::cargo::is_crate_installed::is_crate_installed,
     solar_error::SolarError,
     traits::GetPartialInstall,
 };

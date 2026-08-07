@@ -5,15 +5,13 @@ use derive_getters::Getters;
 use derive_new::new;
 
 use crate::{
-    components::{
-        commitalyzer::{
-            COMMIT_RULES_NAME,
-            download::{download_commitalyzer_binary, download_commitalyzer_ruleset},
-            installation::Installation,
-            ruleset::Ruleset,
-        },
-        git::GitRepository,
+    components::commitalyzer::{
+        COMMIT_RULES_NAME,
+        download::{download_commitalyzer_binary, download_commitalyzer_ruleset},
+        installation::Installation,
+        ruleset::Ruleset,
     },
+    tools::git::GitRepository,
     solar_error::SolarError,
     traits::Installable,
 };

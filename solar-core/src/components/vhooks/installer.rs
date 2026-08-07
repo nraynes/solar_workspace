@@ -9,10 +9,8 @@ use derive_new::new;
 use rust_terminal::Terminal;
 
 use crate::{
-    components::{
-        git::GitRepository,
-        vhooks::{installation::Installation, move_hooks::move_hooks},
-    },
+    components::vhooks::{installation::Installation, move_hooks::move_hooks},
+    tools::git::GitRepository,
     solar_error::SolarError,
     traits::Installable,
 };

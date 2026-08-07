@@ -5,12 +5,10 @@ use derive_getters::Getters;
 use derive_new::new;
 
 use crate::{
-    components::{
-        commitalyzer::{
-            COMMIT_MSG_NAME, download::download_commitalyzer_binary, installation::Installation,
-        },
-        git::GitRepository,
+    components::commitalyzer::{
+        COMMIT_MSG_NAME, download::download_commitalyzer_binary, installation::Installation,
     },
+    tools::git::GitRepository,
     solar_error::SolarError,
     traits::Upgradable,
 };

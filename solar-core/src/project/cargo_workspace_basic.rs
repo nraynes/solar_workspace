@@ -1,7 +1,6 @@
 use std::path::Path;
 
 use clap::Parser;
-use toml::Value;
 
 use crate::{
     components::{
@@ -19,33 +18,13 @@ use crate::{
 };
 
 #[derive(Parser, Clone)]
-pub struct CargoLibBasic {
-    /// The authors for this crate, if any.
-    #[arg(short, long)]
-    authors: Option<Vec<String>>,
-
-    /// The description for this crate, if any.
-    #[arg(short, long)]
-    description: Option<String>,
-
-    /// The repository for this crate, if any.
-    #[arg(short, long)]
-    repository: Option<String>,
-
-    /// The keywords for this crate, if any.
-    #[arg(short, long)]
-    keywords: Option<Vec<String>>,
-
-    /// The categories for this crate, if any.
-    #[arg(short, long)]
-    categories: Option<Vec<String>>,
-
+pub struct CargoWorkspaceBasic {
     /// If there is already a pre-commit hook present, this option will allow it to be overwritten.
     #[arg(short)]
     force_overwrite_pre_commit: bool,
 }
 
-impl ConfigureProject for CargoLibBasic {
+impl ConfigureProject for CargoWorkspaceBasic {
     fn deinit(&self, path: &Path) -> Result<(), SolarError> {
         self.combine_errors(&[
             CargoDenyUninstaller::new().uninstall(path),
@@ -65,15 +44,15 @@ impl ConfigureProject for CargoLibBasic {
             path.join(name),
             name.into(),
             (0, 0, 0),
-            self.authors.clone().unwrap_or(Vec::new()),
-            self.description.clone().unwrap_or("".into()),
+            Vec::new(),
+            "".into(),
             "MIT OR Apache-2.0".into(),
-            self.repository.clone().unwrap_or("".into()),
-            self.keywords.clone().unwrap_or(Vec::new()),
-            self.categories.clone().unwrap_or(Vec::new()),
+            "".into(),
+            Vec::new(),
+            Vec::new(),
             vec![],
         );
-        cratebuilder.lib()?;
+        cratebuilder.workspace()?;
 
         self.init(cratebuilder.path())
     }
@@ -148,17 +127,6 @@ impl ConfigureProject for CargoLibBasic {
             path,
             SemverReleaseInstaller::new(Some(vec![Plugin::Cargo])).install(path),
         )?;
-
-        // Update Cargo.toml to include new files in published crate.
-        let mut cargo_toml = CrateBuilder::get_cargo_toml(path)?;
-        let include_files_list = CrateBuilder::include_files_ref(&mut cargo_toml)?;
-        include_files_list.extend(vec![
-            Value::String("LICENSES/".into()),
-            Value::String("LICENSE-MIT".into()),
-            Value::String("LICENSE-Apache-2.0".into()),
-            Value::String("CHANGELOG.md".into()),
-        ]);
-        CrateBuilder::save_cargo_toml(path, &cargo_toml)?;
 
         Ok(())
     }

@@ -3,10 +3,8 @@ use std::{collections::HashSet, fs, path::Path, str::FromStr};
 use derive_getters::Getters;
 
 use crate::{
-    components::{
-        commitalyzer::{COMMIT_RULES_NAME, ruleset::Ruleset},
-        git::HooksPath,
-    },
+    components::commitalyzer::{COMMIT_RULES_NAME, ruleset::Ruleset},
+    tools::git::HooksPath,
     solar_error::SolarError,
     traits::GetPartialInstall,
 };

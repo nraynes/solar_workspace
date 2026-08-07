@@ -5,6 +5,7 @@ pub mod new;
 pub mod uninstall;
 pub mod update;
 pub mod upgrade;
+pub mod update_all;
 
 pub use deinit::Deinit;
 use enum_dispatch::enum_dispatch;
@@ -14,6 +15,7 @@ pub use new::New;
 pub use uninstall::Uninstall;
 pub use update::Update;
 pub use upgrade::Upgrade;
+pub use update_all::UpdateAll;
 
 use clap::Subcommand as SC;
 
@@ -31,6 +33,8 @@ pub enum Subcommand {
 
     /// Updates the configuration of tools on the current project.
     Update(Update),
+
+    UpdateAll(UpdateAll),
 
     /// Upgrade a single tool in the solar project.
     Ugrade(Upgrade),

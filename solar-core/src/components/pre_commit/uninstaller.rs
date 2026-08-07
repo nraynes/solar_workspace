@@ -5,10 +5,8 @@ use derive_getters::Getters;
 use derive_new::new;
 
 use crate::{
-    components::{
-        git::GitRepository,
-        pre_commit::{PRE_COMMIT, installation::Installation},
-    },
+    components::pre_commit::{PRE_COMMIT, installation::Installation},
+    tools::git::GitRepository,
     solar_error::SolarError,
     traits::Uninstallable,
 };

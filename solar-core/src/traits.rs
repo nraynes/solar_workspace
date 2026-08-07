@@ -26,6 +26,8 @@ pub trait Upgradable {
 
 #[enum_dispatch]
 pub trait ConfigureProject {
+    fn new(&self, path: &Path, name: &str) -> Result<(), SolarError>;
+
     fn init(&self, path: &Path) -> Result<(), SolarError>;
 
     fn deinit(&self, path: &Path) -> Result<(), SolarError>;

@@ -1502,6 +1502,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "solar-test"
+version = "0.1.0"
+
+[[package]]
+name = "solar-utils"
+version = "0.1.0"
+
+[[package]]
 name = "spdx"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

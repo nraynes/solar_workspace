@@ -1,7 +1,5 @@
-pub mod cargo;
 pub mod cargo_deny;
 pub mod commitalyzer;
-pub mod git;
 pub mod github_workflows;
 pub mod licenses;
 pub mod pre_commit;
@@ -19,6 +17,7 @@ pub use vhooks::{VhooksInstaller, VhooksUninstaller};
 use clap::Subcommand;
 use enum_dispatch::enum_dispatch;
 use enum_printer::enum_printer;
+use strum_macros::EnumIter;
 
 #[enum_printer(
     InstallableComponent = [
@@ -42,7 +41,7 @@ use enum_printer::enum_printer;
     UpgradableComponent = [
         attributes = [
             enum_dispatch(Upgradable),
-            derive(Subcommand, Clone, PartialEq, Debug)
+            derive(Subcommand, Clone, PartialEq, Debug, EnumIter)
         ],
         variants = [
             append_tuple(Upgrader)

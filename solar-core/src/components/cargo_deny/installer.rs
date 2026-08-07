@@ -5,12 +5,10 @@ use derive_getters::Getters;
 use derive_new::new;
 
 use crate::{
-    components::{
-        cargo::try_cargo_install::try_cargo_install,
-        cargo_deny::{
-            PKG_NAME, TOML_NAME, generate_toml::generate_toml, installation::Installation,
-        },
+    components::cargo_deny::{
+        PKG_NAME, TOML_NAME, generate_toml::generate_toml, installation::Installation,
     },
+    tools::cargo::try_cargo_install::try_cargo_install,
     solar_error::SolarError,
     traits::{GetPartialInstall, Installable},
 };
