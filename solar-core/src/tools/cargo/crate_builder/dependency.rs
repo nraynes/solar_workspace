@@ -8,15 +8,12 @@ use crate::solar_error::SolarError;
 #[derive(new)]
 pub struct Dependency {
     name: String,
-    features: Vec<String>
+    features: Vec<String>,
 }
 
 impl<const N: usize> From<(&str, [&str; N])> for Dependency {
     fn from(value: (&str, [&str; N])) -> Self {
-        Self::new(
-            value.0.into(),
-            Vec::from(value.1.map(|s| s.to_string()))
-        )
+        Self::new(value.0.into(), Vec::from(value.1.map(|s| s.to_string())))
     }
 }
 

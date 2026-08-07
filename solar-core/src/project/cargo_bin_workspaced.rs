@@ -3,7 +3,7 @@ use std::path::Path;
 use clap::Parser;
 use toml::Value;
 
-use crate::{solar_error::SolarError, tools::{cargo::CrateBuilder}, traits::ConfigureProject};
+use crate::{solar_error::SolarError, tools::cargo::CrateBuilder, traits::ConfigureProject};
 
 #[derive(Parser, Clone)]
 pub struct CargoBinWorkspaced {
@@ -26,7 +26,7 @@ pub struct CargoBinWorkspaced {
     /// The categories for this crate, if any.
     #[arg(short, long)]
     categories: Option<Vec<String>>,
-    
+
     /// If there is already a pre-commit hook present, this option will allow it to be overwritten.
     #[arg(short)]
     force_overwrite_pre_commit: bool,

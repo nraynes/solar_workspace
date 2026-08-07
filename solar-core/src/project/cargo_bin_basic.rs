@@ -15,7 +15,10 @@ use crate::{
         licenses::license::License,
         pre_commit::Script,
         semver_release::Plugin,
-    }, solar_error::SolarError, tools::{cargo::CrateBuilder}, traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
+    },
+    solar_error::SolarError,
+    tools::cargo::CrateBuilder,
+    traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
 };
 
 #[derive(Parser, Clone)]
@@ -39,7 +42,7 @@ pub struct CargoBinBasic {
     /// The categories for this crate, if any.
     #[arg(short, long)]
     categories: Option<Vec<String>>,
-    
+
     /// If there is already a pre-commit hook present, this option will allow it to be overwritten.
     #[arg(short)]
     force_overwrite_pre_commit: bool,
@@ -48,7 +51,6 @@ pub struct CargoBinBasic {
 impl ConfigureProject for CargoBinBasic {
     fn deinit(&self, path: &Path) -> Result<(), SolarError> {
         self.combine_errors(&[
-
             CargoDenyUninstaller::new().uninstall(path),
             VhooksUninstaller::new(false).uninstall(path),
             PreCommitUninstaller::new().uninstall(path),

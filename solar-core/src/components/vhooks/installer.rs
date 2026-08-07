@@ -10,8 +10,8 @@ use rust_terminal::Terminal;
 
 use crate::{
     components::vhooks::{installation::Installation, move_hooks::move_hooks},
-    tools::git::GitRepository,
     solar_error::SolarError,
+    tools::git::GitRepository,
     traits::Installable,
 };
 

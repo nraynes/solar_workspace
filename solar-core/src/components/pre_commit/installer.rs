@@ -6,8 +6,8 @@ use derive_new::new;
 
 use crate::{
     components::pre_commit::{PRE_COMMIT, Script, installation::Installation},
-    tools::git::GitRepository,
     solar_error::SolarError,
+    tools::git::GitRepository,
     traits::Installable,
 };
 

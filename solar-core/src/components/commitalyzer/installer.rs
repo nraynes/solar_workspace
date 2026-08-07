@@ -11,8 +11,8 @@ use crate::{
         installation::Installation,
         ruleset::Ruleset,
     },
-    tools::git::GitRepository,
     solar_error::SolarError,
+    tools::git::GitRepository,
     traits::Installable,
 };
 

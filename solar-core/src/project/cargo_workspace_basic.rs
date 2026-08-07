@@ -14,7 +14,10 @@ use crate::{
         licenses::license::License,
         pre_commit::Script,
         semver_release::Plugin,
-    }, solar_error::SolarError, tools::{cargo::CrateBuilder}, traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
+    },
+    solar_error::SolarError,
+    tools::cargo::CrateBuilder,
+    traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
 };
 
 #[derive(Parser, Clone)]

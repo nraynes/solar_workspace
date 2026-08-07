@@ -4,8 +4,8 @@ pub mod install;
 pub mod new;
 pub mod uninstall;
 pub mod update;
-pub mod upgrade;
 pub mod update_all;
+pub mod upgrade;
 
 pub use deinit::Deinit;
 use enum_dispatch::enum_dispatch;
@@ -14,8 +14,8 @@ pub use install::Install;
 pub use new::New;
 pub use uninstall::Uninstall;
 pub use update::Update;
-pub use upgrade::Upgrade;
 pub use update_all::UpdateAll;
+pub use upgrade::Upgrade;
 
 use clap::Subcommand as SC;
 

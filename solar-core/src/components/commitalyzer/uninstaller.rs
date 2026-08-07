@@ -8,8 +8,8 @@ use crate::{
     components::commitalyzer::{
         COMMIT_MSG_NAME, COMMIT_RULES_NAME, installation::Installation, ruleset::Ruleset,
     },
-    tools::git::GitRepository,
     solar_error::SolarError,
+    tools::git::GitRepository,
     traits::Uninstallable,
 };
 

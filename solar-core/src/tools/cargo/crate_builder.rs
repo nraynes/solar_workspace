@@ -5,7 +5,11 @@ use derive_getters::Getters;
 use rust_terminal::Terminal;
 use toml::{Table, Value, map::Map};
 
-use std::{fs::{self, File}, io::Write, path::{Path, PathBuf}};
+use std::{
+    fs::{self, File},
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 use derive_new::new;
 
@@ -22,7 +26,7 @@ pub struct CrateBuilder {
     repository: String,
     keywords: Vec<String>,
     categories: Vec<String>,
-    
+
     #[new(into)]
     dependencies: Vec<Dependency>,
 }
@@ -50,7 +54,10 @@ impl CrateBuilder {
         Ok(false)
     }
 
-    fn add_dependencies<const N: usize>(&self, additional_dependencies: [Dependency; N]) -> Result<(), SolarError> {
+    fn add_dependencies<const N: usize>(
+        &self,
+        additional_dependencies: [Dependency; N],
+    ) -> Result<(), SolarError> {
         for dependency in &self.dependencies {
             dependency.add_to(&self.path)?;
         }
@@ -62,7 +69,10 @@ impl CrateBuilder {
         Ok(())
     }
 
-    fn package_extension(&self, include_files_with: Option<Vec<Value>>) -> Result<Map<String, Value>, SolarError> {
+    fn package_extension(
+        &self,
+        include_files_with: Option<Vec<Value>>,
+    ) -> Result<Map<String, Value>, SolarError> {
         let mut package_extension_table: Map<String, Value> = Map::new();
         let mut include_files = vec![
             Value::String("src/".into()),
@@ -86,13 +96,21 @@ impl CrateBuilder {
         Ok(cargo_toml_string.parse::<Table>()?)
     }
 
-    pub fn save_cargo_toml(path: &Path, new_cargo_toml: &Map<String, Value>) -> Result<(), SolarError> {
-        let mut file_handle= File::options().write(true).truncate(true).open(path.join(CARGO_TOML))?;
+    pub fn save_cargo_toml(
+        path: &Path,
+        new_cargo_toml: &Map<String, Value>,
+    ) -> Result<(), SolarError> {
+        let mut file_handle = File::options()
+            .write(true)
+            .truncate(true)
+            .open(path.join(CARGO_TOML))?;
         file_handle.write_all(toml::to_string_pretty(new_cargo_toml)?.as_bytes())?;
         Ok(())
     }
 
-    pub fn include_files_ref(cargo_toml: &mut Map<String, Value>) -> Result<&mut Vec<Value>, SolarError> {
+    pub fn include_files_ref(
+        cargo_toml: &mut Map<String, Value>,
+    ) -> Result<&mut Vec<Value>, SolarError> {
         Ok(cargo_toml
             .get_mut("package")
             .ok_or("The Cargo.toml file did not have the expected layout.")?
@@ -104,7 +122,11 @@ impl CrateBuilder {
             .ok_or("Include files list in Cargo.toml is not an array.")?)
     }
 
-    fn build_cargo_toml(&self, extend_with: Option<Map<String, Value>>, extend_package_table_with: Option<Map<String, Value>>) -> Result<(), SolarError> {
+    fn build_cargo_toml(
+        &self,
+        extend_with: Option<Map<String, Value>>,
+        extend_package_table_with: Option<Map<String, Value>>,
+    ) -> Result<(), SolarError> {
         let crate_path = &self.crate_path();
         let mut cargo_toml: Map<String, Value> = Self::get_cargo_toml(crate_path)?;
         let package_table = cargo_toml
@@ -113,13 +135,52 @@ impl CrateBuilder {
             .as_table_mut()
             .ok_or("'package' section does not have the expected layout.")?;
 
-        package_table.insert("version".into(), Value::String(format!("{}.{}.{}", self.version.0, self.version.1, self.version.2)));
-        package_table.insert("authors".into(), Value::Array(self.authors.to_owned().into_iter().map(|s| Value::String(s)).collect()));
-        package_table.insert("description".into(), Value::String(self.description.to_owned()));
+        package_table.insert(
+            "version".into(),
+            Value::String(format!(
+                "{}.{}.{}",
+                self.version.0, self.version.1, self.version.2
+            )),
+        );
+        package_table.insert(
+            "authors".into(),
+            Value::Array(
+                self.authors
+                    .to_owned()
+                    .into_iter()
+                    .map(|s| Value::String(s))
+                    .collect(),
+            ),
+        );
+        package_table.insert(
+            "description".into(),
+            Value::String(self.description.to_owned()),
+        );
         package_table.insert("license".into(), Value::String(self.license.to_owned()));
-        package_table.insert("repository".into(), Value::String(self.repository.to_owned()));
-        package_table.insert("keywords".into(), Value::Array(self.keywords.to_owned().into_iter().map(|s| Value::String(s)).collect()));
-        package_table.insert("categories".into(), Value::Array(self.categories.to_owned().into_iter().map(|s| Value::String(s)).collect()));
+        package_table.insert(
+            "repository".into(),
+            Value::String(self.repository.to_owned()),
+        );
+        package_table.insert(
+            "keywords".into(),
+            Value::Array(
+                self.keywords
+                    .to_owned()
+                    .into_iter()
+                    .map(|s| Value::String(s))
+                    .collect(),
+            ),
+        );
+        package_table.insert(
+            "categories".into(),
+            Value::Array(
+                self.categories
+                    .to_owned()
+                    .into_iter()
+                    .map(|s| Value::String(s))
+                    .collect(),
+            ),
+        );
 
         if let Some(package_table_extension) = extend_package_table_with {
             package_table.extend(package_table_extension);
@@ -130,7 +191,7 @@ impl CrateBuilder {
         }
 
         Self::save_cargo_toml(crate_path, &cargo_toml)?;
-        
+
         Ok(())
     }
 
@@ -139,9 +200,10 @@ impl CrateBuilder {
         self.cargo(["new", &self.name])?;
 
         // Build Cargo.toml.
-        self.build_cargo_toml(None, Some(self.package_extension(Some(vec![
-            Value::String("build.rs".into()),
-        ]))?))?;
+        self.build_cargo_toml(
+            None,
+            Some(self.package_extension(Some(vec![Value::String("build.rs".into())]))?),
+        )?;
 
         // Add dependencies.
         self.add_dependencies([])?;
@@ -171,7 +233,10 @@ impl CrateBuilder {
         cargo_toml_extension.insert("lib".into(), Value::Table(lib_table));
 
         // Build Cargo.toml.
-        self.build_cargo_toml(Some(cargo_toml_extension), Some(self.package_extension(None)?))?;
+        self.build_cargo_toml(
+            Some(cargo_toml_extension),
+            Some(self.package_extension(None)?),
+        )?;
 
         // Add dependencies + dependencies for proc macro.
         self.add_dependencies([
@@ -185,15 +250,18 @@ impl CrateBuilder {
     pub fn workspace(&self) -> Result<(), SolarError> {
         let workspace_path = self.path.join(&self.name);
         fs::create_dir_all(&workspace_path)?;
-        
+
         // Build Cargo.toml for workspace.
         let mut cargo_toml: Map<String, Value> = Map::new();
         let mut workspace_table: Map<String, Value> = Map::new();
         workspace_table.insert("resolver".into(), Value::String("3".into()));
         cargo_toml.insert("workspace".into(), Value::Table(workspace_table));
-        
+
         // Write Cargo.toml.
-        let mut file_handle = File::options().create_new(true).write(true).open(workspace_path.join(CARGO_TOML))?;
+        let mut file_handle = File::options()
+            .create_new(true)
+            .write(true)
+            .open(workspace_path.join(CARGO_TOML))?;
         file_handle.write_all(toml::to_string_pretty(&cargo_toml)?.as_bytes())?;
 
         Ok(())

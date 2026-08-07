@@ -3,9 +3,7 @@ use std::{fs, path::Path};
 use derive_getters::Getters;
 
 use crate::{
-    components::pre_commit::PRE_COMMIT,
-    tools::git::HooksPath,
-    solar_error::SolarError,
+    components::pre_commit::PRE_COMMIT, solar_error::SolarError, tools::git::HooksPath,
     traits::GetPartialInstall,
 };
 

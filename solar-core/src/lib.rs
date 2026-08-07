@@ -1,13 +1,13 @@
 mod check_opt_vec_eq_unord;
 mod check_vec_eq_unord;
 pub mod components;
-pub mod tools;
 mod extend_no_overwrite;
 mod match_target;
 pub mod project;
 pub mod solar_error;
 mod sorted;
 mod subcommand;
+pub mod tools;
 pub mod traits;
 pub mod unit_command;
 mod working_dir;
