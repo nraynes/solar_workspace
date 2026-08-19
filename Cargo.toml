@@ -1,3 +1,3 @@
 [workspace]
 resolver = "3"
-members = ["cargo-solar", "enum_printer", "solar-core", "solar-test", "solar-utils"]
+members = ["cargo-solar", "enum_printer", "solar-core", "solar-utils"]

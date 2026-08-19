@@ -9,6 +9,7 @@ pub mod gitignore;
 mod hooks_path;
 pub mod init;
 pub mod is_git;
+pub mod set_remote_origin;
 
 pub use git_repository::GitRepository;
 pub use hooks_path::HooksPath;

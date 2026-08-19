@@ -1,6 +1,22 @@
 [package]
 name = "solar-utils"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2024"
+authors = ["Nicholas Raynes"]
+description = "Utility functions for writing more idiomatic code."
+license  = "MIT OR Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/nraynes/solar_workspace"
+keywords = ["solar", "framework", "cargo", "project", "tools"]
+categories = ["development-tools"]
+include = [
+    "src/",
+    "examples/",
+    "Cargo.toml",
+    "../LICENSES/",
+    "../LICENSE",
+    "../README.md",
+    "../CHANGELOG.md",
+]
 
 [dependencies]

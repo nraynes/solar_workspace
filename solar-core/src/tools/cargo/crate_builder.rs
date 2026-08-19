@@ -73,21 +73,23 @@ impl CrateBuilder {
         &self,
         include_files_with: Option<Vec<Value>>,
     ) -> Result<Map<String, Value>, SolarError> {
+        let readme = if self.in_workspace()? {
+            Value::String("../README.md".into())
+        } else {
+            Value::String("README.md".into())
+        };
         let mut package_extension_table: Map<String, Value> = Map::new();
         let mut include_files = vec![
             Value::String("src/".into()),
             Value::String("examples/".into()),
             Value::String("Cargo.toml".into()),
-            if self.in_workspace()? {
-                Value::String("../README.md".into())
-            } else {
-                Value::String("README.md".into())
-            },
+            readme.clone(),
         ];
         if let Some(include_files_extension) = include_files_with {
             include_files.extend(include_files_extension);
         }
         package_extension_table.insert("include".into(), Value::Array(include_files));
+        package_extension_table.insert("readme".into(), readme);
         Ok(package_extension_table)
     }
 

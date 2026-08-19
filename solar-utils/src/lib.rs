@@ -1,14 +1,9 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod check_opt_vec_eq_unord;
+mod check_vec_eq_unord;
+mod extend_no_overwrite;
+mod sorted;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use check_opt_vec_eq_unord::check_opt_vec_eq_unord;
+pub use check_vec_eq_unord::check_vec_eq_unord;
+pub use extend_no_overwrite::extend_no_overwrite;
+pub use sorted::sorted;

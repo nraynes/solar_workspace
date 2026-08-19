@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{fs::File, path::Path};
 
 use clap::Parser;
 use toml::Value;
@@ -17,7 +17,7 @@ use crate::{
         semver_release::Plugin,
     },
     solar_error::SolarError,
-    tools::cargo::CrateBuilder,
+    tools::{cargo::CrateBuilder, git::set_remote_origin::set_remote_origin},
     traits::{ConfigureProject, Installable, Uninstallable, Upgradable},
 };
 
@@ -42,6 +42,10 @@ pub struct CargoLibBasic {
     /// The categories for this crate, if any.
     #[arg(short, long)]
     categories: Option<Vec<String>>,
+
+    /// The git origin for this crate, if any.
+    #[arg(short, long)]
+    origin: Option<String>,
 
     /// If there is already a pre-commit hook present, this option will allow it to be overwritten.
     #[arg(short)]
@@ -77,6 +81,14 @@ impl ConfigureProject for CargoLibBasic {
             vec![],
         );
         cratebuilder.lib()?;
+
+        // Create the readme.
+        File::create(cratebuilder.path().join("README.md"))?;
+
+        // Set the git origin point if provided.
+        if let Some(origin) = &self.origin {
+            set_remote_origin(cratebuilder.path(), origin)?;
+        }
 
         self.init(cratebuilder.path())
     }
