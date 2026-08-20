@@ -21,7 +21,7 @@ impl TryFrom<&Path> for HooksPath {
         let is_default = hooks_path
             .to_str()
             .ok_or("Could not convert hooks path to str.")?
-            != DEFAULT_GIT_HOOKS_DIR;
+            == DEFAULT_GIT_HOOKS_DIR;
 
         Ok(Self {
             path: hooks_path,

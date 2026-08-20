@@ -149,6 +149,7 @@ dependencies = [
  "affirm-fs",
  "clap",
  "clap_mangen",
+ "derive-getters",
  "mocked-up",
  "rust-terminal 0.3.0",
  "serde_json",

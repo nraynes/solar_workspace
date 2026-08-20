@@ -12,6 +12,7 @@ use crate::{
 use clap::Parser;
 use derive_getters::Getters;
 use derive_new::new;
+use rust_terminal::Terminal;
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Getters, new)]
 pub struct VhooksUninstaller {
@@ -41,6 +42,18 @@ impl Uninstallable for VhooksUninstaller {
 
             // Remove the versioned hooks folder.
             fs::remove_dir_all(git_repository.installation().hooks_path().path())?;
+
+            // Set the hooks directory.
+            Terminal::command().current_dir(path).piped().run(
+                "git",
+                vec![
+                    "config",
+                    "core.hooksPath",
+                    default_hooks_path
+                        .to_str()
+                        .ok_or("Could not convert default git hooks path to string.")?,
+                ],
+            )?;
         }
 
         Ok(())
