@@ -1,75 +1,43 @@
-use std::{fs, path::Path, str::FromStr};
+use std::{fs, path::Path};
 
-use serde_json::Value;
-use solar_core::{
-    Config,
-    components::{Plugin, RELEASE_BIN_NAME, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME},
-};
+use affirm_fs::Directory;
+use derive_getters::Getters;
+use serde_json::{Map, Value};
+use solar_core::components::semver_release::{RELEASE_CONFIG_NAME, RELEASE_DIR_NAME};
 
-mod double_install;
-mod operations_duplicate_plugin;
-mod operations_no_plugins;
-mod operations_one_plugin;
-mod uninstall_no_install;
-mod uninstall_one_plugin;
-mod upgrade_no_install;
-mod upgrade_one_plugin;
+mod install;
+mod uninstall;
+mod upgrade;
 
-use crate::{assert, assert_opt_vec_eq_unord};
-
-pub fn assert_configuration(path: &Path, expected_plugins: Option<Vec<Plugin>>) {
-    let solar_config = Config::load_from(path).unwrap();
-    let semver_release_config = solar_config.semver_release().as_ref().unwrap();
-    let actual_plugins = semver_release_config.plugins();
-    assert_opt_vec_eq_unord(actual_plugins, &expected_plugins, true);
+#[derive(Getters)]
+pub struct Snapshot {
+    release_dir: Option<Directory>,
+    semver_config: Option<Map<String, Value>>,
 }
 
-pub fn assert_installation(path: &Path, expected_plugins: Option<Vec<Plugin>>, assert_true: bool) {
-    assert(
-        fs::exists(path.join(RELEASE_DIR_NAME)).unwrap(),
-        assert_true,
-    );
-    assert(
-        fs::exists(path.join(RELEASE_DIR_NAME).join(RELEASE_BIN_NAME)).unwrap(),
-        assert_true,
-    );
+impl From<&Path> for Snapshot {
+    fn from(value: &Path) -> Self {
+        let config_path = value.join(RELEASE_CONFIG_NAME);
+        let release_dir = Directory::try_from(value.join(RELEASE_DIR_NAME)).ok();
+        let semver_config = fs::exists(&config_path).unwrap().then(|| {
+            serde_json::from_str::<Value>(&fs::read_to_string(&config_path).unwrap())
+                .unwrap()
+                .as_object()
+                .unwrap()
+                .clone()
+        });
 
-    assert(
-        fs::exists(path.join(RELEASE_CONFIG_NAME)).unwrap(),
-        assert_true,
-    );
-    if assert_true {
-        let config_contents = Value::from_str(
-            &fs::read_to_string(path.join(RELEASE_CONFIG_NAME))
-                .expect("No configuration file found."),
-        )
-        .unwrap();
-        let plugin_configs = config_contents
-            .as_object()
-            .ok_or("Could not parse release config.")
-            .unwrap()
-            .get("plugins")
-            .ok_or("Could not extract plugins config.")
-            .unwrap()
-            .as_object()
-            .ok_or("Could not parse plugins config.")
-            .unwrap();
-        if let Some(plugins) = expected_plugins {
-            for plugin in plugins {
-                assert(
-                    fs::exists(path.join(RELEASE_DIR_NAME).join(plugin.bin_name())).unwrap(),
-                    assert_true,
-                );
-
-                let plugin_config_result = plugin_configs
-                    .get(plugin.bin_name())
-                    .ok_or(format!("Plugin {}:", plugin.bin_name()));
-                match assert_true {
-                    true => plugin_config_result.expect("Configuration not found."),
-                    false => plugin_config_result
-                        .expect("Configuration found when it should not have been."),
-                };
-            }
+        Self {
+            release_dir,
+            semver_config,
         }
+    }
+}
+
+impl Snapshot {
+    pub fn plugin_configurations(&self) -> Option<&Map<String, Value>> {
+        self.semver_config
+            .as_ref()
+            .and_then(|x| x.get("plugins").and_then(|x| x.as_object()))
     }
 }

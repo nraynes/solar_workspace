@@ -11,7 +11,7 @@ use serde_json::Value;
 
 use crate::{
     components::semver_release::{
-        CONFIG_PLUGINS_SECTION, Plugin, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME,
+        CONFIG_PLUGINS_SECTION, Platform, Plugin, RELEASE_CONFIG_NAME, RELEASE_DIR_NAME,
         download::{download_semver_release_binary, get_semver_release_config},
         installation::Installation,
     },
@@ -24,6 +24,10 @@ pub struct SemverReleaseInstaller {
     /// The list of semver plugins to use.
     #[arg(short, long, num_args = 0..)]
     plugins: Option<Vec<Plugin>>,
+
+    /// The desired platform for the binary.
+    #[arg(short, long, default_value = "arm-macos")]
+    os: Platform,
 }
 
 impl Installable for SemverReleaseInstaller {
@@ -41,7 +45,7 @@ impl Installable for SemverReleaseInstaller {
 
         // Download main semver binary if it doesn't exist.
         if !current_installation.release_bin() {
-            download_semver_release_binary(&release_dir_path)?;
+            download_semver_release_binary(&release_dir_path, &self.os)?;
         }
 
         // Download plugin binaries from arguments if they do not exist.

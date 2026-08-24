@@ -1,10 +1,10 @@
 use clap::Parser;
+use solar_utils::working_dir;
 
 use crate::{
     components::UninstallableComponent,
     solar_error::SolarError,
     traits::{Run, Uninstallable},
-    working_dir,
 };
 
 #[derive(Parser, Clone)]

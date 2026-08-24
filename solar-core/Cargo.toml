@@ -30,6 +30,7 @@ rust-dl = "0.0.1"
 rust-terminal = "0.2.1"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"
+solar-utils = { path = "../solar-utils" }
 spdx = "0.13.4"
 toml = "1.1.2"
 url = "2.5.8"

@@ -1,10 +1,10 @@
 use clap::Parser;
+use solar_utils::working_dir;
 
 use crate::{
     project::Project,
     solar_error::SolarError,
     traits::{ConfigureProject, Run},
-    working_dir,
 };
 
 #[derive(Parser, Clone)]

@@ -1605,6 +1605,7 @@ dependencies = [
  "rust-terminal 0.2.1",
  "serde",
  "serde_json",
+ "solar-utils",
  "spdx",
  "strum",
  "strum_macros",

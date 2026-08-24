@@ -1,11 +1,13 @@
 pub mod download;
 pub mod installation;
 mod installer;
+mod platform;
 mod plugin;
 mod uninstaller;
 mod upgrader;
 
 pub use installer::SemverReleaseInstaller;
+pub use platform::Platform;
 pub use plugin::Plugin;
 pub use uninstaller::SemverReleaseUninstaller;
 pub use upgrader::SemverReleaseUpgrader;

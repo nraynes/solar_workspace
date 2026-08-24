@@ -41,8 +41,12 @@ impl Installation {
     }
 
     fn semver_configuration(path: &Path) -> Result<Option<Value>, SolarError> {
-        let config_file_text = fs::read_to_string(path.join(RELEASE_CONFIG_NAME))?;
-        Ok(Some(Value::from_str(&config_file_text)?))
+        let configuration_path = path.join(RELEASE_CONFIG_NAME);
+        if fs::exists(&configuration_path)? {
+            let config_file_text = fs::read_to_string(&configuration_path)?;
+            return Ok(Some(Value::from_str(&config_file_text)?));
+        }
+        Ok(None)
     }
 
     fn installed_plugins(

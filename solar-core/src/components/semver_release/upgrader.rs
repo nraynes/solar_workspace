@@ -6,7 +6,7 @@ use derive_new::new;
 
 use crate::{
     components::semver_release::{
-        RELEASE_BIN_NAME, RELEASE_DIR_NAME, download::download_semver_release_binary,
+        Platform, RELEASE_BIN_NAME, RELEASE_DIR_NAME, download::download_semver_release_binary,
         installation::Installation,
     },
     solar_error::SolarError,
@@ -14,7 +14,11 @@ use crate::{
 };
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Getters, new)]
-pub struct SemverReleaseUpgrader {}
+pub struct SemverReleaseUpgrader {
+    /// The desired platform for the binary.
+    #[arg(short, long, default_value = "arm-macos")]
+    os: Platform,
+}
 
 impl Upgradable for SemverReleaseUpgrader {
     fn upgrade(&self, path: &Path) -> Result<(), SolarError> {
@@ -27,7 +31,7 @@ impl Upgradable for SemverReleaseUpgrader {
         // Upgrade release binary if it exists.
         if *current_installation.release_bin()
             && fs::remove_file(release_dir_path.join(RELEASE_BIN_NAME)).is_ok()
-            && let Err(e) = download_semver_release_binary(&release_dir_path)
+            && let Err(e) = download_semver_release_binary(&release_dir_path, &self.os)
         {
             println!(
                 "There was an error while trying to upgrade semver-release main binary.\n\nERROR: {}",

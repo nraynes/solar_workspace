@@ -14,7 +14,7 @@ use crate::{
         github_workflows::workflow::{CargoAnyGeneralTest, CargoBinGeneralRelease, Workflow},
         licenses::license::License,
         pre_commit::Script,
-        semver_release::Plugin,
+        semver_release::{Platform, Plugin},
     },
     solar_error::SolarError,
     tools::{cargo::CrateBuilder, git::set_remote_origin::set_remote_origin},
@@ -161,7 +161,8 @@ impl ConfigureProject for CargoBinBasic {
         // Install SemverRelease.
         self.clean_up_on_error(
             path,
-            SemverReleaseInstaller::new(Some(vec![Plugin::Cargo])).install(path),
+            SemverReleaseInstaller::new(Some(vec![Plugin::Cargo]), Platform::ArmMacos)
+                .install(path),
         )?;
 
         // Update Cargo.toml to include new files in published crate.
@@ -181,7 +182,7 @@ impl ConfigureProject for CargoBinBasic {
     fn update(&self, path: &Path) -> Result<(), SolarError> {
         self.combine_errors(&[
             CommitalyzerUpgrader::new().upgrade(path),
-            SemverReleaseUpgrader::new().upgrade(path),
+            SemverReleaseUpgrader::new(Platform::ArmMacos).upgrade(path),
         ])
     }
 }
