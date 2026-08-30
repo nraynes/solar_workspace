@@ -19,7 +19,7 @@ use crate::{
 
 #[derive(Parser, Clone, Default, PartialEq, Debug, Getters, new)]
 pub struct SemverReleaseUninstaller {
-    /// The list of semver plugins to use.
+    /// The list of semver plugins to uninstall.
     #[arg(short, long, num_args = 0..)]
     plugins: Option<Vec<Plugin>>,
 }
@@ -68,7 +68,10 @@ impl Uninstallable for SemverReleaseUninstaller {
                 }
             }
             None => {
-                if fs::remove_dir_all(&release_dir_path).is_ok() {
+                if *current_installation.release_dir() {
+                    fs::remove_dir_all(&release_dir_path)?;
+                }
+                if current_installation.configuration().is_some() {
                     fs::remove_file(&config_path)?;
                 }
             }

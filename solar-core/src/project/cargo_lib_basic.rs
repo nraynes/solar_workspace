@@ -161,7 +161,7 @@ impl ConfigureProject for CargoLibBasic {
         // Install SemverRelease.
         self.clean_up_on_error(
             path,
-            SemverReleaseInstaller::new(Some(vec![Plugin::Cargo]), Platform::ArmMacos)
+            SemverReleaseInstaller::new(Some(vec![Plugin::SemverCargo]), Platform::ArmMacos)
                 .install(path),
         )?;
 

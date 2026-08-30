@@ -2,6 +2,7 @@ mod check_opt_vec_eq_unord;
 mod check_vec_eq_unord;
 mod extend_no_overwrite;
 mod match_target;
+mod prod_switch;
 mod sorted;
 mod working_dir;
 

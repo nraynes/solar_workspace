@@ -42,7 +42,7 @@ impl Upgradable for SemverReleaseUpgrader {
         // Upgrade plugin binaries if they exist.
         for plugin in current_installation.plugins().values() {
             if fs::remove_file(release_dir_path.join(plugin.bin_name())).is_ok()
-                && let Err(e) = plugin.download_binary(&release_dir_path)
+                && let Err(e) = plugin.download_binary(&release_dir_path, &self.os)
             {
                 println!(
                     "There was an error while trying to upgrade semver plugin {}.\n\nERROR: {}",

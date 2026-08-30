@@ -7,33 +7,42 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use url::Url;
 
-use crate::solar_error::SolarError;
+use crate::{
+    components::semver_release::Platform,
+    solar_error::SolarError,
+    strings::{
+        SEMVER_CARGO_BINARY_URL_ARM_MACOS, SEMVER_CARGO_BINARY_URL_X86_LINUX,
+        SEMVER_CARGO_BINARY_URL_X86_MACOS, SEMVER_CARGO_BINARY_URL_X86_WINDOWS,
+        SEMVER_CARGO_CONFIG_URL,
+    },
+};
 
 #[derive(ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Ord, PartialOrd, Eq)]
 pub enum Plugin {
-    Cargo,
+    SemverCargo,
 }
 
 impl Plugin {
     pub fn bin_name(&self) -> &str {
         match self {
-            Self::Cargo => "semver-cargo",
+            Self::SemverCargo => "semver-cargo",
         }
     }
 
-    fn binary_download_url(&self) -> Result<Url, SolarError> {
+    fn binary_download_url(&self, os: &Platform) -> Result<Url, SolarError> {
         Ok(match self {
-            Self::Cargo => Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/bin/arm-macos/semver-cargo",
-            )?,
+            Self::SemverCargo => Url::parse(match os {
+                Platform::ArmMacos => SEMVER_CARGO_BINARY_URL_ARM_MACOS,
+                Platform::X86Macos => SEMVER_CARGO_BINARY_URL_X86_MACOS,
+                Platform::X86Linux => SEMVER_CARGO_BINARY_URL_X86_LINUX,
+                Platform::X86Windows => SEMVER_CARGO_BINARY_URL_X86_WINDOWS,
+            })?,
         })
     }
 
     fn plugin_configuration_url(&self) -> Result<Url, SolarError> {
         Ok(match self {
-            Self::Cargo => Url::parse(
-                "https://github.com/nraynes/semver-cargo/raw/refs/heads/master/sample.plugin.config.json",
-            )?,
+            Self::SemverCargo => Url::parse(SEMVER_CARGO_CONFIG_URL)?,
         })
     }
 
@@ -47,9 +56,9 @@ impl Plugin {
             .clone())
     }
 
-    pub fn download_binary(&self, destination: &Path) -> Result<(), SolarError> {
+    pub fn download_binary(&self, destination: &Path, os: &Platform) -> Result<(), SolarError> {
         Ok(download_sync(
-            self.binary_download_url()?,
+            self.binary_download_url(os)?,
             destination.join(self.bin_name()),
         )?)
     }
@@ -60,8 +69,8 @@ impl FromStr for Plugin {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "cargo" => Ok(Self::Cargo),
-            "semver-cargo" => Ok(Self::Cargo),
+            "cargo" => Ok(Self::SemverCargo),
+            "semver-cargo" => Ok(Self::SemverCargo),
             _ => Err(SolarError::from(format!("{} is not a valid plugin.", s))),
         }
     }

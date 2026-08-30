@@ -55,7 +55,7 @@ impl Installable for SemverReleaseInstaller {
                     .plugins()
                     .get(plugin.bin_name())
                     .is_none()
-                    && plugin.download_binary(&release_dir_path).is_ok()
+                    && plugin.download_binary(&release_dir_path, &self.os).is_ok()
                 {
                     current_installation.add_plugin(plugin.to_owned());
                 }

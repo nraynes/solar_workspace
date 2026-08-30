@@ -34,10 +34,11 @@ pub enum Subcommand {
     /// Updates the configuration of tools on the current project.
     Update(Update),
 
+    /// Updates every tool that has an upgrader found in the project.
     UpdateAll(UpdateAll),
 
     /// Upgrade a single tool in the solar project.
-    Ugrade(Upgrade),
+    Upgrade(Upgrade),
 
     /// Install tools from the Solar framework to the project.
     Install(Install),

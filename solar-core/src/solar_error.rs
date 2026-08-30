@@ -15,6 +15,7 @@ use rust_alert::alert;
     clap::error::Error,
     toml::ser::Error,
     toml::de::Error,
-    yaml_serde::Error
+    yaml_serde::Error,
+    mocked_up::MockError,
 ])]
 pub struct SolarError {}

@@ -42,18 +42,18 @@ fn test_install_was_successful(path: &Path, hooks_path: &str) {
 
 #[test]
 pub fn vhooks() {
-    let mut temp = setup_env();
+    let temp = setup_env();
 
     // Initialize Git first.
     Terminal::command()
-        .current_dir(temp.env().path())
+        .current_dir(temp.root().path())
         .piped()
         .run("git", ["init"])
         .unwrap();
 
     // Test cold install (install with no prior install).
-    test_install_was_successful(temp.env().path(), ".hooks");
+    test_install_was_successful(temp.root().path(), ".hooks");
 
     // Test hot install (install with prior install).
-    test_install_was_successful(temp.env().path(), ".new_hooks");
+    test_install_was_successful(temp.root().path(), ".new_hooks");
 }

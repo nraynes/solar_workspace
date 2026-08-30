@@ -5,11 +5,11 @@ use crate::resources::{CARGO_COMMAND, setup_env};
 
 #[test]
 pub fn vhooks() {
-    let mut temp = setup_env();
+    let temp = setup_env();
 
     // Run command.
     let stderr = Terminal::command()
-        .current_dir(temp.env().path())
+        .current_dir(temp.root().path())
         .piped()
         .stderr(CARGO_COMMAND, ["solar", "uninstall", "vhooks"])
         .unwrap();
