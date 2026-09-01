@@ -11,6 +11,8 @@ use crate::{
     traits::Installable,
 };
 
+pub static PRECOMMIT_ALREADY_EXISTS_ERR_MSG: &str = "There is already a pre-commit hook present. Please use the -f or --force-overwrite option to force overwriting the old hook.";
+
 #[derive(Parser, Clone, Default, PartialEq, Debug, Getters, new)]
 pub struct PreCommitInstaller {
     // The script to use as the pre-commit hook.
@@ -29,9 +31,7 @@ impl Installable for PreCommitInstaller {
 
         // If a hook is already present and force_overwrite is not set, return error.
         if *git_repository.installation().script_exists() && !self.force_overwrite {
-            return Err(SolarError::from(
-                "There is already a pre-commit hook present. Please use the -f or --force-overwrite option to force overwriting the old hook.",
-            ));
+            return Err(SolarError::from(PRECOMMIT_ALREADY_EXISTS_ERR_MSG));
         }
 
         // Create the new hook file.

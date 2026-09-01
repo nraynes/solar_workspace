@@ -3,7 +3,7 @@ mod installer;
 mod script;
 mod uninstaller;
 
-pub use installer::PreCommitInstaller;
+pub use installer::{PRECOMMIT_ALREADY_EXISTS_ERR_MSG, PreCommitInstaller};
 pub use script::Script;
 pub use uninstaller::PreCommitUninstaller;
 
