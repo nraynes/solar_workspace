@@ -4,7 +4,7 @@ use crate::components::licenses::license::License;
 
 impl Display for License {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
+        write!(
             f,
             "{}",
             match self {

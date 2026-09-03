@@ -1,10 +1,16 @@
 use clap::Parser;
 use derive_getters::Getters;
 use derive_new::new;
-use std::{fs, path::Path, str::FromStr};
+use std::{
+    fs::{self, DirEntry},
+    path::Path,
+    str::FromStr,
+};
 
 use crate::{
-    components::licenses::{LICENSES_DIR, installation::Installation, license::License},
+    components::licenses::{
+        LICENSE_PREFIX, LICENSES_DIR, installation::Installation, license::License,
+    },
     solar_error::SolarError,
     traits::{GetPartialInstall, Uninstallable},
 };
@@ -26,8 +32,8 @@ impl LicensesUninstaller {
             for dir_entry_result in read_dir {
                 if let Ok(dir_entry) = dir_entry_result
                     && let Ok(file_name) = dir_entry.file_name().into_string()
-                    && let Some((_, spdx_identifier)) = file_name.split_once("LICENSE-")
-                    && let Ok(license) = License::from_str(spdx_identifier)
+                    && let Some((_, spdx_identifier)) = file_name.split_once(LICENSE_PREFIX)
+                    && let Ok(license) = License::from_str(spdx_identifier.trim_end_matches("\n"))
                 {
                     fs::remove_file(path.join(license.file_name()))?;
                 }
@@ -50,6 +56,13 @@ impl Uninstallable for LicensesUninstaller {
         if self.include_licenses.is_none() && self.licensed_under.is_none() {
             Self::remove_all_licenses_in_dir(path)?;
             Self::remove_all_licenses_in_dir(&licenses_dir)?;
+            if fs::read_dir(&licenses_dir).is_ok_and(|r| {
+                r.filter_map(|d| d.ok())
+                    .collect::<Vec<DirEntry>>()
+                    .is_empty()
+            }) {
+                fs::remove_dir_all(&licenses_dir)?;
+            }
         } else {
             // If include licenses were given, remove just those if they exist.
             if let Some(include_licenses) = &self.include_licenses

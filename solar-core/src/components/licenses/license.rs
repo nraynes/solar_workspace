@@ -2,10 +2,9 @@ mod display;
 mod download;
 mod file_name;
 mod from_str;
+mod value_enum;
 
-use clap::ValueEnum;
-
-#[derive(ValueEnum, Clone, PartialEq, Debug, Eq)]
+#[derive(Clone, PartialEq, Debug, Eq)]
 pub enum License {
     _0BSD,
     _3DUSlicer1x0,

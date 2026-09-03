@@ -4,9 +4,9 @@ version = 4
 
 [[package]]
 name = "affirm-fs"
-version = "0.5.7"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7d70a529d62a2458ea347665b58d0c15aa9ad7638df002f64c61b79c88ee946"
+checksum = "9b346252a02ff738c5f33ffe81e8d70c6df0faf4a616ec93ed8e25eda15c6063"
 dependencies = [
  "derive-getters",
  "derive-new",

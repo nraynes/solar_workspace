@@ -3,7 +3,7 @@ use std::{fs, path::Path, str::FromStr};
 use derive_getters::Getters;
 
 use crate::{
-    components::licenses::{LICENSES_DIR, license::License},
+    components::licenses::{LICENSE_PREFIX, LICENSES_DIR, license::License},
     solar_error::SolarError,
     traits::GetPartialInstall,
 };
@@ -21,7 +21,7 @@ impl Installation {
             for dir_entry_result in read_dir {
                 if let Ok(dir_entry) = dir_entry_result
                     && let Ok(file_name) = dir_entry.file_name().into_string()
-                    && let Some((_, spdx_identifier)) = file_name.split_once("LICENSE-")
+                    && let Some((_, spdx_identifier)) = file_name.split_once(LICENSE_PREFIX)
                     && let Ok(license) = License::from_str(spdx_identifier)
                 {
                     include_licenses.push(license);

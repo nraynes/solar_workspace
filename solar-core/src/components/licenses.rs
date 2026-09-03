@@ -7,3 +7,4 @@ pub use installer::LicensesInstaller;
 pub use uninstaller::LicensesUninstaller;
 
 pub static LICENSES_DIR: &str = "LICENSES";
+pub static LICENSE_PREFIX: &str = "LICENSE-";
