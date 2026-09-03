@@ -6,8 +6,8 @@ use derive_new::new;
 
 use crate::{
     components::cargo_deny::{
-        CARGO_DENY_CRATE_NAME, DENY_TOML_NAME, generate_toml::generate_toml,
-        installation::Installation,
+        CARGO_DENY_CRATE_NAME, DENY_EXISTS_ERROR_MESSAGE, DENY_TOML_NAME,
+        generate_toml::generate_toml, installation::Installation,
     },
     solar_error::SolarError,
     tools::cargo::try_cargo_install::try_cargo_install,
@@ -28,9 +28,7 @@ impl Installable for CargoDenyInstaller {
 
         // Check for current toml configuration.
         if *current_installation.deny_toml_exists() {
-            return Err(SolarError::from(
-                "Current installation found. Use cargo-deny to make changes to the current installation. Only use cargo-solar to uninstall completely.",
-            ));
+            return Err(SolarError::from(DENY_EXISTS_ERROR_MESSAGE));
         }
 
         // Ensure that tool is globally installed.
