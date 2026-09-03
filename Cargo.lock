@@ -4,9 +4,9 @@ version = 4
 
 [[package]]
 name = "affirm-fs"
-version = "0.5.8"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b346252a02ff738c5f33ffe81e8d70c6df0faf4a616ec93ed8e25eda15c6063"
+checksum = "7e111fe7c38aaea0adfa870abc4b73bba3ffd0da2577b7a1b99dd0be6848251c"
 dependencies = [
  "derive-getters",
  "derive-new",
@@ -155,6 +155,7 @@ dependencies = [
  "serde_json",
  "solar-core",
  "toml",
+ "yaml_serde",
 ]
 
 [[package]]
@@ -2444,9 +2445,9 @@ checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
 
 [[package]]
 name = "yaml_serde"
-version = "0.10.4"
+version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08c7c1b1a6a7c8a6b2741a6c21a4f8918e51899b111cfa08d1288202656e3975"
+checksum = "33b729a08a9a6be689bbad3e2bf8015926db54b6622cc89c3a5f7dc174b9e918"
 dependencies = [
  "indexmap",
  "itoa",

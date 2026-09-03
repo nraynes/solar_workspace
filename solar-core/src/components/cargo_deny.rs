@@ -6,5 +6,5 @@ mod uninstaller;
 pub use installer::CargoDenyInstaller;
 pub use uninstaller::CargoDenyUninstaller;
 
-pub static PKG_NAME: &str = "cargo-deny";
-pub static TOML_NAME: &str = "deny.toml";
+pub static CARGO_DENY_CRATE_NAME: &str = "cargo-deny";
+pub static DENY_TOML_NAME: &str = "deny.toml";

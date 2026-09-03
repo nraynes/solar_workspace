@@ -61,7 +61,7 @@ impl ConfigureProject for CargoProcMacroBasic {
             LicensesUninstaller::new(None, None).uninstall(path),
             GithubWorkflowsUninstaller::new(Some(vec!["test".into(), "release".into()]))
                 .uninstall(path),
-            CommitalyzerUninstaller::new(None).uninstall(path),
+            CommitalyzerUninstaller::new().uninstall(path),
             SemverReleaseUninstaller::new(None).uninstall(path),
         ])
     }

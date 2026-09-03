@@ -6,7 +6,8 @@ use derive_new::new;
 
 use crate::{
     components::cargo_deny::{
-        PKG_NAME, TOML_NAME, generate_toml::generate_toml, installation::Installation,
+        CARGO_DENY_CRATE_NAME, DENY_TOML_NAME, generate_toml::generate_toml,
+        installation::Installation,
     },
     solar_error::SolarError,
     tools::cargo::try_cargo_install::try_cargo_install,
@@ -34,14 +35,14 @@ impl Installable for CargoDenyInstaller {
 
         // Ensure that tool is globally installed.
         if !current_installation.crate_installed() {
-            try_cargo_install(PKG_NAME)?;
+            try_cargo_install(CARGO_DENY_CRATE_NAME)?;
         }
 
         // Generate config file.
         let toml_contents = generate_toml(&self.allow_licenses)?.into_bytes();
 
         // Create configuration file.
-        let mut deny_config = File::create(path.join(TOML_NAME))?;
+        let mut deny_config = File::create(path.join(DENY_TOML_NAME))?;
         deny_config.write_all(&toml_contents)?;
 
         Ok(())

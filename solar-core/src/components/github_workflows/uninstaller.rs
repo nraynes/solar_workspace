@@ -30,7 +30,7 @@ impl Uninstallable for GithubWorkflowsUninstaller {
             if let Some(workflow_files) = current_installation.workflow_files() {
                 for file_name in file_names {
                     if workflow_files.contains(file_name) {
-                        fs::remove_file(path.join(file_name))?;
+                        fs::remove_file(workflows_path.join(file_name))?;
                     }
                 }
             }

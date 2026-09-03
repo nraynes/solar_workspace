@@ -5,7 +5,7 @@ use derive_getters::Getters;
 use derive_new::new;
 
 use crate::{
-    components::cargo_deny::{TOML_NAME, installation::Installation},
+    components::cargo_deny::{DENY_TOML_NAME, installation::Installation},
     solar_error::SolarError,
     traits::{GetPartialInstall, Uninstallable},
 };
@@ -20,7 +20,7 @@ impl Uninstallable for CargoDenyUninstaller {
 
         // Remove configuration file if it exists.
         if *current_installation.deny_toml_exists() {
-            fs::remove_file(path.join(TOML_NAME))?;
+            fs::remove_file(path.join(DENY_TOML_NAME))?;
         }
 
         Ok(())

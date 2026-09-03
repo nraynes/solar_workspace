@@ -23,7 +23,7 @@ pub mod components {
             use std::{fs, path::Path};
             use derive_getters::Getters;
             use crate::{
-                components::cargo_deny::{PKG_NAME, TOML_NAME},
+                components::cargo_deny::{CARGO_DENY_CRATE_NAME, DENY_TOML_NAME},
                 solar_error::SolarError,
                 tools::cargo::is_crate_installed::is_crate_installed,
                 traits::GetPartialInstall,
@@ -46,8 +46,8 @@ pub mod components {
             impl GetPartialInstall for Installation {
                 fn get_current(path: &Path) -> Result<Self, SolarError> {
                     Ok(Self {
-                        crate_installed: is_crate_installed(PKG_NAME)?,
-                        deny_toml_exists: fs::exists(path.join(TOML_NAME))?,
+                        crate_installed: is_crate_installed(CARGO_DENY_CRATE_NAME)?,
+                        deny_toml_exists: fs::exists(path.join(DENY_TOML_NAME))?,
                     })
                 }
             }
@@ -59,7 +59,7 @@ pub mod components {
             use derive_new::new;
             use crate::{
                 components::cargo_deny::{
-                    PKG_NAME, TOML_NAME, generate_toml::generate_toml,
+                    CARGO_DENY_CRATE_NAME, DENY_TOML_NAME, generate_toml::generate_toml,
                     installation::Installation,
                 },
                 solar_error::SolarError,
@@ -347,11 +347,11 @@ pub mod components {
                         );
                     }
                     if !current_installation.crate_installed() {
-                        try_cargo_install(PKG_NAME)?;
+                        try_cargo_install(CARGO_DENY_CRATE_NAME)?;
                     }
                     let toml_contents = generate_toml(&self.allow_licenses)?
                         .into_bytes();
-                    let mut deny_config = File::create(path.join(TOML_NAME))?;
+                    let mut deny_config = File::create(path.join(DENY_TOML_NAME))?;
                     deny_config.write_all(&toml_contents)?;
                     Ok(())
                 }
@@ -363,7 +363,7 @@ pub mod components {
             use derive_getters::Getters;
             use derive_new::new;
             use crate::{
-                components::cargo_deny::{TOML_NAME, installation::Installation},
+                components::cargo_deny::{DENY_TOML_NAME, installation::Installation},
                 solar_error::SolarError, traits::{GetPartialInstall, Uninstallable},
             };
             pub struct CargoDenyUninstaller {}
@@ -555,7 +555,7 @@ pub mod components {
                         path,
                     )?;
                     if *current_installation.deny_toml_exists() {
-                        fs::remove_file(path.join(TOML_NAME))?;
+                        fs::remove_file(path.join(DENY_TOML_NAME))?;
                     }
                     Ok(())
                 }
@@ -563,8 +563,8 @@ pub mod components {
         }
         pub use installer::CargoDenyInstaller;
         pub use uninstaller::CargoDenyUninstaller;
-        pub static PKG_NAME: &str = "cargo-deny";
-        pub static TOML_NAME: &str = "deny.toml";
+        pub static CARGO_DENY_CRATE_NAME: &str = "cargo-deny";
+        pub static DENY_TOML_NAME: &str = "deny.toml";
     }
     pub mod commitalyzer {
         pub mod download {

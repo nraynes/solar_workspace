@@ -10,7 +10,8 @@ use derive_new::new;
 
 use crate::{
     components::github_workflows::{
-        installation::Installation, workflow::Workflow, workflows_path,
+        WORKFLOW_ALREADY_EXISTS_ERROR_MESSAGE, installation::Installation, workflow::Workflow,
+        workflows_path,
     },
     solar_error::SolarError,
     traits::{GetPartialInstall, Installable},
@@ -54,6 +55,8 @@ impl Installable for GithubWorkflowsInstaller {
             workflow_file.write_all(
                 yaml_serde::to_string(&self.workflow.build_yaml(&current_installation))?.as_bytes(),
             )?;
+        } else {
+            println!("{}", WORKFLOW_ALREADY_EXISTS_ERROR_MESSAGE);
         }
 
         Ok(())

@@ -9,7 +9,7 @@ pub fn generate_toml(allow_licenses: &[String]) -> Result<String, SolarError> {
 
     // Build allow key value pair.
     let mut allow_list = HashMap::new();
-    allow_list.insert("allow", Vec::from(allow_licenses));
+    allow_list.insert("allow", allow_licenses.to_vec());
 
     // Build licenses section.
     let licenses_section = Value::from(allow_list);

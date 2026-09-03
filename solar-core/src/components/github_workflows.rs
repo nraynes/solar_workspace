@@ -10,7 +10,8 @@ pub use installer::GithubWorkflowsInstaller;
 pub use uninstaller::GithubWorkflowsUninstaller;
 
 pub static WORKFLOW_PARSE_ERROR_MESSAGE: &str = "Must format workflow as '<file_name>:<workflow_name>:<workflow_options>;'.\n\nEXAMPLE: 'release:cargo-bin-general:name=CI/CD Release;main_branch=main;'";
+pub static WORKFLOW_ALREADY_EXISTS_ERROR_MESSAGE: &str = "Workflow already exists - skipping...";
 
-fn workflows_path(path: &Path) -> PathBuf {
+pub fn workflows_path(path: &Path) -> PathBuf {
     path.join(".github/workflows")
 }

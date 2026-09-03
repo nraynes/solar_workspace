@@ -3,7 +3,7 @@ use std::{collections::HashSet, fs, path::Path, str::FromStr};
 use derive_getters::Getters;
 
 use crate::{
-    components::commitalyzer::{COMMIT_RULES_NAME, ruleset::Ruleset},
+    components::commitalyzer::{COMMIT_MSG_NAME, COMMIT_RULES_NAME, ruleset::Ruleset},
     solar_error::SolarError,
     tools::git::HooksPath,
     traits::GetPartialInstall,
@@ -20,7 +20,7 @@ impl GetPartialInstall for Installation {
     fn get_current(path: &Path) -> Result<Self, SolarError> {
         // Get hooks path and commitalyzer binary.
         let hooks_path = HooksPath::try_from(path)?;
-        let hook_bin = fs::exists(path.join(hooks_path.path()))?;
+        let hook_bin = fs::exists(path.join(hooks_path.path()).join(COMMIT_MSG_NAME))?;
 
         let mut rulesets = HashSet::new();
         let read_dir_result = fs::read_dir(path.join(COMMIT_RULES_NAME));
