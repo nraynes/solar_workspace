@@ -139,7 +139,7 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "cargo-solar"
-version = "1.0.5"
+version = "1.2.0"
 dependencies = [
  "affirm-fs",
  "clap",
@@ -436,7 +436,7 @@ dependencies = [
 
 [[package]]
 name = "enum_printer"
-version = "0.1.0"
+version = "1.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1509,7 +1509,7 @@ dependencies = [
 
 [[package]]
 name = "solar-core"
-version = "1.0.5"
+version = "1.2.0"
 dependencies = [
  "clap",
  "derive-getters",
@@ -1535,7 +1535,7 @@ dependencies = [
 
 [[package]]
 name = "solar-utils"
-version = "0.0.0"
+version = "1.2.0"
 
 [[package]]
 name = "spdx"

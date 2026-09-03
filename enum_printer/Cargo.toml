@@ -1,6 +1,6 @@
 [package]
 name = "enum_printer"
-version = "0.1.0"
+version = "1.2.0"
 edition = "2024"
 authors = ["Nicholas Raynes"]
 description = "Creates named enums containing cherry-picked variants of a parent enum."
