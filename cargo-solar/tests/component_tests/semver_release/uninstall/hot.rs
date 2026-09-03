@@ -1,10 +1,8 @@
-use rust_terminal::Terminal;
-
 use crate::{
     component_tests::semver_release::{
-        Snapshot, install::test_install_was_successful, uninstall::test_uninstall_was_successful,
+        install::test_install_was_successful, uninstall::test_uninstall_was_successful,
     },
-    resources::{CARGO_COMMAND, setup_env},
+    resources::setup_env,
 };
 
 #[test]
