@@ -1,16 +1,21 @@
 use clap::Parser;
+use solar_utils::working_dir;
 
-use crate::{Action, SolarError, Tool};
+use crate::{
+    components::UninstallableComponent,
+    solar_error::SolarError,
+    traits::{Run, Uninstallable},
+};
 
 #[derive(Parser, Clone)]
 pub struct Uninstall {
     /// The name of the tool to remove. If none is provided, defaults to all tools.
     #[command(subcommand)]
-    tool: Tool,
+    component: UninstallableComponent,
 }
 
-impl Uninstall {
-    pub fn run(&mut self) -> Result<(), SolarError> {
-        self.tool.act(&Action::UNINSTALL, None)
+impl Run for Uninstall {
+    fn run(&self) -> Result<(), SolarError> {
+        self.component.uninstall(&working_dir()?)
     }
 }

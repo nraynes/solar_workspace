@@ -1,6 +1,5 @@
 use clap::Parser;
-
-use solar_core::UnitCommand;
+use solar_core::unit_command::UnitCommand;
 
 #[derive(Parser)]
 pub struct Args {

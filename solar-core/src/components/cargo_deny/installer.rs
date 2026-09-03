@@ -1,0 +1,48 @@
+use std::{fs::File, io::Write, path::Path};
+
+use clap::Parser;
+use derive_getters::Getters;
+use derive_new::new;
+
+use crate::{
+    components::cargo_deny::{
+        CARGO_DENY_CRATE_NAME, DENY_EXISTS_ERROR_MESSAGE, DENY_TOML_NAME,
+        generate_toml::generate_toml, installation::Installation,
+    },
+    solar_error::SolarError,
+    tools::cargo::try_cargo_install::try_cargo_install,
+    traits::{GetPartialInstall, Installable},
+};
+
+#[derive(Parser, Clone, Default, PartialEq, Debug, Getters, new)]
+pub struct CargoDenyInstaller {
+    /// Default licenses to allow in your dependencies in your project.
+    #[arg(short, long, num_args = 0..)]
+    allow_licenses: Vec<String>,
+}
+
+impl Installable for CargoDenyInstaller {
+    fn install(&self, path: &Path) -> Result<(), SolarError> {
+        // Get current installation if it exists.
+        let current_installation: Installation = Installation::get_current(path)?;
+
+        // Check for current toml configuration.
+        if *current_installation.deny_toml_exists() {
+            return Err(SolarError::from(DENY_EXISTS_ERROR_MESSAGE));
+        }
+
+        // Ensure that tool is globally installed.
+        if !current_installation.crate_installed() {
+            try_cargo_install(CARGO_DENY_CRATE_NAME)?;
+        }
+
+        // Generate config file.
+        let toml_contents = generate_toml(&self.allow_licenses)?.into_bytes();
+
+        // Create configuration file.
+        let mut deny_config = File::create(path.join(DENY_TOML_NAME))?;
+        deny_config.write_all(&toml_contents)?;
+
+        Ok(())
+    }
+}

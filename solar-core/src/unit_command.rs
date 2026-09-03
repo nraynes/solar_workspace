@@ -1,7 +1,9 @@
 use clap::{Parser, Subcommand as SC};
+use enum_dispatch::enum_dispatch;
 
-use crate::Subcommand;
+use crate::{solar_error::SolarError, subcommand::Subcommand, traits::Run};
 
+#[enum_dispatch(Run)]
 #[derive(SC, Clone)]
 pub enum UnitCommand {
     SOLAR(SolarCommand),
@@ -10,5 +12,11 @@ pub enum UnitCommand {
 #[derive(Parser, Clone)]
 pub struct SolarCommand {
     #[command(subcommand)]
-    pub subcommand: Subcommand,
+    subcommand: Subcommand,
+}
+
+impl Run for SolarCommand {
+    fn run(&self) -> Result<(), SolarError> {
+        self.subcommand.run()
+    }
 }

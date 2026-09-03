@@ -1,0 +1,28 @@
+[package]
+name = "enum_printer"
+version = "0.1.0"
+edition = "2024"
+authors = ["Nicholas Raynes"]
+description = "Creates named enums containing cherry-picked variants of a parent enum."
+license  = "MIT OR Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/nraynes/solar_workspace"
+keywords = ["solar", "framework", "cargo", "project", "enum"]
+categories = ["development-tools"]
+include = [
+    "src/",
+    "examples/",
+    "Cargo.toml",
+    "../LICENSES/",
+    "../LICENSE",
+    "../README.md",
+    "../CHANGELOG.md",
+]
+
+[dependencies]
+proc-macro2 = "1.0.106"
+quote = "1.0.46"
+syn = { version = "2.0.118", features = ["full"] }
+
+[lib]
+proc-macro = true

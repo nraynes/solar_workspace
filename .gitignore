@@ -1,3 +1,4 @@
 target
 cargo-solar/target
 .vscode
+.DS_Store

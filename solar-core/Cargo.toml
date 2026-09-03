@@ -22,6 +22,7 @@ include = [
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
 derive-getters = "0.5.0"
+derive-new = "0.7.0"
 derive_setters = "0.1.9"
 reqwest = { version = "0.13.4", features = ["blocking"] }
 rust-alert = "0.3.0"
@@ -29,6 +30,13 @@ rust-dl = "0.0.1"
 rust-terminal = "0.2.1"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"
+solar-utils = { path = "../solar-utils" }
 spdx = "0.13.4"
 toml = "1.1.2"
 url = "2.5.8"
+enum_printer = { version = "0.1.0", path = "../enum_printer" }
+enum_dispatch = "0.3.13"
+yaml_serde = "0.10.4"
+strum = "0.28.0"
+strum_macros = "0.28.0"
+mocked-up = "0.6.1"
