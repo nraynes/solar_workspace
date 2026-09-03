@@ -43,12 +43,12 @@ impl ConfigureProject for CargoBinWorkspaced {
             path.join(name),
             name.into(),
             (0, 0, 0),
-            self.authors.clone().unwrap_or(Vec::new()),
+            self.authors.clone().unwrap_or_default(),
             self.description.clone().unwrap_or("".into()),
             "MIT OR Apache-2.0".into(),
             self.repository.clone().unwrap_or("".into()),
-            self.keywords.clone().unwrap_or(Vec::new()),
-            self.categories.clone().unwrap_or(Vec::new()),
+            self.keywords.clone().unwrap_or_default(),
+            self.categories.clone().unwrap_or_default(),
             vec![],
         );
         cratebuilder.bin()?;

@@ -4,6 +4,7 @@ use rust_dl::downloader::download_sync;
 use solar_utils::match_target;
 use url::Url;
 
+#[allow(unused_imports)]
 use crate::{
     components::commitalyzer::{COMMIT_MSG_NAME, ruleset::Ruleset},
     solar_error::SolarError,

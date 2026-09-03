@@ -26,6 +26,7 @@ pub trait Upgradable {
 
 #[enum_dispatch]
 pub trait ConfigureProject {
+    #[allow(clippy::new_ret_no_self, clippy::wrong_self_convention)]
     fn new(&self, path: &Path, name: &str) -> Result<(), SolarError>;
 
     fn init(&self, path: &Path) -> Result<(), SolarError>;

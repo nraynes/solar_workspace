@@ -15,6 +15,7 @@ use derive_new::new;
 
 use crate::{solar_error::SolarError, tools::cargo::CARGO_TOML};
 
+#[allow(clippy::too_many_arguments)]
 #[derive(Getters, new)]
 pub struct CrateBuilder {
     path: PathBuf,
@@ -146,13 +147,7 @@ impl CrateBuilder {
         );
         package_table.insert(
             "authors".into(),
-            Value::Array(
-                self.authors
-                    .to_owned()
-                    .into_iter()
-                    .map(|s| Value::String(s))
-                    .collect(),
-            ),
+            Value::Array(self.authors.iter().cloned().map(Value::String).collect()),
         );
         package_table.insert(
             "description".into(),
@@ -165,23 +160,11 @@ impl CrateBuilder {
         );
         package_table.insert(
             "keywords".into(),
-            Value::Array(
-                self.keywords
-                    .to_owned()
-                    .into_iter()
-                    .map(|s| Value::String(s))
-                    .collect(),
-            ),
+            Value::Array(self.keywords.iter().cloned().map(Value::String).collect()),
         );
         package_table.insert(
             "categories".into(),
-            Value::Array(
-                self.categories
-                    .to_owned()
-                    .into_iter()
-                    .map(|s| Value::String(s))
-                    .collect(),
-            ),
+            Value::Array(self.categories.iter().cloned().map(Value::String).collect()),
         );
 
         if let Some(package_table_extension) = extend_package_table_with {
